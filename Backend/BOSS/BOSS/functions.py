@@ -1,6 +1,22 @@
 # Imports
 from django.contrib.auth.models import User  # Assuming the User model is used
+from django.http import JsonResponse
 from .models import Account, Rider, Driver, Ride, Message, Van, Report, RideRequest, Notification
+from django.contrib.auth import authenticate, login, logout
+
+# Function to handle user login
+def user_login(request, username, password):
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return JsonResponse({'status': 'success', 'message': 'User logged in'})
+    else:
+        return JsonResponse({'status': 'fail', 'message': 'Invalid credentials'})
+
+# Function to handle user logout
+def user_logout(request):
+    logout(request)
+    return JsonResponse({'status': 'success', 'message': 'User logged out'})
 
 # Example function to retrieve the ride queue position
 def get_ride_queue_position(rider_id: int) -> int:
