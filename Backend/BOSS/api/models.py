@@ -60,7 +60,7 @@ class Report(models.Model):
         ('driver', 'Driver'),
         ('ride', 'Ride'),
     ]
-    reporter = models.ForeignKey(Account, related_name='reporter', on_delete=models.CASCADE)
+    reporter = models.ForeignKey(Account.name, related_name='reporter', on_delete=models.CASCADE)
     report_type = models.CharField(max_length=20, choices=Report_Category)
     context = models.TextField()
 
