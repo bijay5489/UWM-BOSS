@@ -1,218 +1,267 @@
-# Imports
-from django.contrib.auth.models import User  # Assuming the User model is used
-from django.http import JsonResponse
-from .models import Account, Rider, Driver, Ride, Message, Van, Report, RideRequest, Notification
-from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
-# Function to handle user login
-def user_login(request, username, password):
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return JsonResponse({'status': 'success', 'message': 'User logged in'})
-    else:
-        return JsonResponse({'status': 'fail', 'message': 'Invalid credentials'})
-
-# Function to handle user logout
-def user_logout(request):
-    logout(request)
-    return JsonResponse({'status': 'success', 'message': 'User logged out'})
-
-# Example function to retrieve the ride queue position
-def get_ride_queue_position(rider_id: int) -> int:
-    """
-    Retrieves the position of a rider in the ride queue.
-    Args:
-        rider_id (int): The ID of the rider.
-    Returns:
-        int: Position of the rider in the queue.
-    Description:
-        This function will calculate the rider's position in the queue based on the number
-        of rides ahead of them and return the position number.
-    """
-    pass
-
-# Contact function skeleton for in-app messaging
-def send_message(rider_id: int, driver_id: int, text: str) -> bool:
-    """
-    Sends a message from a rider to a driver.
-    Args:
-        rider_id (int): The ID of the rider sending the message.
-        driver_id (int): The ID of the driver receiving the message.
-        text (str): The content of the message.
-    Returns:
-        bool: True if message was successfully sent, False otherwise.
-    Description:
-        This function allows a rider to send an in-app message to the driver. This could
-        be used for communication about pickup delays or location changes.
-    """
-    pass
-
-# Function to add a new driver
-def add_driver(username: str, password: str, name: str) -> Driver:
-    """
-    Adds a new driver to the system.
-    Args:
-        username (str): Username for the driver.
-        password (str): Password for the driver's account.
-        name (str): Name of the driver.
-    Returns:
-        Driver: The newly created Driver object.
-    Description:
-        This function creates a new driver account and adds them to the system.
-    """
-    pass
-
-# Function to remove a driver
-def remove_driver(driver_id: int) -> bool:
-    """
-    Removes a driver from the system.
-    Args:
-        driver_id (int): The ID of the driver to be removed.
-    Returns:
-        bool: True if the driver was successfully removed, False otherwise.
-    Description:
-        This function removes a driver from the system based on their ID.
-    """
-    pass
-
-# Function to create a ride request
-def create_ride_request(rider_id: int, pickup_location: str, dropoff_location: str, ada_required: bool, num_passengers: int) -> RideRequest:
-    """
-    Creates a new ride request for a rider.
-    Args:
-        rider_id (int): The ID of the rider making the request.
-        pickup_location (str): The pickup location for the ride.
-        dropoff_location (str): The dropoff location for the ride.
-        ada_required (bool): Indicates if ADA-compliant van is required.
-        num_passengers (int): The number of passengers for the ride.
-    Returns:
-        RideRequest: The newly created RideRequest object.
-    Description:
-        This function allows a rider to request a ride by providing necessary details such
-        as pickup location, dropoff location, ADA requirements, and number of passengers.
-    """
-    pass
-
-# Function to assign a driver to a ride request
-def assign_driver_to_ride(driver_id: int, ride_request_id: int) -> Ride:
-    """
-    Assigns a driver to a ride request.
-    Args:
-        driver_id (int): The ID of the driver to be assigned.
-        ride_request_id (int): The ID of the ride request to be fulfilled.
-    Returns:
-        Ride: The newly created Ride object.
-    Description:
-        This function assigns a driver to a specific ride request and marks the ride as in progress.
-    """
-    pass
-
-# Function to notify rider of ride status
-def send_notification(rider_id: int, text: str) -> bool:
-    """
-    Sends a notification to the rider.
-    Args:
-        rider_id (int): The ID of the rider to notify.
-        text (str): The content of the notification.
-    Returns:
-        bool: True if notification was successfully sent, False otherwise.
-    Description:
-        This function allows the system to send notifications to the rider, for example,
-        to inform them of the arrival of their ride or any updates on delays.
-    """
-    pass
-
-# Function to report issues with a driver or rider
-def create_report(reporter_id: int, reported_person_id: int, text: str) -> Report:
-    """
-    Creates a report for an issue between a driver and a rider.
-    Args:
-        reporter_id (int): The ID of the person reporting the issue.
-        reported_person_id (int): The ID of the person being reported.
-        text (str): Details of the issue.
-    Returns:
-        Report: The newly created Report object.
-    Description:
-        This function allows users to report issues with either a driver or a rider, which can
-        then be reviewed by the supervisor.
-    """
-    pass
-
-# Function to manage van assignments (ADA or regular)
-def assign_van_to_driver(driver_id: int, van_number: int) -> bool:
-    """
-    Assigns a van to a driver.
-    Args:
-        driver_id (int): The ID of the driver.
-        van_number (int): The van number to be assigned.
-    Returns:
-        bool: True if the van was successfully assigned, False otherwise.
-    Description:
-        This function allows the assignment of a specific van (ADA-compliant or regular) to a driver.
-    """
-    pass
-
-# Function to calculate estimated pickup time
-def estimate_pickup_time(rider_id: int) -> str:
-    """
-    Calculates the estimated pickup time for a rider.
-    Args:
-        rider_id (int): The ID of the rider.
-    Returns:
-        str: The estimated pickup time as a string (e.g., '15 minutes').
-    Description:
-        This function calculates an estimated time for when the rider's van will arrive.
-    """
-    pass
-
-# Function to mark a ride as completed
-def complete_ride(ride_id: int) -> bool:
-    """
-    Marks a ride as completed.
-    Args:
-        ride_id (int): The ID of the ride to be marked as completed.
-    Returns:
-        bool: True if the ride was successfully marked as completed, False otherwise.
-    Description:
-        This function allows the system to mark a ride as completed once the rider has been dropped off.
-    """
-    pass
+from .models import User, Ride, Notification, Report, Van
 
 
-def update_ride_status(ride_id: int, status: str) -> None:
+class UserFunctions:
     """
-    Updates the status of a ride.
+    Create - Creates user based on provided data.
 
-    Args:
-        ride_id (int): The ID of the ride.
-        status (str): The new status of the ride (e.g., "Completed", "In Progress").
-
-    Returns:
-        None
-
-    Description:
-        This function will update the status of a ride in the system.
-        It will set the status to the provided string value, which could be
-        values like "Completed", "In Progress", "Cancelled", etc.
+    Preconditions: Valid dictionary with correct values based on user.
+    Postconditions: User is successfully added to the database.
+    Side Effects: Adds a user to database and all locations that reference users.
+    In: info - is a dictionary containing user information.
+    Out: Boolean - to determine if operation was accomplished or not.
     """
-    pass  # Logic to update the ride status in the database will go here.
 
+    def create(self, info: dict) -> bool:
+        """Check for empty dictionaries before querying info"""
+        if not bool(info):
+            return False
 
-def update_ride_queue(rider_id: int, new_queue_position: int) -> None:
+        """Check for empty required values before creation"""
+        required_fields = ['username', 'password', 'name', 'email', 'phone_number', 'address', 'user_type']
+        if not all(field in info for field in required_fields):
+            return False
+
+        if False in info.values():
+            return False
+
+        """Check for duplicates"""
+        if User.objects.filter(username=info['username']).exists() or User.objects.filter(email=info['email']).exists():
+            return False
+
+        """Take entries from input dictionary and create a new user"""
+        user = User(
+            username=info['username'],
+            password=info['password'],
+            name=info['name'],
+            phone_number=info['phone_number'],
+            email=info['email'],
+            address=info['address'],
+            user_type=info['user_type']
+        )
+        user.save()
+        return True
+
     """
-    Updates the position of a rider in the ride queue.
+    Edit - Updates user information with the provided data.
 
-    Args:
-        rider_id (int): The ID of the rider.
-        new_queue_position (int): The new position of the rider in the queue.
-
-    Returns:
-        None
-
-    Description:
-        This function will update the rider's position in the ride queue.
-        It will adjust the rider's position to the new queue position
-        passed as an argument.
+    Preconditions: User must be authenticated and exist in the database.
+    Postconditions: User information is updated in the database if successful.
+    Side Effects: May modify user information in the database and anywhere where user is referenced.
+    In: info - is a dictionary containing user information.
+    Out: Boolean - to determine if operation was accomplished or not.
     """
-    pass  # Logic to update the ride queue position in the database will go here.
+
+    def edit(self, info: dict) -> bool:
+        """Check if username is present"""
+        if 'username' not in info:
+            return False
+
+        """Check if username is in database"""
+        try:
+            temp_user = User.objects.get(username=info['username'])
+        except ObjectDoesNotExist:
+            return False
+
+        """Update user information if provided"""
+        for field in ['password', 'name', 'email', 'phone_number', 'address', 'user_type']:
+            if field in info:
+                setattr(temp_user, field, info[field])
+
+        temp_user.save()
+        return True
+
+    """
+    Delete - Deletes the user from the database.
+
+    Preconditions: User must exist in the database.
+    Postconditions: User is removed from the database and everywhere referenced if successful.
+    Side Effects: Removed from any database tables as a foreign key.
+    In: identity - String to locate the given user by username to delete.
+    Out: Boolean to determine if operation was accomplished or not.
+    """
+
+    def delete(self, identity: str) -> bool:
+        """Try and find the user"""
+        try:
+            temp_user = User.objects.get(username=identity)
+        except ObjectDoesNotExist:
+            return False
+
+        """Delete the user"""
+        temp_user.delete()
+        return True
+
+    """
+    get - Retrieves information about the user(s).
+
+    Preconditions: User(s) must be authenticated and exist in the database.
+    Postconditions: Returns a list of dictionaries containing user information.
+    Side Effects: None.
+    In: query - string field to search based off of, identity - string fields value to search for
+    Out: List - of dictionaries containing the given query
+    """
+
+    def get(self, query: str, identity: str) -> list:
+        """Create empty lists"""
+        return_list = []
+        user_list = []
+
+        """Get items based on the given query"""
+        if query in ['username', 'name', 'email', 'address', 'phone_number', 'user_type']:
+            user_list = User.objects.filter(**{query: identity}).values()
+
+        """Go through userlist and create format"""
+        for user in user_list:
+            temp_dic = {
+                'name': user['name'],
+                'username': user['username'],
+                'password': user['password'],
+                'email': user['email'],
+                'phone_number': int(user['phone_number']),
+                'address': user['address'],
+                'user_type': user['user_type']
+            }
+            """Add to list"""
+            return_list.append(temp_dic)
+
+        return return_list
+
+    """
+    get_all - Retrieves all users from the database.
+
+    Preconditions: None. Will return empty if there is nothing in database.
+    Postconditions: Returns a list containing dictionaries of user information.
+    Side Effects: None.
+    In: None
+    Out: List of dictionaries containing all users.
+    """
+
+    def get_all(self) -> list:
+        """Get all users in table"""
+        user_list = User.objects.all()
+
+        """Initialize user list"""
+        return_list = []
+        """Add entries to list"""
+        for user in user_list:
+            """Create user dictionary"""
+            temp_dic = {
+                'name': user.name,
+                'username': user.username,
+                'password': user.password,
+                'email': user.email,
+                'phone_number': int(user.phone_number),
+                'address': user.address,
+                'user_type': user.user_type
+            }
+            """Add to list"""
+            return_list.append(temp_dic)
+        """Return the list of users"""
+        return return_list
+
+
+class RideManagement:
+    def create(self, rider: User, ride_info: dict) -> bool:
+        """Create a new ride."""
+        if rider.user_type != 'R':
+            return False
+
+        ride = Ride(
+            rider=rider,
+            pickup_location=ride_info.get('pickup_location'),
+            dropoff_location=ride_info.get('dropoff_location'),
+            num_passengers=ride_info.get('num_passengers', 1),
+            is_accessible=ride_info.get('ADA_required')
+        )
+        ride.save()
+        return True
+
+    def edit(self, ride_id: int, ride_info: dict) -> bool:
+        """Edit an existing ride."""
+        try:
+            ride = Ride.objects.get(ride_id=ride_id)
+            for attr, value in ride_info.items():
+                setattr(ride, attr, value)
+            ride.save()
+            return True
+        except Ride.DoesNotExist:
+            return False
+
+    def delete(self, ride_id: int) -> bool:
+        """Delete a ride."""
+        try:
+            ride = Ride.objects.get(ride_id=ride_id)
+            ride.delete()
+            return True
+        except Ride.DoesNotExist:
+            return False
+
+    def assign_driver(self) -> bool:
+        """Assign a driver to an existing ride."""
+        pending_requests = Ride.objects.filter(status='Pending')
+        request = pending_requests.first()
+
+        drivers = User.objects.filter(user_type='D')
+        available_drivers = drivers.filter(status='Available')
+
+
+        if available_drivers.exists():
+            driver = available_drivers.first()  # Choose the first available driver
+            request.driver = driver
+            request.van = Van.objects.get(driver=driver)
+            request.pickup_time = timezone.now()
+            request.status = 'Assigned'
+            request.save()
+            driver.status = 'Assigned'
+            driver.save()
+            return True
+        else:
+            return False
+
+
+    def get(self, identifier: str, value) -> list:
+        """Get rides by user, get riders by driver, or get ride by ride ID."""
+        if identifier == 'ride_id':
+            try:
+                ride = Ride.objects.get(ride_id=value)
+                return [ride]  # Return a list with a single ride object
+            except Ride.DoesNotExist:
+                return []
+
+        if identifier == 'driver':
+            return list(Ride.objects.filter(driver=value))
+
+        if identifier == 'rider':
+            return list(Ride.objects.filter(rider=value))
+
+        return []  # Return an empty list if no valid identifier is provided
+
+    def get_all(self) -> list:
+        """Get all rides."""
+        return list(Ride.objects.all())
+
+
+class NotificationManager:
+    def get(self, query: str, identity: str) -> Notification:
+        try:
+            return Notification.objects.get(id=query, rider=identity)
+        except Notification.DoesNotExist:
+            return None
+
+    def get_all(self) -> list:
+        return list(Notification.objects.all())
+
+
+class ReportManager:
+    def get(self, query: str, identity: str) -> Report:
+        try:
+            return Report.objects.get(id=query, reporter=identity)
+        except Report.DoesNotExist:
+            return None
+
+    def get_all(self) -> list:
+        return list(Report.objects.all())
