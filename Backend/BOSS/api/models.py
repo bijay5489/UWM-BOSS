@@ -1,14 +1,29 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
-class User(models.Model):
-    """
-    Represents a user in the UWM BOSS system.
-    """
+class UserManager(BaseUserManager):
+    def create_user(self, username, password=None, **extra_fields):
+        if not username:
+            raise ValueError("The Username field must be set")
+        user = self.model(username=username, **extra_fields)
+        user.set_password(password)  # Hashes the password
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self.create_user(username, password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin):
     USER_TYPES = (
         ('S', 'Supervisor'),
         ('D', 'Driver'),
         ('R', 'Rider'),
+        ('A', 'Admin'),
     )
 
     DRIVER_STATUS = (
@@ -16,14 +31,21 @@ class User(models.Model):
         ('assigned', 'Assigned'),
     )
 
-    username = models.CharField(max_length=25, unique=True)
-    password = models.CharField(max_length=25)
-    name = models.CharField(max_length=75)
-    phone_number = models.CharField(max_length=11)
-    address = models.TextField()
-    email = models.EmailField(unique=True)
-    user_type = models.CharField(max_length=1, choices=USER_TYPES, default='S')
+    username = models.CharField(max_length=25, unique=True, blank=False)
+    name = models.CharField(max_length=75, blank=False)
+    phone_number = models.CharField(max_length=11, blank=True)
+    address = models.TextField(blank=True)
+    email = models.EmailField(unique=True, blank=False)
+    user_type = models.CharField(max_length=1, choices=USER_TYPES, blank=False)
     status = models.CharField(max_length=10, choices=DRIVER_STATUS, default='available', null=True, blank=True)
+
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'username'  # The field used to log in
+    REQUIRED_FIELDS = ['email', 'name']  # Fields required when creating a user via the createsuperuser command
 
     def __str__(self):
         return self.username
