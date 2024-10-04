@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-
+from django.contrib.auth.hashers import make_password
 from .models import User, Ride, Notification, Report, Van
 
 
@@ -32,15 +32,15 @@ class UserFunctions:
         if User.objects.filter(username=info['username']).exists() or User.objects.filter(email=info['email']).exists():
             return False
 
-        """Take entries from input dictionary and create a new user"""
+        """Create a new user with required fields"""
         user = User(
             username=info['username'],
-            password=info['password'],
+            password=make_password(info['password']),
             name=info['name'],
             phone_number=info['phone_number'],
             email=info['email'],
             address=info['address'],
-            user_type=info['user_type']
+            user_type=info['user_type'],
         )
         user.save()
         return True
@@ -55,21 +55,25 @@ class UserFunctions:
     Out: Boolean - to determine if operation was accomplished or not.
     """
 
-    def edit(self, info: dict) -> bool:
+    def edit(self, username: str, info: dict) -> bool:
         """Check if username is present"""
-        if 'username' not in info:
+        if not username:
             return False
 
         """Check if username is in database"""
         try:
-            temp_user = User.objects.get(username=info['username'])
+            temp_user = User.objects.get(username=username)
         except ObjectDoesNotExist:
             return False
 
         """Update user information if provided"""
         for field in ['password', 'name', 'email', 'phone_number', 'address', 'user_type']:
             if field in info:
-                setattr(temp_user, field, info[field])
+                # Hash the password if it is being changed
+                if field == 'password':
+                    setattr(temp_user, field, make_password(info[field]))
+                else:
+                    setattr(temp_user, field, info[field])
 
         temp_user.save()
         return True
@@ -119,9 +123,8 @@ class UserFunctions:
             temp_dic = {
                 'name': user['name'],
                 'username': user['username'],
-                'password': user['password'],
                 'email': user['email'],
-                'phone_number': int(user['phone_number']),
+                'phone_number': user['phone_number'],
                 'address': user['address'],
                 'user_type': user['user_type']
             }
@@ -143,6 +146,8 @@ class UserFunctions:
     def get_all(self) -> list:
         """Get all users in table"""
         user_list = User.objects.all()
+        user_list = user_list.exclude(user_type='A')
+        user_list = user_list.exclude(user_type='S')
 
         """Initialize user list"""
         return_list = []
@@ -152,9 +157,8 @@ class UserFunctions:
             temp_dic = {
                 'name': user.name,
                 'username': user.username,
-                'password': user.password,
                 'email': user.email,
-                'phone_number': int(user.phone_number),
+                'phone_number': user.phone_number,
                 'address': user.address,
                 'user_type': user.user_type
             }
