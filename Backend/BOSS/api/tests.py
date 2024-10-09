@@ -34,16 +34,16 @@ class UserFunctionsTests(TestCase):
     def test_edit_user_success(self):
         """Test successful user editing."""
         self.user_func.create(self.user_info)
-        new_info = {'username': 'testuser', 'name': 'Updated User'}
-        result = self.user_func.edit(new_info)
+        new_info = {'name': 'Updated User'}
+        result = self.user_func.edit('testuser',new_info)
         self.assertTrue(result)
         user = User.objects.get(username='testuser')
         self.assertEqual(user.name, 'Updated User')
 
     def test_edit_user_non_existent(self):
         """Test editing a non-existent user."""
-        new_info = {'username': 'nonexistent', 'name': 'Updated User'}
-        result = self.user_func.edit(new_info)
+        new_info = {'name': 'Updated User'}
+        result = self.user_func.edit('nonexistent', new_info)
         self.assertFalse(result)
 
     def test_delete_user_success(self):
