@@ -174,20 +174,27 @@ class RideManagement:
         if rider.user_type != 'R':
             return False
 
+
+
         ride = Ride(
             rider=rider,
+            driver=ride_info.get('driver'),
             pickup_location=ride_info.get('pickup_location'),
             dropoff_location=ride_info.get('dropoff_location'),
             num_passengers=ride_info.get('num_passengers', 1),
-            is_accessible=ride_info.get('ADA_required')
+            ADA_required=ride_info.get('ADA_required'),
+            van=ride_info.get('van'),
         )
+        status = ride_info.get('status')
+        if status is not None:
+            ride.status = status
         ride.save()
         return True
 
     def edit(self, ride_id: int, ride_info: dict) -> bool:
         """Edit an existing ride."""
         try:
-            ride = Ride.objects.get(ride_id=ride_id)
+            ride = Ride.objects.get(id=ride_id)
             for attr, value in ride_info.items():
                 setattr(ride, attr, value)
             ride.save()
@@ -198,7 +205,7 @@ class RideManagement:
     def delete(self, ride_id: int) -> bool:
         """Delete a ride."""
         try:
-            ride = Ride.objects.get(ride_id=ride_id)
+            ride = Ride.objects.get(id=ride_id)
             ride.delete()
             return True
         except Ride.DoesNotExist:
@@ -226,23 +233,29 @@ class RideManagement:
         else:
             return False
 
+    def get_by_rider_id(self, _id: int, status: str = None) -> list:
+        try:
+            if status is not None:
+                return Ride.objects.filter(rider__id=_id, status=status)
+            return Ride.objects.filter(rider__id=_id)
+        except Ride.DoesNotExist:
+            return []
 
-    def get(self, identifier: str, value) -> list:
-        """Get rides by user, get riders by driver, or get ride by ride ID."""
-        if identifier == 'ride_id':
-            try:
-                ride = Ride.objects.get(ride_id=value)
-                return [ride]  # Return a list with a single ride object
-            except Ride.DoesNotExist:
-                return []
+    def get_by_driver_id(self, _id: int, status: str = None) -> list:
+        try:
+            if status is not None:
+                return Ride.objects.filter(driver__id=_id, status=status)
+            return Ride.objects.filter(driver__id=_id)
+        except Ride.DoesNotExist:
+            return []
 
-        if identifier == 'driver':
-            return list(Ride.objects.filter(driver=value))
-
-        if identifier == 'rider':
-            return list(Ride.objects.filter(rider=value))
-
-        return []  # Return an empty list if no valid identifier is provided
+    def get_by_van_id(self, _id: int, status: str = None) -> list:
+        try:
+            if status is not None:
+                return Ride.objects.filter(van__id=_id, status=status)
+            return Ride.objects.filter(van__id=_id)
+        except Ride.DoesNotExist:
+            return []
 
     def get_all(self) -> list:
         """Get all rides."""
@@ -265,7 +278,13 @@ class ReportManager:
         try:
             return Report.objects.get(id=query, reporter=identity)
         except Report.DoesNotExist:
-            return None
+            return []
 
     def get_all(self) -> list:
         return list(Report.objects.all())
+
+
+class VanManagement:
+    def get_by_id(self, _id: int) ->  Van:
+        return Van.objects.get(id=_id)
+

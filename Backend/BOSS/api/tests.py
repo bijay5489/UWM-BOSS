@@ -3,6 +3,7 @@ from django.utils import timezone
 from .models import User, Ride, Report, Van
 import api.functions as functions
 
+
 # Testing User functions
 class UserFunctionsTests(TestCase):
 
@@ -35,7 +36,7 @@ class UserFunctionsTests(TestCase):
         """Test successful user editing."""
         self.user_func.create(self.user_info)
         new_info = {'name': 'Updated User'}
-        result = self.user_func.edit('testuser',new_info)
+        result = self.user_func.edit('testuser', new_info)
         self.assertTrue(result)
         user = User.objects.get(username='testuser')
         self.assertEqual(user.name, 'Updated User')
@@ -86,24 +87,30 @@ class UserFunctionsTests(TestCase):
         result = self.user_func.get_all()
         self.assertEqual(len(result), 2)
 
+
 # Testing Ride functions
 class RideManagementTests(TestCase):
     def setUp(self):
+        self.rider = User(username="test_rider", password="test"
+                                                          "_pass", name="Test Rider", phone_number="987654321",
+                          address="123 ave WI", email="test_rider@uwm.edu", user_type="R")
+        self.rider.save()
+
+        self.driver = User(username="test_driver", password="test_pass", name="Test Driver", phone_number="987654321",
+                           address="123 ave WI", email="test_driver@uwm.edu", user_type="D")
+        self.driver.save()
+
+        self.van = Van(van_number="1234 QWERTY", driver=self.driver)
+        self.van.save()
+
         self.ride_info = {
             'pickup_location': '123 main ST',
             'dropoff_location': '123 test ST',
             'passengers': 3,
-            'is_accessible': True,
+            'ADA_required': True,
+            'van': self.van,
+            'driver': self.driver,
         }
-
-        self.rider = User(username="test_rider", password="test_pass", name="Test Rider", phone_number="987654321", address="123 ave WI", email="test_rider@uwm.edu", user_type="R")
-        self.rider.save()
-
-        self.driver = User(username="test_driver", password="test_pass", name="Test Driver", phone_number="987654321", address="123 ave WI", email="test_driver@uwm.edu", user_type="D")
-        self.driver.save()
-
-        self.van = Van(van_number="1234 QWERTY")
-        self.van.save()
 
         self.ride_manage_fun = functions.RideManagement()
 
@@ -112,3 +119,35 @@ class RideManagementTests(TestCase):
         self.driver.delete()
         self.van.delete()
 
+    def test_get_ride_by_rider_id(self):
+        self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
+        ride = self.ride_manage_fun.get_by_rider_id(self.rider.id)[0]
+        self.assertEqual(ride.rider.id, self.rider.id)
+
+        self.ride_info['status'] = 'active'
+        self.ride_manage_fun.create(self.rider, self.ride_info)
+        ride = self.ride_manage_fun.get_by_rider_id(self.rider.id, 'active')[0]
+        self.assertEqual(ride.rider.id, self.rider.id)
+        self.assertEqual(ride.status, 'active')
+
+    def test_get_ride_by_driver_id(self):
+        self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
+        ride = self.ride_manage_fun.get_by_driver_id(self.driver.id)[0]
+        self.assertEqual(ride.driver.id, self.driver.id)
+
+        self.ride_info['status'] = 'active'
+        self.ride_manage_fun.create(self.rider, self.ride_info)
+        ride = self.ride_manage_fun.get_by_driver_id(self.driver.id, 'active')[0]
+        self.assertEqual(ride.van.id, self.van.id)
+        self.assertEqual(ride.status, 'active')
+
+    def test_get_ride_by_van_id(self):
+        self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
+        ride = self.ride_manage_fun.get_by_van_id(self.van.id)[0]
+        self.assertEqual(ride.id, self.van.id)
+
+        self.ride_info['status'] = 'active'
+        self.ride_manage_fun.create(self.rider, self.ride_info)
+        ride = self.ride_manage_fun.get_by_van_id(self.van.id, status='active')[0]
+        self.assertEqual(ride.van.id, self.van.id)
+        self.assertEqual(ride.status, 'active')
