@@ -119,6 +119,8 @@ class RideManagementTests(TestCase):
         self.driver.delete()
         self.van.delete()
 
+    # tests of get ride
+
     def test_get_ride_by_rider_id(self):
         self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
         ride = self.ride_manage_fun.get_by_rider_id(self.rider.id)[0]
@@ -151,3 +153,11 @@ class RideManagementTests(TestCase):
         ride = self.ride_manage_fun.get_by_van_id(self.van.id, status='active')[0]
         self.assertEqual(ride.van.id, self.van.id)
         self.assertEqual(ride.status, 'active')
+
+    # tests of delete ride
+
+    def test_delete_ride(self):
+        self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
+        ride = self.ride_manage_fun.get_by_rider_id(self.rider.id)[0]
+        result = self.ride_manage_fun.delete(ride.id)
+        self.assertTrue(result)
