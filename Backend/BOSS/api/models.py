@@ -50,26 +50,30 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+
 class Van(models.Model):
-    van_number = models.CharField(max_length=15, primary_key=True)
+    van_number = models.CharField(max_length=15)
     ADA = models.BooleanField(default=False)
     driver = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'D'})
 
     def __str__(self):
         return f"Van {self.van_number} - ADA: {self.ADA}"
 
+    def __id__(self):
+        return self.id
+
 
 class Ride(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),        # Ride requested but not yet confirmed
         ('assigned', 'Assigned'),      # Driver assigned to the ride
-        ('in_progress', 'In Progress'), # Ride is currently happening
+        ('in_progress', 'In Progress'),  # Ride is currently happening
         ('completed', 'Completed'),     # Ride has been completed
         ('cancelled', 'Cancelled'),     # Ride was cancelled
     ]
-    ride_id = models.AutoField(primary_key=True)
-    rider = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'R'}, related_name='ride_rider')
-    driver = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'D'}, null=True, blank=True, related_name='ride_driver')
+    rider = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'R'}, related_name='rider')
+    driver = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'D'}, null=True,
+                               blank=True, related_name='driver')
     van = models.ForeignKey(Van, on_delete=models.CASCADE, null=True, blank=True)
     pickup_location = models.CharField(max_length=200)
     dropoff_location = models.CharField(max_length=200)
@@ -80,6 +84,7 @@ class Ride(models.Model):
 
     def __str__(self):
         return f"{self.rider.username} - {self.status}"
+
 
 class Message(models.Model):
     rider = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'R'},
