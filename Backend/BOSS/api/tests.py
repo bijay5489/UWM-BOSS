@@ -133,14 +133,22 @@ class RideManagementTests(TestCase):
         self.assertEqual(ride.status, 'active')
 
     def test_get_ride_by_driver_id(self):
-        self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
+        newride = Ride(
+            pickup_time=timezone.now(),
+            pickup_location='here',
+            dropoff_location='there',
+            ADA_required=True,
+            rider=self.rider,
+            driver=self.driver,
+        )
+        newride.save()
         ride = self.ride_manage_fun.get_by_driver_id(self.driver.id)[0]
         self.assertEqual(ride.driver.id, self.driver.id)
 
-        self.ride_info['status'] = 'active'
-        self.ride_manage_fun.create(self.rider, self.ride_info)
+        newride.status = 'active'
+        newride.save()
         ride = self.ride_manage_fun.get_by_driver_id(self.driver.id, 'active')[0]
-        self.assertEqual(ride.van.id, self.van.id)
+        self.assertEqual(ride.driver.id, self.driver.id)
         self.assertEqual(ride.status, 'active')
 
     def test_get_ride_by_van_id(self):
@@ -160,4 +168,10 @@ class RideManagementTests(TestCase):
         self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
         ride = self.ride_manage_fun.get_by_rider_id(self.rider.id)[0]
         result = self.ride_manage_fun.delete(ride.id)
+        self.assertTrue(result)
+
+    def test_assign_driver(self):
+        self.ride_manage_fun.create(rider=self.rider, ride_info=self.ride_info)
+        ride = self.ride_manage_fun.get_all()[0]
+        result = self.ride_manage_fun.assign_driver(ride.id)
         self.assertTrue(result)
