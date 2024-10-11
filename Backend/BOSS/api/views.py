@@ -117,11 +117,11 @@ def get_ride_by_van(request, van_id, ride_status=None):
     return Response(serializer.data)
 
 
-@api_view(['POST'])
-def assign_driver(request, ride_id):
-    result = RideManagement().assign_driver_task(ride_id)
+@api_view(['DELETE'])
+def delete_ride(request, ride_id):
+    result = RideManagement().delete(ride_id)
     if result:
-        return Response({"message": "Driver assigned successfully."}, status=status.HTTP_200_OK)
+        return Response({"message": "Ride deleted successfully."}, status=status.HTTP_200_OK)
     else:
-        return Response({"error": "Error assigning driver."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Ride not found."}, status=status.HTTP_404_NOT_FOUND)
 
