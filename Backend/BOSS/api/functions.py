@@ -1,7 +1,10 @@
+from sched import scheduler
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 from .models import User, Ride, Notification, Report, Van
+import time
 
 
 class UserFunctions:
@@ -174,11 +177,8 @@ class RideManagement:
         if rider.user_type != 'R':
             return False
 
-
-
         ride = Ride(
             rider=rider,
-            driver=ride_info.get('driver'),
             pickup_location=ride_info.get('pickup_location'),
             dropoff_location=ride_info.get('dropoff_location'),
             num_passengers=ride_info.get('num_passengers', 1),
@@ -211,27 +211,47 @@ class RideManagement:
         except Ride.DoesNotExist:
             return False
 
-    def assign_driver(self) -> bool:
+    def assign_driver(self, ride_id) -> bool:
         """Assign a driver to an existing ride."""
-        pending_requests = Ride.objects.filter(status='Pending')
-        request = pending_requests.first()
-
-        drivers = User.objects.filter(user_type='D')
-        available_drivers = drivers.filter(status='Available')
-
-
-        if available_drivers.exists():
-            driver = available_drivers.first()  # Choose the first available driver
-            request.driver = driver
-            request.van = Van.objects.get(driver=driver)
-            request.pickup_time = timezone.now()
-            request.status = 'Assigned'
-            request.save()
-            driver.status = 'Assigned'
-            driver.save()
-            return True
-        else:
+        try:
+            ride = self.get_by_id(ride_id)
+            if ride.driver is not None:
+                return False
+        except Ride.DoesNotExist:
             return False
+
+        available_drivers = User.objects.filter(user_type='D', status__iexact='Available')
+        if not available_drivers.exists():
+            return False
+
+        driver = available_drivers.first()  # Choose the first available driver
+        ride.driver = driver
+        ride.van = VanManagement().get_by_driver_id(driver.id)
+        ride.pickup_time = timezone.now()
+        ride.status = 'Assigned'
+        ride.save()
+        driver.status = 'Assigned'
+        driver.save()
+
+        return True
+
+    def assign_driver_task(self, ride_id) -> bool:
+        result = self.assign_driver(ride_id)
+        retries = 0
+
+        while not result:
+            if retries > 10:
+                return False
+            time.sleep(60)
+            result = self.assign_driver(ride_id)
+        return result
+
+    def get_by_id(self, ride_id: int) -> Ride:
+        try:
+            ride = Ride.objects.get(id=ride_id)
+            return ride
+        except Ride.DoesNotExist:
+            return Ride()
 
     def get_by_rider_id(self, _id: int, status: str = None) -> list:
         try:
@@ -285,6 +305,8 @@ class ReportManager:
 
 
 class VanManagement:
-    def get_by_id(self, _id: int) ->  Van:
+    def get_by_id(self, _id: int) -> Van:
         return Van.objects.get(id=_id)
 
+    def get_by_driver_id(self, _id: int) -> Van:
+        return Van.objects.get(driver__id=_id)
