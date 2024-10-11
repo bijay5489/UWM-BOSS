@@ -107,3 +107,10 @@ def get_ride_by_rider(request, rider_id, ride_status=None):
     ride = RideManagement().get_by_rider_id(_id=rider_id, status=ride_status)
     serializer = RideSerializer(ride, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def get_ride_by_van(request, van_id, ride_status=None):
+    ride = RideManagement().get_by_rider_id(_id=van_id, status=ride_status)
+    serializer = RideSerializer(ride, many=True)
+    return Response(serializer.data)
+
