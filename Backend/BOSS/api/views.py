@@ -125,3 +125,12 @@ def assign_driver(request, ride_id):
     else:
         return Response({"error": "Error assigning driver."}, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['DELETE'])
+def delete_ride(request, ride_id):
+    result = RideManagement().delete(ride_id)
+    if result:
+        return Response({"message": "Ride deleted successfully."}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Ride not found."}, status=status.HTTP_404_NOT_FOUND)
+

@@ -14,5 +14,6 @@ urlpatterns = [
     path('rides/get-by-van-id/<int:van_id>/status/<str:ride_status>', get_ride_by_van),
     path('rides/get-by-van-id/<int:van_id>', get_ride_by_van),
     path('rides/assign-driver/<int:ride_id>', assign_driver),
+    path('rides/delete/<int:ride_id>', delete_ride),
     path('rides/get-all', get_all_rides),
 ]
