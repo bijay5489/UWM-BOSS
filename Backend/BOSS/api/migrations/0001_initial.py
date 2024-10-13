@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Van',
             fields=[
-                ('van_number', models.CharField(max_length=15, primary_key=True, serialize=False)),
+                ('id', models.CharField(max_length=15, primary_key=True, serialize=False)),
                 ('ADA', models.BooleanField(default=False)),
                 ('driver', models.ForeignKey(limit_choices_to={'user_type': 'D'}, on_delete=django.db.models.deletion.CASCADE, to='api.user')),
             ],

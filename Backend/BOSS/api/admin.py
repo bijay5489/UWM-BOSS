@@ -9,13 +9,13 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Van)
 class VanAdmin(admin.ModelAdmin):
-    list_display = ('van_number', 'ADA', 'driver')
-    search_fields = ('van_number',)
+    list_display = ('id', 'ADA', 'driver')
+    search_fields = ('id',)
     list_filter = ('ADA',)
 
 @admin.register(Ride)
 class RideAdmin(admin.ModelAdmin):
-    list_display = ('ride_id', 'rider', 'driver', 'status', 'pickup_location', 'dropoff_location')
+    list_display = ('id', 'rider', 'driver', 'status', 'pickup_location', 'dropoff_location')
     search_fields = ('rider__username', 'driver__username', 'pickup_location', 'dropoff_location')
     list_filter = ('status',)
 
