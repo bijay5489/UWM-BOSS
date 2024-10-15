@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+type IoniconNames = keyof typeof Ionicons.glyphMap;
+
 const screenWidth = Dimensions.get('window').width;
 
 interface HamburgerMenuProps {
@@ -19,22 +21,19 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, toggleMenu }) => 
         </TouchableOpacity>
       </View>
       <View style={styles.menuItems}>
-        <MenuItem label="View Reports" icon="ios-document" />
-        <MenuItem label="Message Driver" icon="ios-chatbubbles" />
-        <MenuItem label="View Activity" icon="ios-eye" />
-        <MenuItem label="View Logs" icon="ios-albums" />
-        <MenuItem label="Settings" icon="ios-settings" />
+        <MenuItem label="View Reports" icon="document" />
+        <MenuItem label="Message Driver" icon="chatbubbles" />
+        <MenuItem label="View Activity" icon="eye" />
+        <MenuItem label="View Logs" icon="albums" />
+        <MenuItem label="Settings" icon="settings" />
       </View>
-      <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutText}>Log Out</Text>
-      </TouchableOpacity>
     </Animated.View>
   );
 };
 
 interface MenuItemProps {
   label: string;
-  icon: string;
+  icon: IoniconNames;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ label, icon }) => {
@@ -51,8 +50,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: screenWidth * 0.75,
-    height: '100%',
+    width: '75%',
+    height: '50%',
     backgroundColor: 'white',
     padding: 20,
     zIndex: 1000,
