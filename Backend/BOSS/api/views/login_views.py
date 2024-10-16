@@ -17,13 +17,13 @@ class LoginView(APIView):
 
             # Redirect based on user type
             if user.user_type == 'S':
-                return Response({"message": "Logged in as Supervisor", "homepage": "/supervisor/home"},
+                return Response({"message": "Logged in as Supervisor", "user_type": "S"},
                                 status=status.HTTP_200_OK)
             elif user.user_type == 'D':
-                return Response({"message": "Logged in as Driver", "homepage": "/driver/home"},
+                return Response({"message": "Logged in as Driver", "user_type": "D"},
                                 status=status.HTTP_200_OK)
             elif user.user_type == 'R':
-                return Response({"message": "Logged in as Rider", "homepage": "/rider/home"}, status=status.HTTP_200_OK)
+                return Response({"message": "Logged in as Rider", "user_type": "R"}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
 
