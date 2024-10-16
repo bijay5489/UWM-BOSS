@@ -40,7 +40,11 @@ const SupervisorHomePage: React.FC = () => {
     checkLoginStatus();
     }, []);
 
-  return (
+const handleUserList = async () => {
+    navigation.navigate('SupervisorUser');
+};
+
+return (
     <ThemedView style={styles.container}>
       {/* Hamburger Menu */}
       <HamburgerMenu isOpen={menuOpen} toggleMenu={toggleMenu} />
@@ -58,9 +62,28 @@ const SupervisorHomePage: React.FC = () => {
 
       {/* Cards Section */}
       <View style={styles.cardsContainer}>
-        <Card title="Switch View" description="Switch to a driver or student rider view." buttonLabel="Switch" />
-        <Card title="Users" description="View and manage user profiles and access." buttonLabel="Users" />
-        <Card title="Generate Report" description="Generate detailed reports on user activity." buttonLabel="Go" />
+        <Card
+            title="Switch View"
+            description="Switch to a driver or student rider view."
+            buttonLabel="Switch"
+            onPress={() => {
+                // switch view logic
+            }}
+        />
+        <Card
+            title="Users"
+            description="View and manage user profiles and access."
+            buttonLabel="Users"
+            onPress={handleUserList}
+        />
+        <Card
+            title="Generate Report"
+            description="Generate detailed reports on user activity."
+            buttonLabel="Go"
+            onPress={() => {
+                // generate report logic
+            }}
+        />
       </View>
 
       {/* Log Out Button */}
