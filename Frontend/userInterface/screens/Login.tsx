@@ -28,6 +28,7 @@ const LoginScreen: React.FC = () => {
       const data = await response.json();
 
       if (response.status === 200) {
+        data.user_type = "S";
         if (data.user_type === "S") {
           navigation.navigate('SupervisorHome');
         }// else if (data.user_type === "D") {

@@ -1,41 +1,68 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
 import HamburgerMenu from '../components/HamburgerMenu';
-import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "@/components/navigation/NavigationTypes";
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const SupervisorHomePage: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const navigation = useNavigation();
+    const [username, setUsername] = useState<string | null>(null);
+    const navigation = useNavigation<LoginScreenNavigationProp>();
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+    }, []);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen)
     };
 
 const handleLogout = async () => {
-    try {
-        const response = await axios.post(
-            'http://127.0.0.1:8000/api/logout/',
-            {},
-            {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('token'),
-                },
-            }
-        );
-        if (response.status === 200) {
-            Alert.alert('Success', 'Logged out successfully');
-            console.log("Logged out successfully");
-        }
-    } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'Failed to log out. Please try again.');
-    }
+    navigation.navigate('Login');
+
+    // const refreshToken = localStorage.getItem('refresh_token');
+    // console.log(refreshToken);
+    // try {
+    //     const response = await fetch('http://127.0.0.1:8000/api/auth/logout/', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${refreshToken}`,
+    //         },
+    //         body: JSON.stringify({
+    //           'refresh_token': refreshToken
+    //         })
+    //     });
+    //
+    //     const data = await response.json();
+    //     console.log(data);
+    //
+    //     if (response.status === 200) {
+    //         Alert.alert('Success', 'Logged out successfully');
+    //         localStorage.removeItem('access_token');
+    //         localStorage.removeItem('refresh_token');
+    //         localStorage.removeItem('username');
+    //         navigation.navigate('Login');
+    //     }
+    // } catch (error) {
+    //     console.error(error);
+    //     Alert.alert('Error', 'Failed to log out. Please try again.');
+    // }
 }
+
+const handleUserList = async () => {
+    navigation.navigate('SupervisorUser');
+};
 
 return (
     <ThemedView style={styles.container}>
@@ -55,9 +82,28 @@ return (
 
       {/* Cards Section */}
       <View style={styles.cardsContainer}>
-        <Card title="Switch View" description="Switch to a driver or student rider view." buttonLabel="Switch" />
-        <Card title="Users" description="View and manage user profiles and access." buttonLabel="Users" />
-        <Card title="Generate Report" description="Generate detailed reports on user activity." buttonLabel="Go" />
+        <Card
+            title="Switch View"
+            description="Switch to a driver or student rider view."
+            buttonLabel="Switch"
+            onPress={() => {
+                // switch view logic
+            }}
+        />
+        <Card
+            title="Users"
+            description="View and manage user profiles and access."
+            buttonLabel="Users"
+            onPress={handleUserList}
+        />
+        <Card
+            title="Generate Report"
+            description="Generate detailed reports on user activity."
+            buttonLabel="Go"
+            onPress={() => {
+                // generate report logic
+            }}
+        />
       </View>
 
       {/* Log Out Button */}
