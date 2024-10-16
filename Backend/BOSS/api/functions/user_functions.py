@@ -20,7 +20,7 @@ class UserFunctions:
             return False
 
         """Check for empty required values before creation"""
-        required_fields = ['username', 'password', 'name', 'email', 'phone_number', 'address', 'user_type']
+        required_fields = ['username', 'password', 'name', 'email', 'phone_number', 'address']
         if not all(field in info for field in required_fields):
             return False
 
@@ -39,7 +39,6 @@ class UserFunctions:
             phone_number=info['phone_number'],
             email=info['email'],
             address=info['address'],
-            user_type=info['user_type'],
         )
         user.save()
         return True

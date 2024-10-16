@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import ThemedText from "@/components/ThemedText";
+import Login from "@/screens/Login";
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -17,39 +18,48 @@ const CreateAccount: React.FC = () => {
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleCreateAccount = async () => {
-    if (!username || !password || !name || !phoneNumber || !address || !email) {
-      setErrorMessage('Please fill in all fields.');
-      return;
-    }
+    const handleCreateAccount = async () => {
+        if (!username || !password || !name || !phoneNumber || !address || !email) {
+          setErrorMessage('Please fill in all fields.');
+          return;
+        }
 
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-          name,
-          phone_number: phoneNumber,
-          address,
-          email,
-        }),
-      });
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              username,
+              password,
+              name,
+              phone_number: phoneNumber,
+              address,
+              email,
+            }),
+            });
 
-      const data = await response.json();
+            const data = await response.json();
 
-      if (response.status === 201) {
-        setErrorMessage(data.message);
-      } else {
-        setErrorMessage('Registration failed: ' + JSON.stringify(data));
-      }
-    } catch (error) {
-      setErrorMessage('Failed to connect. Please check your internet connection.');
-    }
-  };
+            if (response.status === 201) {
+              navigation.navigate('Login');
+            } else {
+              // Parse the error response and display simplified messages
+              if (data.username) {
+                setErrorMessage('Username already exists.');
+              } else if (data.email) {
+                setErrorMessage('Email already exists.');
+              } else if (data.phone_number) {
+                setErrorMessage('Invalid phone number.');
+              } else {
+                setErrorMessage('Registration failed. Please check your inputs.');
+              }
+            }
+        } catch (error) {
+          setErrorMessage('Failed to connect. Please check your internet connection.');
+        }
+    };
 
   return (
     <View style={styles.container}>
