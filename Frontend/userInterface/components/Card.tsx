@@ -3,6 +3,7 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import ThemedText from './ThemedText';
 import ThemedView from './ThemedView';
 
+// @ts-ignore
 const Card = ({ title, description, buttonLabel }) => (
   <ThemedView style={styles.card}>
     <ThemedText type="defaultSemiBold" style={styles.cardTitle}>{title}</ThemedText>

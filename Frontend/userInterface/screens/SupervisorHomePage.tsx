@@ -1,16 +1,41 @@
 import React, {useState} from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
 import HamburgerMenu from '../components/HamburgerMenu';
+import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 
 const SupervisorHomePage: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const navigation = useNavigation();
+
     const toggleMenu = () => {
         setMenuOpen(!menuOpen)
     };
+
+const handleLogout = async () => {
+    try {
+        const response = await axios.post(
+            'http://127.0.0.1:8000/api/logout/',
+            {},
+            {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                },
+            }
+        );
+        if (response.status === 200) {
+            Alert.alert('Success', 'Logged out successfully');
+            console.log("Logged out successfully");
+        }
+    } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Failed to log out. Please try again.');
+    }
+}
 
 return (
     <ThemedView style={styles.container}>
@@ -36,7 +61,7 @@ return (
       </View>
 
       {/* Log Out Button */}
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <ThemedText type="defaultSemiBold" style={styles.logoutText}>Log Out</ThemedText>
       </TouchableOpacity>
     </ThemedView>
