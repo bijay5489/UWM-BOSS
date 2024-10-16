@@ -9,11 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'password', 'name', 'phone_number', 'address', 'email', 'user_type']
 
-    # Hash the password before saving the user
     def create(self, validated_data):
         user_func = functions.UserFunctions()
-        user = user_func.create(validated_data)
-        return user
+        try:
+            return user_func.create(validated_data)
+        except serializers.ValidationError as e:
+            raise serializers.ValidationError({"detail": str(e)})
 
 
 class RideSerializer(serializers.ModelSerializer):
