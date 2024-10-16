@@ -1,9 +1,9 @@
 # Login view with different homepage redirection based on user type
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 
 class LoginView(APIView):
@@ -13,25 +13,16 @@ class LoginView(APIView):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)
 
-            # Redirect based on user type
-            if user.user_type == 'S':
-                return Response({"message": "Logged in as Supervisor", "user_type": "S"},
-                                status=status.HTTP_200_OK)
-            elif user.user_type == 'D':
-                return Response({"message": "Logged in as Driver", "user_type": "D"},
-                                status=status.HTTP_200_OK)
-            elif user.user_type == 'R':
-                return Response({"message": "Logged in as Rider", "user_type": "R"}, status=status.HTTP_200_OK)
+            access_token = AccessToken.for_user(user)
+            refresh_token = RefreshToken.for_user(user)
+
+            return Response({
+                "message": "Logged in successfully",
+                "user_type": user.user_type,
+                "access": str(access_token),
+                "refresh": str(refresh_token),
+            }, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
 
-
-# Logout view
-class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        logout(request)
-        return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)

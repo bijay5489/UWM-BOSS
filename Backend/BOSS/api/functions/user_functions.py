@@ -40,6 +40,9 @@ class UserFunctions:
             email=info['email'],
             address=info['address'],
         )
+        if 'user_type' in info:
+            user.user_type = info['user_type']
+
         user.save()
         return True
 

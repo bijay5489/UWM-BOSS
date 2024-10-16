@@ -1,64 +1,44 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
 import HamburgerMenu from '../components/HamburgerMenu';
-import {useNavigation} from '@react-navigation/native';
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/components/navigation/NavigationTypes";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+type SupervisorHomePageNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const SupervisorHomePage: React.FC = () => {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [username, setUsername] = useState<string | null>(null);
-    const navigation = useNavigation<LoginScreenNavigationProp>();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigation = useNavigation<SupervisorHomePageNavigationProp>();
 
-    useEffect(() => {
-        const storedUsername = localStorage.getItem('username');
-        if (storedUsername) {
-            setUsername(storedUsername);
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('accesstoken');
+      await AsyncStorage.removeItem('refreshtoken');
+      navigation.navigate('Login');
+    } catch (error) {
+      Alert.alert('Error', 'An error occurred while logging out. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        if (!accessToken) {
+            navigation.navigate('Login');
         }
-    }, []);
-
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen)
     };
-
-const handleLogout = async () => {
-    navigation.navigate('Login');
-
-    // const refreshToken = localStorage.getItem('refresh_token');
-    // console.log(refreshToken);
-    // try {
-    //     const response = await fetch('http://127.0.0.1:8000/api/auth/logout/', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${refreshToken}`,
-    //         },
-    //         body: JSON.stringify({
-    //           'refresh_token': refreshToken
-    //         })
-    //     });
-    //
-    //     const data = await response.json();
-    //     console.log(data);
-    //
-    //     if (response.status === 200) {
-    //         Alert.alert('Success', 'Logged out successfully');
-    //         localStorage.removeItem('access_token');
-    //         localStorage.removeItem('refresh_token');
-    //         localStorage.removeItem('username');
-    //         navigation.navigate('Login');
-    //     }
-    // } catch (error) {
-    //     console.error(error);
-    //     Alert.alert('Error', 'Failed to log out. Please try again.');
-    // }
-}
+    checkLoginStatus();
+    }, []);
 
 const handleUserList = async () => {
     navigation.navigate('SupervisorUser');
