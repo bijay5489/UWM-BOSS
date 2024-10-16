@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, TextInput, Image, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
-import {StackNavigationProp} from "@react-navigation/stack";
-import {RootStackParamList} from "@/components/navigation/NavigationTypes";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "@/components/navigation/NavigationTypes";
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -14,6 +15,13 @@ const LoginScreen: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
+  useFocusEffect(
+    React.useCallback(() => {
+      setUsername('');
+      setPassword('');
+      setErrorMessage(null);
+    }, [])
+  );
 
   const handleLogin = async () => {
     try {
@@ -28,13 +36,12 @@ const LoginScreen: React.FC = () => {
       const data = await response.json();
 
       if (response.status === 200) {
+        await AsyncStorage.setItem('accessToken', data.access);
+        await AsyncStorage.setItem('refreshToken', data.refresh);
+
         if (data.user_type === "S") {
           navigation.navigate('SupervisorHome');
-        }// else if (data.user_type === "D") {
-         // navigation.navigate('DriverHome');
-        //} else if (data.user_type === "R") {
-          //navigation.navigate('RiderHome');
-        //}
+        }
       } else if (response.status === 400) {
         setErrorMessage(data.error);
       } else {

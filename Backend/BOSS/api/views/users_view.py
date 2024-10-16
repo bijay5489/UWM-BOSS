@@ -8,7 +8,6 @@ user_functions = UserFunctions()
 
 
 class ManageUsersView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # Retrieve and return all users
