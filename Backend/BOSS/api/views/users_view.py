@@ -10,12 +10,17 @@ user_functions = UserFunctions()
 class ManageUsersView(APIView):
 
     def get(self, request):
-        # Retrieve and return all users
-        if request.user.user_type not in ['S', 'A']:  # Assuming 'A' is for Admin
-            return Response({"error": "You do not have permission to access this resource."},
-                            status=status.HTTP_403_FORBIDDEN)
-        users = user_functions.get_all()
-        return Response(users)
+        username = request.query_params.get('username')
+
+        if username:
+            user = user_functions.get('username', username)
+            if user:
+                return Response(user)
+            else:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            users = user_functions.get_all()
+            return Response(users)
 
     def post(self, request):
         data = request.data
