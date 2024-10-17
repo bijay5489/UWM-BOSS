@@ -4,6 +4,7 @@ import SupervisorHomePage from "@/screens/SupervisorHomePage";
 import SupervisorUserPage from "@/screens/SupervisorUserPage";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import CreateAccount from "@/screens/CreateAccount";
+import SupervisorEditUser from "@/screens/SupervisorEditUser";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -13,6 +14,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SupervisorHome" component={SupervisorHomePage} />
         <Stack.Screen name="SupervisorUser" component={SupervisorUserPage} />
+        <Stack.Screen name="SupervisorEdit" component={SupervisorEditUser} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
     </Stack.Navigator>
   );

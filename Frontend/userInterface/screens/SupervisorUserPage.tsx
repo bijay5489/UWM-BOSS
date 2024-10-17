@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/components/navigation/NavigationTypes";
+import { useFocusEffect} from "@react-navigation/native";
 
 type User = {
     username: string;
@@ -26,9 +27,11 @@ const SupervisorUserPage: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const navigation = useNavigation<SupervisorUserPageNavigationProp>();
 
-    useEffect(() => {
-        fetchUsers();
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchUsers();
+        }, [])
+    );
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -71,11 +74,11 @@ const SupervisorUserPage: React.FC = () => {
                     {users.map((user) => (
                         <Card
                             key={user.username}
-                            title={user.username}
+                            title={user.name}
                             description={`Email: ${user.email}\nType: ${user.user_type}\nAddress: ${user.address}\nPhone Number: ${user.phone_number}`}
                             buttonLabel="Edit"
                             onPress={() => {
-                                // Handle user edit logic here
+                                navigation.navigate('SupervisorEdit', { username: user.username });
                             }}
                         />
                     ))}
