@@ -1,16 +1,48 @@
-import React, {useState} from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
 import HamburgerMenu from '../components/HamburgerMenu';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/components/navigation/NavigationTypes';
+
+type SupervisorHomePageNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const SupervisorHomePage: React.FC = () => {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigation = useNavigation<SupervisorHomePageNavigationProp>();
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('accesstoken');
+      await AsyncStorage.removeItem('refreshtoken');
+      navigation.navigate('Login');
+    } catch (error) {
+      Alert.alert('Error', 'An error occurred while logging out. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        if (!accessToken) {
+            navigation.navigate('Login');
+        }
     };
+    checkLoginStatus();
+    }, []);
+
+const handleUserList = async () => {
+    navigation.navigate('SupervisorUser');
+};
 
 return (
     <ThemedView style={styles.container}>
@@ -30,13 +62,32 @@ return (
 
       {/* Cards Section */}
       <View style={styles.cardsContainer}>
-        <Card title="Switch View" description="Switch to a driver or student rider view." buttonLabel="Switch" />
-        <Card title="Users" description="View and manage user profiles and access." buttonLabel="Users" />
-        <Card title="Generate Report" description="Generate detailed reports on user activity." buttonLabel="Go" />
+        <Card
+            title="Switch View"
+            description="Switch to a driver or student rider view."
+            buttonLabel="Switch"
+            onPress={() => {
+                // switch view logic
+            }}
+        />
+        <Card
+            title="Users"
+            description="View and manage user profiles and access."
+            buttonLabel="Users"
+            onPress={handleUserList}
+        />
+        <Card
+            title="Generate Report"
+            description="Generate detailed reports on user activity."
+            buttonLabel="Go"
+            onPress={() => {
+                // generate report logic
+            }}
+        />
       </View>
 
       {/* Log Out Button */}
-      <TouchableOpacity style={styles.logoutButton}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <ThemedText type="defaultSemiBold" style={styles.logoutText}>Log Out</ThemedText>
       </TouchableOpacity>
     </ThemedView>

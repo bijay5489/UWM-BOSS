@@ -36,7 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=11, blank=True)
     address = models.TextField(blank=True)
     email = models.EmailField(unique=True, blank=False)
-    user_type = models.CharField(max_length=1, choices=USER_TYPES, blank=False)
+    user_type = models.CharField(max_length=1, choices=USER_TYPES, blank=True, default='R')
     status = models.CharField(max_length=10, choices=DRIVER_STATUS, default='available', null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
