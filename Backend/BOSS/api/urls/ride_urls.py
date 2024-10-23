@@ -13,7 +13,7 @@ urlpatterns = [
     path('get-by-van-id/<int:van_id>/', get_ride_by_van),
     path('assign-driver/<int:ride_id>/', assign_driver),
     path('delete/<int:ride_id>/', delete_ride),
-    path('create/<int:ride_id>', create_ride),
+    path('create/', create_ride),
     path('edit/<int:ride_id>', edit_ride),
     path('get-all/', get_all_rides),
 ]
