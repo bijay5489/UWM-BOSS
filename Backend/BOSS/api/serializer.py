@@ -23,6 +23,8 @@ class RideSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ReportSerializer(serializers.ModelSerializer):
+    reporter = serializers.StringRelatedField(source='reporter.name')
+
     class Meta:
         model = Report
-        fields = '__all__'
+        fields = ['id', 'reporter', 'report_type', 'context']

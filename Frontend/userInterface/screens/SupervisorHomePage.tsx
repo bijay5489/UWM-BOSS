@@ -24,7 +24,7 @@ const SupervisorHomePage: React.FC = () => {
     {
       label: "View Reports",
       icon: "document",
-      nav: 'CreateAccount',
+      nav: 'ViewReports',
     },
     {
       label: "Message Driver",

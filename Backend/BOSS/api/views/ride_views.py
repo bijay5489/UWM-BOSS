@@ -36,9 +36,9 @@ def get_ride_by_driver(request, driver_id, ride_status=None):
 
 
 @api_view(['GET'])
-def get_ride_by_rider(request, rider_id, ride_status=None):
+def get_rides_by_rider(request, rider_id, ride_status=None):
     ride = RideManagement().get_by_id(rider_id, 'rider', ride_status)
-    serializer = RideSerializer(ride)
+    serializer = RideSerializer(ride, many=True)
     return Response(serializer.data)
 
 

@@ -80,7 +80,7 @@ class Ride(models.Model):
     num_passengers = models.IntegerField(default=1)
     ADA_required = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    pickup_time = models.DateTimeField(null=True, blank=True)  # Optional pickup time for requests
+    pickup_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.rider.username} - {self.status}"
@@ -104,17 +104,12 @@ class Report(models.Model):
     ]
     # Reporter can be either a Rider or a Driver
     reporter = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='reports')
+    report_ride = models.ForeignKey(Ride, null=True, blank=True, on_delete=models.CASCADE)
     report_type = models.CharField(max_length=20, choices=REPORT_CATEGORIES)
     context = models.TextField()
 
     def __str__(self):
         return f"Report by {self.reporter.name} - {self.get_report_type_display()}"
-
-    def save(self, *args, **kwargs):
-        # Ensure that the reporter is either a Rider or a Driver
-        if self.reporter.user_type not in ['R', 'D']:
-            raise ValueError("Reporter must be either a Rider or Driver.")
-        super().save(*args, **kwargs)
 
 
 class Notification(models.Model):
