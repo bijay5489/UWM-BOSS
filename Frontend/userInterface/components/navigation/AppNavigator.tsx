@@ -8,6 +8,8 @@ import SupervisorEditUser from "@/screens/SupervisorEditUser";
 import SupervisorCreate from "@/screens/SupervisorCreate";
 import RiderDashboard from "@/screens/RiderDashboard";
 import UserEditInfo from "@/screens/UserEditInfo";
+import GenerateReport from "@/screens/GenerateReport";
+import ViewReports from "@/screens/ViewReports";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -22,6 +24,8 @@ export const AppNavigator = () => {
         <Stack.Screen name="SupervisorCreate" component={SupervisorCreate} />
         <Stack.Screen name="RiderDashboard" component={RiderDashboard} />
         <Stack.Screen name="UserEditInfo" component={UserEditInfo} />
+        <Stack.Screen name="GenerateReport" component={GenerateReport} />
+        <Stack.Screen name="ViewReports" component={ViewReports} />
     </Stack.Navigator>
     );
 };
