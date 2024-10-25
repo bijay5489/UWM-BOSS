@@ -19,3 +19,7 @@ from .login_views import (
 from .register_views import (
     RegisterView,
 )
+
+from .report_views import (
+    ReportView,
+)

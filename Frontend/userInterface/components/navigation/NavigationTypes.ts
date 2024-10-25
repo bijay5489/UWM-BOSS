@@ -7,4 +7,6 @@ export type RootStackParamList = {
   SupervisorCreate: undefined;
   RiderDashboard: undefined;
   UserEditInfo: { username: string };
+  GenerateReport: undefined;
+  ViewReports: undefined;
 };
