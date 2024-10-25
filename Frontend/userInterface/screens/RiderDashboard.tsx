@@ -46,6 +46,10 @@ const RiderDashboard: React.FC = () => {
         }
     };
 
+    const handleReport = async () => {
+        navigation.navigate('GenerateReport');
+    };
+
     return (
         <ThemedView style={styles.container}>
             {/* Header Section */}
@@ -63,7 +67,7 @@ const RiderDashboard: React.FC = () => {
                     description="Select Ride Category (BOSS General, etc.)"
                     buttonLabel="Select"
                     onPress={() => {
-                        // switch view logic
+                        // ride selection logic
                     }}
                 />
                 <Card
@@ -76,9 +80,7 @@ const RiderDashboard: React.FC = () => {
                     title="Generate Report"
                     description="Generate detailed reports on ride experience."
                     buttonLabel="Go"
-                    onPress={() => {
-                        // switch view logic
-                    }}
+                    onPress={handleReport}
                 />
             </View>
 
