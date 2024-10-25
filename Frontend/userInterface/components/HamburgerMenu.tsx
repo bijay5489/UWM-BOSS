@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 
 type IoniconNames = keyof typeof Ionicons.glyphMap;
 
@@ -9,9 +12,16 @@ const screenWidth = Dimensions.get('window').width;
 interface HamburgerMenuProps {
   isOpen: boolean;
   toggleMenu: () => void;
+  menuItems: any[];
 }
 
-const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, toggleMenu }) => {
+type HamburgerNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
+const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, toggleMenu, menuItems }) => {
+  const navigation = useNavigation<HamburgerNavigationProp>();
+  const handleNavigate = async (screen: any) => {
+    navigation.navigate(screen);
+  };
   return (
     <Animated.View style={[styles.menuContainer, { transform: [{ translateX: isOpen ? 0 : -screenWidth }] }]}>
       <View style={styles.header}>
@@ -21,11 +31,9 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, toggleMenu }) => 
         </TouchableOpacity>
       </View>
       <View style={styles.menuItems}>
-        <MenuItem label="View Reports" icon="document" />
-        <MenuItem label="Message Driver" icon="chatbubbles" />
-        <MenuItem label="View Activity" icon="eye" />
-        <MenuItem label="View Logs" icon="albums" />
-        <MenuItem label="Settings" icon="settings" />
+        {menuItems.map
+          ((i) => <MenuItem key={`${i.icon},${i.label},${i.nav}`} label={i.label} icon={i.icon} nav={i.nav} handlePress={handleNavigate} />
+        )}
       </View>
     </Animated.View>
   );
@@ -34,14 +42,16 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, toggleMenu }) => 
 interface MenuItemProps {
   label: string;
   icon: IoniconNames;
+  nav: any;
+  handlePress: (screen: any) => void;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ label, icon }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ label, icon, handlePress, nav }) => {
   return (
-    <TouchableOpacity style={styles.menuItem}>
-      <Ionicons name={icon} size={24} color="black" />
-      <Text style={styles.menuLabel}>{label}</Text>
-    </TouchableOpacity>
+      <TouchableOpacity style={styles.menuItem} onPress={() => handlePress(nav)}>
+        <Ionicons name={icon} size={24} color="black" />
+        <Text style={styles.menuLabel}>{label}</Text>
+      </TouchableOpacity>
   );
 };
 
