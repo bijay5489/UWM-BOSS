@@ -13,12 +13,40 @@ import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 type SupervisorHomePageNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const SupervisorHomePage: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const navigation = useNavigation<SupervisorHomePageNavigationProp>();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
+  const menuItems: any = [
+    {
+      label: "View Reports",
+      icon: "document",
+      nav: 'CreateAccount',
+    },
+    {
+      label: "Message Driver",
+      icon: "chatbubbles",
+      nav: 'CreateAccount',
+    },
+    {
+      label: "View Activity",
+      icon: "eye",
+      nav: 'CreateAccount',
+    },
+    {
+      label: "View Logs",
+      icon: "albums",
+      nav: 'CreateAccount',
+    },
+    {
+      label: "Settings",
+      icon: "settings",
+      nav: 'CreateAccount',
+    }
+  ];
 
   const handleLogout = async () => {
     try {
@@ -47,7 +75,7 @@ const SupervisorHomePage: React.FC = () => {
   return (
     <ThemedView style={styles.container}>
       {/* Hamburger Menu */}
-      <HamburgerMenu isOpen={menuOpen} toggleMenu={toggleMenu} />
+      <HamburgerMenu isOpen={menuOpen} toggleMenu={toggleMenu} menuItems={menuItems} />
 
       {/* Header Section */}
       <View style={styles.header}>
