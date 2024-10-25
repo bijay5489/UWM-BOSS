@@ -61,12 +61,8 @@ const SupervisorUserPage: React.FC = () => {
 
     return (
         <ThemedView style={styles.container}>
-            {/* Hamburger Menu */}
-            <HamburgerMenu isOpen={menuOpen} toggleMenu={toggleMenu} />
-
             {/* Header */}
             <View style={styles.header}>
-                <Ionicons name="menu" size={32} color="black" onPress={toggleMenu} />
                 <ThemedText type="title" style={styles.headerText}>Manage Users</ThemedText>
                 <TouchableOpacity style={styles.squareButton} onPress={handleCreateUser}>
                     <Ionicons name="create-outline" size={24} color="white" />

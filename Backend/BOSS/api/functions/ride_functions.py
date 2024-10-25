@@ -1,4 +1,6 @@
 import time
+from tkinter import Listbox
+
 from django.utils import timezone
 from .van_functions import VanManagement
 from api.models import Ride, User, Van
@@ -80,33 +82,33 @@ class RideManagement:
         return result
 
     # Get a ride by ride, driver, rider, or van id with an optional status parameter
-    def get_by_id(self, _id: int, entity: str = None, _status: str = None) -> Ride | None:
-        ride = None
+    def get_by_id(self, _id: int, entity: str = None, _status: str = None) -> list | None:
+        rides = None
         if entity is None or entity == 'ride':
             if _status is not None:
-                ride = Ride.objects.get(id=_id, status__iexact=_status)
+                rides = Ride.objects.filter(id=_id, status__iexact=_status)
             else:
-                ride = Ride.objects.get(id=_id)
+                rides = Ride.objects.filter(id=_id)
         elif entity == 'driver':
             if _status is not None:
-                ride = Ride.objects.get(driver__id=_id, status__iexact=_status)
+                rides = Ride.objects.filter(driver__id=_id, status__iexact=_status)
             else:
-                ride = Ride.objects.get(driver__id=_id)
+                rides = Ride.objects.filter(driver__id=_id)
         elif entity == 'rider':
             if _status is not None:
-                ride = Ride.objects.get(rider__id=_id, status__iexact=_status)
+                rides = Ride.objects.filter(rider__id=_id, status__iexact=_status)
             else:
-                ride = Ride.objects.get(rider__id=_id)
+                rides = Ride.objects.filter(rider__id=_id)
         elif entity == 'van':
             if _status is not None:
-                ride = Ride.objects.get(van__id=_id, status__iexact=_status)
+                rides = Ride.objects.filter(van__id=_id, status__iexact=_status)
             else:
-                ride = Ride.objects.get(van__id=_id)
+                rides = Ride.objects.filter(van__id=_id)
 
-        if ride is None:
+        if rides is None:
             raise Ride.DoesNotExist
 
-        return ride
+        return list(rides)
 
     def get_all(self) -> list:
         """Get all rides."""

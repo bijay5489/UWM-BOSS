@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -15,10 +15,32 @@ const GenerateReport: React.FC = () => {
     const [reportType, setReportType] = useState('');
     const [context, setContext] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [rides, setRides] = useState<{ id: number; name: string }[]>([]);
+    const [selectedRideId, setSelectedRideId] = useState('');
+
+    // Function to fetch rides for the current rider
+    const fetchRides = async () => {
+        const riderId = await AsyncStorage.getItem('riderId'); // Assuming you store rider ID in AsyncStorage
+        if (!riderId) return;
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/rides/get-by-rider-id/${riderId}/`);
+            const data = await response.json();
+            // Assuming the API returns a list of rides in the expected format
+            setRides(data.map((ride: { id: any; }) => ({ id: ride.id, name: `Ride ID: ${ride.id}` })));
+        } catch (error) {
+            console.error("Error fetching rides:", error);
+        }
+    };
+
+    // Fetch rides when the component mounts
+    useEffect(() => {
+        fetchRides();
+    }, []);
 
     const handleGenerateReport = async () => {
         const reporter = await AsyncStorage.getItem('username');
-        if (!reporter || !reportType || !context) {
+        if (!reporter || !reportType || !context || !selectedRideId) {
             setErrorMessage('All fields are required.');
             return;
         }
@@ -27,6 +49,7 @@ const GenerateReport: React.FC = () => {
             reporter,
             report_type: reportType,
             context,
+            ride_id: selectedRideId, // Include the selected ride ID in the report data
         };
 
         try {
@@ -52,34 +75,41 @@ const GenerateReport: React.FC = () => {
     };
 
     return (
-    <View style={styles.container}>
-        <RNPickerSelect
-        onValueChange={(value: React.SetStateAction<string>) => setReportType(value)}
-        items={[
-          { label: 'Safety Issue', value: 'safety' },
-          { label: 'Service Issue', value: 'service' },
-          { label: 'Delay', value: 'delay' },
-          { label: 'Vehicle Condition', value: 'vehicle' },
-          { label: 'Other', value: 'other' },
-        ]}
-        placeholder={{ label: 'Select Report Type', value: '' }}
-        style={pickerSelectStyles}
-        />
+        <View style={styles.container}>
+            <RNPickerSelect
+                onValueChange={(value: React.SetStateAction<string>) => setReportType(value)}
+                items={[
+                    { label: 'Safety Issue', value: 'safety' },
+                    { label: 'Service Issue', value: 'service' },
+                    { label: 'Delay', value: 'delay' },
+                    { label: 'Vehicle Condition', value: 'vehicle' },
+                    { label: 'Other', value: 'other' },
+                ]}
+                placeholder={{ label: 'Select Report Type', value: '' }}
+                style={pickerSelectStyles}
+            />
 
-        <TextInput
-        placeholder="Enter report details"
-        value={context}
-        onChangeText={setContext}
-        style={styles.input}
-        multiline
-        />
+            <RNPickerSelect
+                onValueChange={(value: React.SetStateAction<string>) => setSelectedRideId(value)}
+                items={rides.map(ride => ({ label: ride.name, value: ride.id.toString() }))}
+                placeholder={{ label: 'Select Ride', value: '' }}
+                style={pickerSelectStyles}
+            />
 
-        {errorMessage && <ThemedText type="error" style={styles.errorText}>{errorMessage}</ThemedText>}
+            <TextInput
+                placeholder="Enter report details"
+                value={context}
+                onChangeText={setContext}
+                style={styles.input}
+                multiline
+            />
 
-        <TouchableOpacity onPress={handleGenerateReport} style={styles.submitButton}>
-        <Text style={styles.submitText}>Submit Report</Text>
-        </TouchableOpacity>
-    </View>
+            {errorMessage && <ThemedText type="error" style={styles.errorText}>{errorMessage}</ThemedText>}
+
+            <TouchableOpacity onPress={handleGenerateReport} style={styles.submitButton}>
+                <Text style={styles.submitText}>Submit Report</Text>
+            </TouchableOpacity>
+        </View>
     );
 };
 

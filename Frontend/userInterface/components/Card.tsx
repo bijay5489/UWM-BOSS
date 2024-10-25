@@ -8,9 +8,11 @@ const Card = ({ title, description, buttonLabel, onPress }) => (
   <ThemedView style={styles.card}>
     <ThemedText type="defaultSemiBold" style={styles.cardTitle}>{title}</ThemedText>
     <ThemedText type="default" style={styles.cardDescription}>{description}</ThemedText>
-    <TouchableOpacity style={styles.cardButton} onPress={onPress}>
-      <ThemedText type="defaultSemiBold" style={styles.cardButtonText}>{buttonLabel}</ThemedText>
-    </TouchableOpacity>
+    {buttonLabel && onPress && (
+      <TouchableOpacity style={styles.cardButton} onPress={onPress}>
+        <ThemedText type="defaultSemiBold" style={styles.cardButtonText}>{buttonLabel}</ThemedText>
+      </TouchableOpacity>
+    )}
   </ThemedView>
 );
 

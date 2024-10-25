@@ -69,7 +69,8 @@ const ViewReports: React.FC = () => {
                             key={report.id}
                             title={`Report Type: ${report.report_type}`}
                             description={`Reporter: ${report.reporter}\nContext: ${report.context}`}
-                            buttonLabel={undefined} onPress={undefined}                        />
+                            buttonLabel={undefined} onPress={undefined}
+                        />
                     ))}
                 </ScrollView>
             )}

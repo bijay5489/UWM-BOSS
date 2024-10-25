@@ -2,7 +2,7 @@ from .ride_views import (
     get_all_rides,
     get_ride_by_id,
     get_ride_by_driver,
-    get_ride_by_rider,
+    get_rides_by_rider,
     get_ride_by_van,
     assign_driver,
     delete_ride,
