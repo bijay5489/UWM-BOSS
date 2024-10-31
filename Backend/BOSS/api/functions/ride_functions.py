@@ -1,8 +1,4 @@
-import time
-from tkinter import Listbox
-
 from django.utils import timezone
-from .van_functions import VanManagement
 from api.models import Ride, User, Van
 
 
@@ -24,7 +20,11 @@ class RideManagement:
         if status is not None:
             ride.status = status
         ride.save()
-        return True
+        result = self.assign_driver(ride.id)
+        if result:
+            return True
+        else:
+            return False
 
     def edit(self, ride_id: int, ride_info: dict) -> bool:
         """Edit an existing ride."""
@@ -41,6 +41,9 @@ class RideManagement:
         """Delete a ride."""
         try:
             ride = Ride.objects.get(id=ride_id)
+            driver = ride.driver
+            driver.status = 'available'
+            driver.save()
             ride.delete()
             return True
         except Ride.DoesNotExist:
@@ -49,7 +52,7 @@ class RideManagement:
     def assign_driver(self, ride_id) -> bool:
         """Assign a driver to an existing ride."""
         try:
-            ride = self.get_by_id(ride_id)
+            ride = Ride.objects.get(id=ride_id)
             if ride.driver is not None:
                 return False
         except Ride.DoesNotExist:
@@ -58,16 +61,14 @@ class RideManagement:
         available_drivers = User.objects.filter(user_type='D', status__iexact='Available')
         if not available_drivers.exists():
             return False
-
-        driver = available_drivers.first()  # Choose the first available driver
+        driver = available_drivers.first()
         ride.driver = driver
-        ride.van = VanManagement().get_by_driver_id(driver.id)
+        ride.van = Van.objects.get(driver=driver)
         ride.pickup_time = timezone.now()
-        ride.status = 'Assigned'
+        ride.status = 'in_progress'
         ride.save()
-        driver.status = 'Assigned'
+        driver.status = 'assigned'
         driver.save()
-
         return True
 
     def assign_driver_task(self, ride_id) -> bool:
@@ -77,7 +78,6 @@ class RideManagement:
         while not result:
             if retries > 10:
                 return False
-            time.sleep(60)
             result = self.assign_driver(ride_id)
         return result
 
