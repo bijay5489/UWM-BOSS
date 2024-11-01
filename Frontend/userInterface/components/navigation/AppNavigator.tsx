@@ -10,6 +10,7 @@ import RiderDashboard from "@/screens/RiderDashboard";
 import UserEditInfo from "@/screens/UserEditInfo";
 import GenerateReport from "@/screens/GenerateReport";
 import ViewReports from "@/screens/ViewReports";
+import SupervisorSettings from "@/screens/SupervisorSettings";
 import CreateRide from "@/screens/CreateRide";
 import QueuePositionScreen from "@/screens/QueuePositionScreen";
 import DisplayRideInfo from "@/screens/DisplayRideInfo";
@@ -29,6 +30,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="UserEditInfo" component={UserEditInfo} />
         <Stack.Screen name="GenerateReport" component={GenerateReport} />
         <Stack.Screen name="ViewReports" component={ViewReports} />
+        <Stack.Screen name="SupervisorSettings" component={SupervisorSettings} />
         <Stack.Screen name="CreateRide" component={CreateRide} />
         <Stack.Screen name="Queue" component={QueuePositionScreen} />
         <Stack.Screen name="DisplayRideInfo" component={DisplayRideInfo} />

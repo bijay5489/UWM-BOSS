@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNPickerSelect from 'react-native-picker-select';
+import CustomDropdown from '@/components/CustomDropdown';
 import ThemedText from '@/components/ThemedText';
 
 type GenerateReportNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
@@ -18,23 +18,19 @@ const GenerateReport: React.FC = () => {
     const [rides, setRides] = useState<{ id: number; name: string }[]>([]);
     const [selectedRideId, setSelectedRideId] = useState('');
 
-    // Function to fetch rides for the current rider
-    const fetchRides = async () => {
-        const riderId = await AsyncStorage.getItem('riderId'); // Assuming you store rider ID in AsyncStorage
-        if (!riderId) return;
-
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/rides/get-by-rider-id/${riderId}/`);
-            const data = await response.json();
-            // Assuming the API returns a list of rides in the expected format
-            setRides(data.map((ride: { id: any; }) => ({ id: ride.id, name: `Ride ID: ${ride.id}` })));
-        } catch (error) {
-            console.error("Error fetching rides:", error);
-        }
-    };
-
-    // Fetch rides when the component mounts
     useEffect(() => {
+        const fetchRides = async () => {
+            const riderId = await AsyncStorage.getItem('riderId');
+            if (!riderId) return;
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/rides/get-by-rider-id/${riderId}/`);
+                const data = await response.json();
+                setRides(data.map((ride: { id: number }) => ({ id: ride.id, name: `Ride ID: ${ride.id}` })));
+            } catch (error) {
+                console.error("Error fetching rides:", error);
+            }
+        };
         fetchRides();
     }, []);
 
@@ -45,22 +41,14 @@ const GenerateReport: React.FC = () => {
             return;
         }
 
-        const reportData = {
-            reporter,
-            report_type: reportType,
-            context,
-            ride_id: selectedRideId, // Include the selected ride ID in the report data
-        };
+        const reportData = { reporter, report_type: reportType, context, ride_id: selectedRideId };
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/report/generateReport/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(reportData),
             });
-
             const data = await response.json();
 
             if (response.status === 201) {
@@ -76,8 +64,7 @@ const GenerateReport: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <RNPickerSelect
-                onValueChange={(value: React.SetStateAction<string>) => setReportType(value)}
+            <CustomDropdown
                 items={[
                     { label: 'Safety Issue', value: 'safety' },
                     { label: 'Service Issue', value: 'service' },
@@ -85,15 +72,16 @@ const GenerateReport: React.FC = () => {
                     { label: 'Vehicle Condition', value: 'vehicle' },
                     { label: 'Other', value: 'other' },
                 ]}
-                placeholder={{ label: 'Select Report Type', value: '' }}
-                style={pickerSelectStyles}
+                selectedValue={reportType}
+                onSelect={setReportType}
+                placeholder="Select Report Type"
             />
 
-            <RNPickerSelect
-                onValueChange={(value: React.SetStateAction<string>) => setSelectedRideId(value)}
+            <CustomDropdown
                 items={rides.map(ride => ({ label: ride.name, value: ride.id.toString() }))}
-                placeholder={{ label: 'Select Ride', value: '' }}
-                style={pickerSelectStyles}
+                selectedValue={selectedRideId}
+                onSelect={setSelectedRideId}
+                placeholder="Select Ride"
             />
 
             <TextInput
@@ -114,50 +102,35 @@ const GenerateReport: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: 'white', justifyContent: 'center' },
-    inputContainer: { marginBottom: 30 },
+    container: { flex: 1, padding: 20, backgroundColor: '#f4f4f8', justifyContent: 'center' },
     input: {
         height: 100,
-        borderColor: 'gray',
+        borderColor: '#ddd',
         borderWidth: 1,
-        borderRadius: 10,
-        marginBottom: 15,
-        paddingHorizontal: 15,
+        borderRadius: 12,
+        backgroundColor: '#fff',
+        padding: 15,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
     },
-    errorText: { color: 'red', textAlign: 'center', marginBottom: 10 },
+    errorText: { color: 'red', textAlign: 'center', marginBottom: 15, fontWeight: 'bold' },
     submitButton: {
-        backgroundColor: 'blue',
+        backgroundColor: '#4a90e2',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
         marginBottom: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
     },
-    submitText: { color: 'white' },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        color: 'black',
-        paddingRight: 30,
-        marginBottom: 15,
-    },
-    inputAndroid: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        color: 'black',
-        paddingRight: 30,
-        marginBottom: 15,
-    },
+    submitText: { color: 'white', fontWeight: '600' },
 });
 
 export default GenerateReport;
