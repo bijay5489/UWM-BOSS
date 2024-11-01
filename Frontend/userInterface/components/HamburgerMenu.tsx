@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -19,11 +19,20 @@ type HamburgerNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, toggleMenu, menuItems }) => {
   const navigation = useNavigation<HamburgerNavigationProp>();
+  const translateX = useRef(new Animated.Value(-screenWidth)).current;
+
+  useEffect(() => {
+    Animated.timing(translateX, {
+      toValue: isOpen ? 0 : -screenWidth,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [isOpen]);
   const handleNavigate = async (screen: any) => {
     navigation.navigate(screen);
   };
   return (
-    <Animated.View style={[styles.menuContainer, { transform: [{ translateX: isOpen ? 0 : -screenWidth }] }]}>
+    <Animated.View style={[styles.menuContainer, { transform: [{ translateX }] }]}>
       <View style={styles.header}>
         <Text style={styles.menuTitle}>Supervisor Menu</Text>
         <TouchableOpacity onPress={toggleMenu}>
@@ -31,9 +40,9 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, toggleMenu, menuI
         </TouchableOpacity>
       </View>
       <View style={styles.menuItems}>
-        {menuItems.map
-          ((i) => <MenuItem key={`${i.icon},${i.label},${i.nav}`} label={i.label} icon={i.icon} nav={i.nav} handlePress={handleNavigate} />
-        )}
+        {menuItems.map((i) => (
+            <MenuItem key={`${i.icon},${i.label},${i.nav}`} label={i.label} icon={i.icon} nav={i.nav} handlePress={handleNavigate} />
+        ))}
       </View>
     </Animated.View>
   );
@@ -60,12 +69,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '75%',
-    height: '50%',
+    width: '65%',
+    height: '44.5%',
     backgroundColor: 'white',
     padding: 20,
     zIndex: 1000,
     elevation: 10,
+    borderColor: '#add',
+    borderWidth: 1,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
   header: {
     flexDirection: 'row',
@@ -81,13 +97,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   menuLabel: { marginLeft: 10, fontSize: 16 },
-  logoutButton: {
-    backgroundColor: 'red',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  logoutText: { color: 'white', fontSize: 16 },
 });
 
 export default HamburgerMenu;

@@ -9,4 +9,5 @@ export type RootStackParamList = {
   UserEditInfo: { username: string };
   GenerateReport: undefined;
   ViewReports: undefined;
+  SupervisorSettings: undefined;
 };

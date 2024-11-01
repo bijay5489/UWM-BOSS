@@ -44,7 +44,7 @@ const SupervisorHomePage: React.FC = () => {
     {
       label: "Settings",
       icon: "settings",
-      nav: 'CreateAccount',
+      nav: 'SupervisorSettings',
     }
   ];
 
