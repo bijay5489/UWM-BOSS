@@ -50,6 +50,10 @@ const RiderDashboard: React.FC = () => {
         navigation.navigate('GenerateReport');
     };
 
+    const handleCreateRide = async () => {
+        navigation.navigate('CreateRide');
+    };
+
     return (
         <ThemedView style={styles.container}>
             {/* Header Section */}
@@ -66,9 +70,7 @@ const RiderDashboard: React.FC = () => {
                     title="Ride Category"
                     description="Select Ride Category (BOSS General, etc.)"
                     buttonLabel="Select"
-                    onPress={() => {
-                        // ride selection logic
-                    }}
+                    onPress={handleCreateRide}
                 />
                 <Card
                     title="Edit Information"

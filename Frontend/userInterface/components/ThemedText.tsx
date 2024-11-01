@@ -1,15 +1,13 @@
 import React from 'react';
 import { Text, type TextProps, StyleSheet } from 'react-native';
 
-import { useThemeColor } from '@/hooks/useThemeColor';
-
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle'; // make `type` optional
 };
 
-const ThemedText = ({ type, style, children }) => {
+const ThemedText: React.FC<ThemedTextProps> = ({ type = 'default', style, children }) => {
   return (
     <Text style={[styles[type], style]}>
       {children}

@@ -54,13 +54,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Van(models.Model):
     van_number = models.CharField(max_length=15)
     ADA = models.BooleanField(default=False)
-    driver = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'D'})
+    driver = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Van {self.van_number} - ADA: {self.ADA}"
 
-    def __id__(self):
-        return self.id
 
 
 class Ride(models.Model):
