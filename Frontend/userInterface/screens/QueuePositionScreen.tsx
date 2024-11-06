@@ -33,7 +33,6 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
                 setRideId(data.ride_id)
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver})
             }else if(response.status === 200) {
-                const data = await response.json();
                 setCurrentPosition(data.queue_position);
             }
         } catch (error) {
