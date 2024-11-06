@@ -12,6 +12,7 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
     const navigation = useNavigation<QueueScreenNavigationProp>();
     const { queuePosition, rideId, driverName } = route.params;
     const [currentPosition, setCurrentPosition] = useState(queuePosition);
+    const [ride_id, setRideId] = useState();
 
     // Update queue position
     useEffect(() => {
@@ -26,11 +27,12 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
         try {
             const riderusername = await AsyncStorage.getItem('username');
             const response = await fetch(`http://127.0.0.1:8000/api/rides/queue-position/${riderusername}`);
+            const data = await response.json();
             if(response.status === 202){
                 window.alert("A driver has been assigned to your ride!")
-                navigation.navigate('DisplayRideInfo', {rideId: rideId, driverName: driverName})
+                setRideId(data.ride_id)
+                navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver})
             }else if(response.status === 200) {
-                const data = await response.json();
                 setCurrentPosition(data.queue_position);
             }
         } catch (error) {
@@ -60,7 +62,7 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
 
     const deleteRide = async () => {
         try {
-            await fetch(`http://127.0.0.1:8000/api/rides/delete/${rideId}`, {
+            await fetch(`http://127.0.0.1:8000/api/rides/delete/${ride_id}`, {
                 method: 'DELETE',
             });
             window.alert("Ride Deleted you have left the queue.");

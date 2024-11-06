@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'api.User'
 
+GOOGLE_PLACES_API_KEY = 'AIzaSyD_NIiMzA-copFPaO5YqCGsDRRVX1jVT5s'
+
 
 # Application definition
 

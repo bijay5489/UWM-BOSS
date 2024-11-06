@@ -1,10 +1,41 @@
+from django.conf import settings
+import requests
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from ..functions import RideManagement
 from ..models import Ride, User
 from ..serializer import RideSerializer
+
+GOOGLE_PLACES_API_URL = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
+
+
+@api_view(['GET'])
+def location_search(request):
+    query = request.query_params.get('query', '')
+    if not query:
+        return Response({"message": "Query parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    params = {
+        'input': query,
+        'key': settings.GOOGLE_PLACES_API_KEY,
+        'types': 'geocode',
+    }
+
+    try:
+        response = requests.get(GOOGLE_PLACES_API_URL, params=params)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        data = response.json()
+        if data.get('status') == 'OK':
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": data.get('status', 'Unknown error')},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except requests.RequestException as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:  # Catch any other exceptions
+        return Response({"error": "An unexpected error occurred: " + str(e)},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
@@ -13,17 +44,14 @@ def get_all_rides(request):
     serializer = RideSerializer(rides, many=True)
     return Response(serializer.data)
 
-
 @api_view(['GET'])
 def get_ride_by_id(request, ride_id):
     try:
         ride = Ride.objects.get(id=ride_id)
     except Ride.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     serializer = RideSerializer(ride)
     return Response(serializer.data)
-
 
 @api_view(['GET'])
 def get_ride_by_driver(request, driver_id, ride_status=None):
@@ -31,24 +59,24 @@ def get_ride_by_driver(request, driver_id, ride_status=None):
         ride = RideManagement().get_by_id(driver_id, 'driver', ride_status)
     except Ride.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     serializer = RideSerializer(ride)
     return Response(serializer.data)
 
-
 @api_view(['GET'])
 def get_rides_by_rider(request, rider_id, ride_status=None):
-    ride = RideManagement().get_by_id(rider_id, 'rider', ride_status)
-    serializer = RideSerializer(ride, many=True)
+    try:
+        rider = User.objects.get(id=rider_id)
+    except User.DoesNotExist:
+        return Response({"error": "Rider not found"}, status=status.HTTP_404_NOT_FOUND)
+    rides = RideManagement().get_by_id(rider_id, 'rider', ride_status)
+    serializer = RideSerializer(rides, many=True)
     return Response(serializer.data)
-
 
 @api_view(['GET'])
 def get_ride_by_van(request, van_id, ride_status=None):
     ride = RideManagement().get_by_id(van_id, 'van', ride_status)
     serializer = RideSerializer(ride)
     return Response(serializer.data)
-
 
 @api_view(['POST'])
 def assign_driver(request, ride_id):
@@ -58,7 +86,6 @@ def assign_driver(request, ride_id):
     else:
         return Response({"error": "Error assigning driver."}, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['DELETE'])
 def delete_ride(request, ride_id):
     result = RideManagement().delete(ride_id)
@@ -67,47 +94,50 @@ def delete_ride(request, ride_id):
     else:
         return Response({"error": "Ride not found."}, status=status.HTTP_404_NOT_FOUND)
 
-
 @api_view(['POST'])
 def create_ride(request):
-    riderU = request.data.get('username')
-    rider = User.objects.get(username=riderU)
+    rider_username = request.data.get('username')
+    try:
+        rider = User.objects.get(username=rider_username)
+    except User.DoesNotExist:
+        return Response({"error": "Rider not found"}, status=status.HTTP_404_NOT_FOUND)
+
     ride_info = request.data
     result = RideManagement().create(rider, ride_info)
+
     if result:
-        rideid = Ride.objects.get(rider=rider, status='in_progress').id
-        ridedriver = Ride.objects.get(id=rideid).driver.name
-        return Response({"message": "Ride created successfully.", "ride_id": rideid, "driver": ridedriver}, status=status.HTTP_201_CREATED)
-    rides = Ride.objects.filter(status='pending').count()
-    rideid = Ride.objects.get(rider=rider, status='pending').id
-    return Response({"message": "Ride created but no available drivers", "queue_position": rides, "ride_id": rideid}, status=status.HTTP_200_OK)
+        try:
+            ride = Ride.objects.get(rider=rider, status='in_progress')
+            return Response({"message": "Ride created successfully.", "ride_id": ride.id, "driver": ride.driver.name}, status=status.HTTP_201_CREATED)
+        except Ride.DoesNotExist:
+            return Response({"error": "Ride in progress not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    pending_count = Ride.objects.filter(status='pending').count()
+    return Response({"message": "Ride created but no available drivers", "queue_position": pending_count}, status=status.HTTP_200_OK)
 
-@api_view(['EDIT'])
-def edit_ride(request, ride_id, updated_info):
+@api_view(['PUT'])
+def edit_ride(request, ride_id):
+    updated_info = request.data
     result = RideManagement().edit(ride_id, updated_info)
     if result:
         return Response({"message": "Ride updated successfully."}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Error updating ride."}, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET'])
 def get_queue_position(request, rider_id):
     """Retrieve the updated position in the queue for a given rider."""
-    try:
-        rider = User.objects.get(username=rider_id)
-        ride = Ride.objects.get(rider=rider, status='pending')
-        queue_position = Ride.objects.filter(status='pending').count()
-        if queue_position == 1:
-            result = RideManagement().assign_driver(ride.id)
-            if result:
-                return Response({"Driver assigned to ride!"}, status=status.HTTP_202_ACCEPTED)
-            else:
-                return Response({"queue_position": queue_position}, status=status.HTTP_200_OK)
-        else:
-            return Response({"queue_position": queue_position}, status=status.HTTP_200_OK)
-    except Ride.DoesNotExist:
-            return Response({"error": "Ride not found or already assigned.","queue_position": 0}, status=status.HTTP_404_NOT_FOUND)
+    rider = User.objects.get(username=rider_id)
+    ride = Ride.objects.filter(rider=rider, status='pending').first()
+    queue_position = Ride.objects.filter(status='pending', id__lt=ride.id).count() + 1
+    if not ride:
+        return Response({"error": "Ride not found or already assigned.", "queue_position": 0}, status=status.HTTP_404_NOT_FOUND)
 
+
+    if queue_position == 1:
+        if RideManagement().assign_driver(ride.id):
+            curRide = Ride.objects.get(rider=rider, status='in_progress')
+            return Response({"message": "Driver assigned to ride!", "ride_id": curRide.id, "driver": curRide.driver.name}, status=status.HTTP_202_ACCEPTED)
+
+    return Response({"queue_position": queue_position}, status=status.HTTP_200_OK)
 

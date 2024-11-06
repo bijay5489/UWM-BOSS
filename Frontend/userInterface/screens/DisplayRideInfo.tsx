@@ -5,6 +5,7 @@ import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {RouteProp, useNavigation} from "@react-navigation/native";
 
+
 type DisplayRideInfoNavigationProp = StackNavigationProp<RootStackParamList, 'DisplayRideInfo'>;
 type DisplayRideInfoProps = { route: RouteProp<RootStackParamList, 'DisplayRideInfo'>; };
 
@@ -31,7 +32,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
                     driver: driverName,
                     pickupLocation: data.pickup_location,
                     dropoffLocation: data.dropoff_location,
-                    pickupTime: data.pickup_time,
+                    pickupTime: new Date(data.pickup_time).toLocaleString(undefined, {dateStyle: 'medium', timeStyle: 'short',}),
                 });
             } else {
                 showAlert('Error', 'Failed to fetch ride information.');
@@ -52,20 +53,34 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
     const handleCancelRide = async () => {
         if (Platform.OS === 'web') {
             if(window.confirm("Are you sure? This action will delete your ride.")){
-                cancelRide();
+                await cancelRide();
                 showAlert("Ride Canceled", "Your ride has been canceled successfully.");
             }
+        }else{
+            await cancelRide();
         }
     };
 
     const cancelRide = async () => {
         try {
-            await fetch(`http://127.0.0.1:8000/api/rides/delete/${rideId}`, {
-                method: 'DELETE',
+            const updatedInfo = { status: 'cancelled' }; // Update the status to "canceled"
+
+            const response = await fetch(`http://127.0.0.1:8000/api/rides/edit/${rideId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedInfo),
             });
-            navigation.navigate('RiderDashboard');
+
+            if (response.ok) {
+                navigation.navigate('RiderDashboard');
+            } else {
+                showAlert('Error', 'Failed to cancel ride.');
+            }
         } catch (error) {
-            console.error("Error deleting ride:", error);
+            console.error("Error canceling ride:", error);
+            showAlert('Error', 'Failed to cancel ride.');
         }
     };
 
