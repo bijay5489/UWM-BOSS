@@ -67,9 +67,9 @@ const RiderDashboard: React.FC = () => {
             {/* Cards Section */}
             <View style={styles.cardsContainer}>
                 <Card
-                    title="Ride Category"
-                    description="Select Ride Category (BOSS General, etc.)"
-                    buttonLabel="Select"
+                    title="Request Ride"
+                    description="Create a ride request"
+                    buttonLabel="Request"
                     onPress={handleCreateRide}
                 />
                 <Card

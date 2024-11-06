@@ -15,6 +15,7 @@ class RideManagement:
             num_passengers=ride_info.get('num_passengers', 1),
             ADA_required=ride_info.get('ADA_required'),
             van=ride_info.get('van'),
+            pickup_time=ride_info.get('pickup_time'),
         )
         status = ride_info.get('status')
         if status is not None:
@@ -32,6 +33,10 @@ class RideManagement:
             ride = Ride.objects.get(id=ride_id)
             for attr, value in ride_info.items():
                 setattr(ride, attr, value)
+            if ride.status in ['cancelled', 'completed']:
+                driver = ride.driver
+                driver.status = 'available'
+                driver.save()
             ride.save()
             return True
         except Ride.DoesNotExist:
@@ -64,7 +69,6 @@ class RideManagement:
         driver = available_drivers.first()
         ride.driver = driver
         ride.van = Van.objects.get(driver=driver)
-        ride.pickup_time = timezone.now()
         ride.status = 'in_progress'
         ride.save()
         driver.status = 'assigned'
