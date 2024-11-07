@@ -51,10 +51,6 @@ const SupervisorUserPage: React.FC = () => {
         }
     };
 
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
-
     const handleCreateUser = () => {
         navigation.navigate('SupervisorCreate'); // Navigate to SupervisorCreate screen
     };

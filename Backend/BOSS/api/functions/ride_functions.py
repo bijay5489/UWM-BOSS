@@ -68,6 +68,7 @@ class RideManagement:
             return False
         driver = available_drivers.first()
         ride.driver = driver
+        ride.driverName = driver.name
         ride.van = Van.objects.get(driver=driver)
         ride.status = 'in_progress'
         ride.save()

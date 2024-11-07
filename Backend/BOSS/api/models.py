@@ -72,6 +72,7 @@ class Ride(models.Model):
     rider = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'R'}, related_name='rider')
     driver = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'D'}, null=True,
                                blank=True, related_name='driver')
+    driverName = models.CharField(max_length=50,null=True,blank=True)
     van = models.ForeignKey(Van, on_delete=models.CASCADE, null=True, blank=True)
     pickup_location = models.CharField(max_length=200)
     dropoff_location = models.CharField(max_length=200)
@@ -79,6 +80,7 @@ class Ride(models.Model):
     ADA_required = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     pickup_time = models.DateTimeField(null=True, blank=True)
+    reason = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return f"{self.rider.username} - {self.status}"

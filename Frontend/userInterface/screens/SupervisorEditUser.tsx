@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Text } from 'react-native';
+import {View, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Text, Platform} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -42,10 +42,10 @@ const SupervisorEditUser: React.FC = () => {
                     user_type: userData.user_type,
                 });
             } else {
-                Alert.alert('Error', data.error || 'Failed to fetch user details.');
+                console.error('Error', data.error || 'Failed to fetch user details.');
             }
         } catch (error) {
-            Alert.alert('Error', 'Failed to fetch user details.');
+            console.error('Error', 'Failed to fetch user details.');
         } finally {
             setLoading(false);
         }
@@ -63,34 +63,46 @@ const SupervisorEditUser: React.FC = () => {
             });
             const data = await response.json();
             if (response.ok) {
-                Alert.alert('Success', 'User updated successfully.');
+                showAlert('Success', 'User updated successfully.');
                 navigation.goBack();
             } else {
-                Alert.alert('Error', data.error || 'Error updating user.');
+                console.error('Error', data.error || 'Error updating user.');
             }
         } catch (error) {
-            Alert.alert('Error', 'Failed to update user.');
+            console.error('Error', 'Failed to update user.');
+        }
+    };
+
+    const showAlert = (title: string, message: string) => {
+        if (Platform.OS === 'web') {
+            window.alert(`${title}: ${message}`);
+        } else {
+            Alert.alert(title, message);
         }
     };
 
     const handleDeleteUser = async () => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username,
-                    delete: true,
-                }),
-            });
-            if (response.ok) {
-                Alert.alert('Success', 'User deleted successfully.');
-                navigation.goBack();
-            } else {
-                Alert.alert('Error', 'Error deleting user.');
+        if (Platform.OS === 'web') {
+            if (window.confirm("Are you sure? This action cannot be undone.")) {
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            username,
+                            delete: true,
+                        }),
+                    });
+                    if (response.ok) {
+                        showAlert('Success', 'User deleted successfully.');
+                        navigation.goBack();
+                    } else {
+                        console.error('Error', 'Error deleting user.');
+                    }
+                } catch (error) {
+                    console.error('Error', 'Failed to delete user.');
+                }
             }
-        } catch (error) {
-            Alert.alert('Error', 'Failed to delete user.');
         }
     };
 
@@ -139,15 +151,15 @@ const SupervisorEditUser: React.FC = () => {
                     </View>
 
                     <TouchableOpacity onPress={handleUpdateUser} style={styles.updateButton}>
-                        <ThemedText type="buttonText" style={styles.buttonText}>Update User</ThemedText>
+                        <ThemedText style={styles.buttonText}>Update User</ThemedText>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={handleDeleteUser} style={styles.deleteButton}>
-                        <ThemedText type="buttonText" style={styles.buttonText}>Delete User</ThemedText>
+                        <ThemedText style={styles.buttonText}>Delete User</ThemedText>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <ThemedText type="buttonText" style={styles.buttonText}>Back</ThemedText>
+                        <ThemedText style={styles.buttonText}>Back</ThemedText>
                     </TouchableOpacity>
                 </View>
             )}
