@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Alert, Platform, Modal, TextInput} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
@@ -18,6 +18,8 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
         dropoffLocation: '',
         pickupTime: '',
     });
+        const [isModalVisible, setIsModalVisible] = useState(false);
+    const [cancelReason, setCancelReason] = useState('');
 
     useEffect(() => {
         fetchRideInfo();
@@ -35,10 +37,10 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
                     pickupTime: new Date(data.pickup_time).toLocaleString(undefined, {dateStyle: 'medium', timeStyle: 'short',}),
                 });
             } else {
-                showAlert('Error', 'Failed to fetch ride information.');
+                console.error('Error', 'Failed to fetch ride information.');
             }
         } catch (error) {
-            showAlert('Error', 'Failed to fetch ride information.');
+            console.error('Error', 'Failed to fetch ride information.');
         }
     };
 
@@ -50,9 +52,13 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
         }
     };
 
-    const handleCancelRide = async () => {
+    const handleCancelRide = () => {
+        setIsModalVisible(true); // Show the modal to provide a reason
+    };
+
+    const handleConfirmCancel = async () => {
         if (Platform.OS === 'web') {
-            if(window.confirm("Are you sure? This action will delete your ride.")){
+            if(window.confirm("Are you sure? This action will cancel your ride.")){
                 await cancelRide();
                 showAlert("Ride Canceled", "Your ride has been canceled successfully.");
             }
@@ -63,7 +69,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
 
     const cancelRide = async () => {
         try {
-            const updatedInfo = { status: 'cancelled' }; // Update the status to "canceled"
+            const updatedInfo = { status: 'cancelled', reason: cancelReason }; // Update the status to "canceled"
 
             const response = await fetch(`http://127.0.0.1:8000/api/rides/edit/${rideId}`, {
                 method: 'PUT',
@@ -80,8 +86,12 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
             }
         } catch (error) {
             console.error("Error canceling ride:", error);
-            showAlert('Error', 'Failed to cancel ride.');
         }
+    };
+
+    const handleCancelModal = () => {
+        setIsModalVisible(false);
+        setCancelReason('');
     };
 
     const handleMessageDriver = () => {
@@ -109,6 +119,34 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({ route }) => {
             <TouchableOpacity onPress={handleMessageDriver} style={styles.messageButton}>
             <ThemedText style={styles.buttonText}>Message Driver</ThemedText>
             </TouchableOpacity>
+
+            <Modal
+                transparent={true}
+                visible={isModalVisible}
+                animationType="fade"
+                onRequestClose={handleCancelModal}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <ThemedText style={styles.modalTitle}>Please provide a reason</ThemedText>
+                        <TextInput
+                            value={cancelReason}
+                            onChangeText={setCancelReason}
+                            placeholder="Enter cancellation reason"
+                            style={styles.inputBox}
+                            multiline
+                        />
+                        <View style={styles.modalActions}>
+                            <TouchableOpacity onPress={handleCancelModal} style={styles.modalButton}>
+                                <ThemedText style={styles.buttonText}>Cancel</ThemedText>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleConfirmCancel} style={styles.modalButton}>
+                                <ThemedText style={styles.buttonText}>Confirm</ThemedText>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -120,6 +158,12 @@ const styles = StyleSheet.create({
     cancelButton: { backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 20 },
     messageButton: { backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 10 },
     buttonText: { color: 'white', fontSize: 16 },
+    modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
+    modalContent: { width: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10 },
+    modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+    inputBox: { height: 100, borderColor: '#ddd', borderWidth: 1, borderRadius: 12, padding: 15, marginBottom: 20 },
+    modalActions: { flexDirection: 'row', justifyContent: 'space-between' },
+    modalButton: { backgroundColor: '#4a90e2', padding: 10, borderRadius: 10, flex: 1, marginHorizontal: 5, alignItems: 'center' },
 });
 
 export default DisplayRideInfo;

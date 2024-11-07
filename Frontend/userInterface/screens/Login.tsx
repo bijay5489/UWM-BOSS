@@ -83,7 +83,7 @@ const LoginScreen: React.FC = () => {
         />
       </View>
 
-      {errorMessage && <ThemedText type="error" style={styles.errorText}>{errorMessage}</ThemedText>}
+      {errorMessage && <ThemedText style={styles.errorText}>{errorMessage}</ThemedText>}
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <ThemedText type="defaultSemiBold" style={styles.loginText}>Login</ThemedText>

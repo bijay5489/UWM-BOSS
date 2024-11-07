@@ -21,7 +21,7 @@ const RiderDashboard: React.FC = () => {
             await AsyncStorage.removeItem('refreshtoken');
             navigation.navigate('Login');
         } catch (error) {
-            Alert.alert('Error', 'An error occurred while logging out. Please try again.');
+            console.error('Error', 'An error occurred while logging out. Please try again.');
         }
     };
 
@@ -42,7 +42,7 @@ const RiderDashboard: React.FC = () => {
         if (username) {
             navigation.navigate('UserEditInfo', { username });
         } else {
-            Alert.alert('Error', 'Username is not available.');
+            console.error('Error', 'Username is not available.');
         }
     };
 

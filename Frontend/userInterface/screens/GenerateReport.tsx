@@ -26,7 +26,13 @@ const GenerateReport: React.FC = () => {
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/rides/get-by-rider-id/${riderId}/`);
                 const data = await response.json();
-                setRides(data.map((ride: { id: number }) => ({ id: ride.id, name: `Ride ID: ${ride.id}` })));
+                setRides(data.map((ride: { id: number; driverName: string; pickup_location: string; dropoff_location: string }) => ({
+                    id: ride.id,
+                    name: `Driver: ${ride.driverName} | Pickup: ${ride.pickup_location} | Dropoff: ${ride.dropoff_location}`,
+                    driver: ride.driverName,
+                    pickup: ride.pickup_location,
+                    dropoff: ride.dropoff_location
+                })));
             } catch (error) {
                 console.error("Error fetching rides:", error);
             }
@@ -92,7 +98,7 @@ const GenerateReport: React.FC = () => {
                 multiline
             />
 
-            {errorMessage && <ThemedText type="error" style={styles.errorText}>{errorMessage}</ThemedText>}
+            {errorMessage && <ThemedText style={styles.errorText}>{errorMessage}</ThemedText>}
 
             <TouchableOpacity onPress={handleGenerateReport} style={styles.submitButton}>
                 <Text style={styles.submitText}>Submit Report</Text>
