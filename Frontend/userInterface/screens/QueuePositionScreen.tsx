@@ -43,14 +43,14 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
     const handleLeaveQueue = () => {
         // Web-compatible confirmation alert
         if (typeof window !== 'undefined' && window.confirm) {
-            if (window.confirm("Are you sure? This action will cancel your ride.")) {
+            if (window.confirm("Are you sure? This action will delete your ride.")) {
                 deleteRide();
             }
         } else {
             // Mobile-compatible alert
             Alert.alert(
                 "Leave Queue",
-                "Are you sure? This action will cancel your ride.",
+                "Are you sure? This action will delete your ride.",
                 [
                     { text: "Cancel", style: "cancel" },
                     { text: "OK", onPress: deleteRide }
