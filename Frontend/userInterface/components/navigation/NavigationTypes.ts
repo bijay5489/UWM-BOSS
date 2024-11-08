@@ -8,6 +8,7 @@ export type RootStackParamList = {
   RiderDashboard: undefined;
   UserEditInfo: { username: string };
   GenerateReport: undefined;
+  AssignedRides: undefined;
   ViewReports: undefined;
   SupervisorSettings: undefined;
   CreateRide: undefined;
