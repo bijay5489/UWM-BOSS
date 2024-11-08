@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/components/navigation/NavigationTypes';
-import AssignedRides from '@/screens/AssignedRides'; 
+
 type DriverDashboardNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const DriverDashboard: React.FC = () => {

@@ -45,6 +45,8 @@ const LoginScreen: React.FC = () => {
           navigation.navigate('SupervisorHome');
         } else if(data.user_type === "R"){
           navigation.navigate('RiderDashboard');
+        } else if(data.user_type === "D"){
+          navigation.navigate('DriverDashboard');
         }
       } else if (response.status === 400) {
         setErrorMessage(data.error);

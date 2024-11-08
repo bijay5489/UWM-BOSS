@@ -14,7 +14,8 @@ import SupervisorSettings from "@/screens/SupervisorSettings";
 import CreateRide from "@/screens/CreateRide";
 import QueuePositionScreen from "@/screens/QueuePositionScreen";
 import DisplayRideInfo from "@/screens/DisplayRideInfo";
-import AssignedRides from '@/screens/AssignedRides'; 
+import AssignedRides from '@/screens/AssignedRides';
+import DriverDashboard from "@/screens/DriverDashboard";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -36,6 +37,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="Queue" component={QueuePositionScreen} />
         <Stack.Screen name="DisplayRideInfo" component={DisplayRideInfo} />
         <Stack.Screen name="AssignedRides" component={AssignedRides} />
+        <Stack.Screen name="DriverDashboard" component={DriverDashboard} />
     </Stack.Navigator>
     );
 };

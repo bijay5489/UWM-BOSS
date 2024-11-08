@@ -9,7 +9,7 @@ import Slider from '@react-native-community/slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {FontAwesome} from "@expo/vector-icons";
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
