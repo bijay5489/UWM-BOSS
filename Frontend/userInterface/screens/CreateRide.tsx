@@ -157,19 +157,23 @@ const CreateRide: React.FC = () => {
 
       {/* Date and Time Picker */}
       <Text style={styles.label}>Pickup Time:</Text>
+    <View style={styles.timePickerContainer}>
       {Platform.OS === 'web' ? (
         <DatePicker
           selected={pickupTime}
-          onChange={(date) =>date && setPickupTime(date)}
+          onChange={(date) => date && setPickupTime(date)}
           showTimeSelect
           dateFormat="Pp"
           minDate={new Date()}
           minTime={isToday(pickupTime) ? new Date() : new Date(new Date().setHours(0, 0, 0, 0))}
           maxTime={new Date(new Date().setHours(23, 59, 59, 999))}
+          customInput={<TextInput style={styles.timeInput} />}
         />
       ) : (
         <>
-          <Button title="Select Pickup Time" onPress={() => setShowPicker(true)} />
+          <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.timeButton}>
+            <Text style={styles.timeText}>{pickupTime.toLocaleString()}</Text>
+          </TouchableOpacity>
           {showPicker && (
             <DateTimePicker
               value={pickupTime}
@@ -180,6 +184,7 @@ const CreateRide: React.FC = () => {
           )}
         </>
       )}
+    </View>
 
       {/* Other components */}
       <Text style={styles.label}>Number of Passengers: {numPassengers}</Text>
@@ -212,18 +217,83 @@ const CreateRide: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  input: { height: 50, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10 },
-  label: { fontSize: 16, marginVertical: 10 },
-  slider: { width: '50%', height: 40 },
-  toggleContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f2f2f2',
+    justifyContent: 'center',
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: '#333',
+  },
+  timePickerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    zIndex: 10,
+  },
+  timeInput: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
+  timeButton: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: '#e0e0e0',
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    zIndex: 10,
+  },
+  timeText: {
+    color: '#333',
+    fontSize: 16,
+  },
+  slider: {
+    width: '100%',
+    marginBottom: 15,
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
   autocompleteContainer: { flex: 1, zIndex: 1 },
   inputContainer: { borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10 },
   suggestion: { padding: 10, backgroundColor: '#fff' },
-  errorText: { color: 'red', marginBottom: 10 },
-  createRideButton: { backgroundColor: 'blue', padding: 15, alignItems: 'center' },
-  createRideText: { color: 'white' },
   suggestionContainer: { maxHeight: 200, borderColor: 'gray', borderWidth: 1, borderTopWidth: 0, backgroundColor: 'white' },
+  createRideButton: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  createRideText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 15,
+  },
 });
 
 export default CreateRide;
