@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text, FlatList, Button, Platform } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, FlatList, Switch, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 import ThemedText from '@/components/ThemedText';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Slider from '@react-native-community/slider';
-import { Switch } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
@@ -32,6 +32,8 @@ const CreateRide: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+
+  // Additional helper function
   const isToday = (date: Date) => {
     const today = new Date();
     return (
@@ -56,7 +58,7 @@ const CreateRide: React.FC = () => {
         console.error("Error fetching location suggestions", error);
       }
     } else {
-      setSuggestions([]); // Clear suggestions if query is too short
+      setSuggestions([]);
     }
   };
 
@@ -103,9 +105,10 @@ const CreateRide: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Pickup Location Field with Autocomplete Suggestions */}
+      {/* Pickup Location Title and Input */}
+      <Text style={styles.label}>Pickup Location</Text>
       <TextInput
-        placeholder="Pickup Location"
+        placeholder="Enter pickup location"
         value={pickupLocation}
         onChangeText={async (text) => {
           setPickupLocation(text);
@@ -129,9 +132,10 @@ const CreateRide: React.FC = () => {
         />
       )}
 
-      {/* Dropoff Location Field with Autocomplete Suggestions */}
+      {/* Dropoff Location Title and Input */}
+      <Text style={styles.label}>Dropoff Location</Text>
       <TextInput
-        placeholder="Dropoff Location"
+        placeholder="Enter dropoff location"
         value={dropoffLocation}
         onChangeText={async (text) => {
           setDropoffLocation(text);
@@ -157,31 +161,36 @@ const CreateRide: React.FC = () => {
 
       {/* Date and Time Picker */}
       <Text style={styles.label}>Pickup Time:</Text>
-      {Platform.OS === 'web' ? (
-        <DatePicker
-          selected={pickupTime}
-          onChange={(date) =>date && setPickupTime(date)}
-          showTimeSelect
-          dateFormat="Pp"
-          minDate={new Date()}
-          minTime={isToday(pickupTime) ? new Date() : new Date(new Date().setHours(0, 0, 0, 0))}
-          maxTime={new Date(new Date().setHours(23, 59, 59, 999))}
-        />
-      ) : (
-        <>
-          <Button title="Select Pickup Time" onPress={() => setShowPicker(true)} />
-          {showPicker && (
-            <DateTimePicker
-              value={pickupTime}
-              mode="datetime"
-              display="default"
-              onChange={(event, date) => date && handleDateChange(date)}
-            />
-          )}
-        </>
-      )}
+      <View style={styles.timePickerContainer}>
+        {Platform.OS === 'web' ? (
+          <DatePicker
+            selected={pickupTime}
+            onChange={(date) => date && setPickupTime(date)}
+            showTimeSelect
+            dateFormat="Pp"
+            minDate={new Date()}
+            minTime={isToday(pickupTime) ? new Date() : new Date(new Date().setHours(0, 0, 0, 0))}
+            maxTime={new Date(new Date().setHours(23, 59, 59, 999))}
+            customInput={<TextInput style={styles.timeInput} />}
+          />
+        ) : (
+          <>
+            <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.timeButton}>
+              <Text style={styles.timeText}>{pickupTime.toLocaleString()}</Text>
+            </TouchableOpacity>
+            {showPicker && (
+              <DateTimePicker
+                value={pickupTime}
+                mode="datetime"
+                display="default"
+                onChange={(event, date) => date && handleDateChange(date)}
+              />
+            )}
+          </>
+        )}
+      </View>
 
-      {/* Other components */}
+      {/* Passenger Slider */}
       <Text style={styles.label}>Number of Passengers: {numPassengers}</Text>
       <Slider
         minimumValue={1}
@@ -192,8 +201,9 @@ const CreateRide: React.FC = () => {
         style={styles.slider}
       />
 
+      {/* ADA Switch with Accessibility Icon */}
       <View style={styles.toggleContainer}>
-        <Text style={styles.label}>{ADA ? 'ADA Required' : 'No ADA Requirements'}</Text>
+        <FontAwesome name="wheelchair" size={24} color={ADA ? '#81b0ff' : '#767577'} />
         <Switch
           value={ADA}
           onValueChange={setADA}
@@ -212,18 +222,28 @@ const CreateRide: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  input: { height: 50, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10 },
-  label: { fontSize: 16, marginVertical: 10 },
-  slider: { width: '50%', height: 40 },
-  toggleContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  autocompleteContainer: { flex: 1, zIndex: 1 },
-  inputContainer: { borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10 },
-  suggestion: { padding: 10, backgroundColor: '#fff' },
-  errorText: { color: 'red', marginBottom: 10 },
-  createRideButton: { backgroundColor: 'blue', padding: 15, alignItems: 'center' },
-  createRideText: { color: 'white' },
-  suggestionContainer: { maxHeight: 200, borderColor: 'gray', borderWidth: 1, borderTopWidth: 0, backgroundColor: 'white' },
+  container: { flex: 1, padding: 20, backgroundColor: '#f2f2f2', justifyContent: 'center' },
+  input: { height: 50, borderColor: '#ccc', borderWidth: 1, borderRadius: 10, paddingHorizontal: 10, marginBottom: 15, backgroundColor: '#fff' },
+  label: { fontSize: 16, marginBottom: 5, color: '#333' },
+  timePickerContainer: { alignItems: 'center', justifyContent: 'center', marginBottom: 10, zIndex: 10 },
+  timeButton: { height: 50, borderWidth: 1, borderColor: '#ccc', borderRadius: 10, justifyContent: 'center', paddingHorizontal: 10, backgroundColor: '#fff' },
+  timeText: { fontSize: 16, color: '#333' },
+  slider: { width: '100%', height: 40, marginBottom: 15 },
+  toggleContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 15, gap: 10 },
+  createRideButton: { height: 50, backgroundColor: '#007bff', alignItems: 'center', justifyContent: 'center', borderRadius: 10 },
+  createRideText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  suggestionContainer: { backgroundColor: 'white', borderRadius: 5, elevation: 3, padding: 5 },
+  suggestion: { padding: 10 },
+  errorText: { color: 'red', marginTop: 10, textAlign: 'center' },
+  timeInput: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
 });
 
 export default CreateRide;
