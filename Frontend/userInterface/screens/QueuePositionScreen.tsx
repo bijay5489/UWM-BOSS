@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { RouteProp, useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '@/components/navigation/NavigationTypes';
+import React, {useEffect, useState} from 'react';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type QueueScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Queue'>;
 type QueuePositionScreenProps = { route: RouteProp<RootStackParamList, 'Queue'>; };
 
-const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
+const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
     const navigation = useNavigation<QueueScreenNavigationProp>();
-    const { queuePosition, rideId, driverName } = route.params;
+    const {queuePosition, rideId, driverName} = route.params;
     const [currentPosition, setCurrentPosition] = useState(queuePosition);
     const [ride_id, setRideId] = useState();
 
@@ -28,11 +28,11 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
             const riderusername = await AsyncStorage.getItem('username');
             const response = await fetch(`http://127.0.0.1:8000/api/rides/queue-position/${riderusername}`);
             const data = await response.json();
-            if(response.status === 202){
+            if (response.status === 202) {
                 window.alert("A driver has been assigned to your ride!")
                 setRideId(data.ride_id)
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver})
-            }else if(response.status === 200) {
+            } else if (response.status === 200) {
                 setCurrentPosition(data.queue_position);
             }
         } catch (error) {
@@ -52,10 +52,10 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({ route }) => {
                 "Leave Queue",
                 "Are you sure? This action will delete your ride.",
                 [
-                    { text: "Cancel", style: "cancel" },
-                    { text: "OK", onPress: deleteRide }
+                    {text: "Cancel", style: "cancel"},
+                    {text: "OK", onPress: deleteRide}
                 ],
-                { cancelable: true }
+                {cancelable: true}
             );
         }
     };

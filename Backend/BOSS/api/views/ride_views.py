@@ -66,7 +66,7 @@ def get_ride_by_driver(request, driver_id, ride_status):
 @api_view(['GET'])
 def get_rides_by_rider(request, rider_id, ride_status=None):
     try:
-        rider = User.objects.get(id=rider_id)
+        User.objects.get(id=rider_id)
     except User.DoesNotExist:
         return Response({"error": "Rider not found"}, status=status.HTTP_404_NOT_FOUND)
     rides = RideManagement().get_by_id(rider_id, 'rider', ride_status)

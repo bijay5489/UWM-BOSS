@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '@/components/navigation/NavigationTypes';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 
 type RiderDashboardNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -40,7 +39,7 @@ const RiderDashboard: React.FC = () => {
 
     const handleEdit = async () => {
         if (username) {
-            navigation.navigate('UserEditInfo', { username });
+            navigation.navigate('UserEditInfo', {username});
         } else {
             console.error('Error', 'Username is not available.');
         }
@@ -95,14 +94,14 @@ const RiderDashboard: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: 'white' },
-    header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-    titleContainer: { flex: 1, alignItems: 'center' },
-    title: { fontSize: 28, fontWeight: 'bold' },
-    subtitle: { fontSize: 20, marginTop: 5, color: 'gray' },
-    cardsContainer: { flex: 1, justifyContent: 'space-around' },
-    logoutButton: { backgroundColor: 'red', padding: 15, borderRadius: 10, marginTop: 20, alignItems: 'center' },
-    logoutText: { color: 'white', fontSize: 16 },
+    container: {flex: 1, padding: 20, backgroundColor: 'white'},
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20},
+    titleContainer: {flex: 1, alignItems: 'center'},
+    title: {fontSize: 28, fontWeight: 'bold'},
+    subtitle: {fontSize: 20, marginTop: 5, color: 'gray'},
+    cardsContainer: {flex: 1, justifyContent: 'space-around'},
+    logoutButton: {backgroundColor: 'red', padding: 15, borderRadius: 10, marginTop: 20, alignItems: 'center'},
+    logoutText: {color: 'white', fontSize: 16},
 });
 
 export default RiderDashboard;
