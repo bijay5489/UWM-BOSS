@@ -14,4 +14,5 @@ export type RootStackParamList = {
   CreateRide: undefined;
   Queue: { queuePosition: number, rideId: number, driverName: string };
   DisplayRideInfo: { rideId: number, driverName: string };
+  DriverDashboard: undefined;
 };

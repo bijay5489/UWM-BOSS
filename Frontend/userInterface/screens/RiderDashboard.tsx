@@ -9,10 +9,10 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 
-type SupervisorHomePageNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+type RiderDashboardNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const RiderDashboard: React.FC = () => {
-    const navigation = useNavigation<SupervisorHomePageNavigationProp>();
+    const navigation = useNavigation<RiderDashboardNavigationProp>();
     const [username, setUsername] = useState<string | null>(null);
 
     const handleLogout = async () => {

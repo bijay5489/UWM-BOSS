@@ -1,15 +1,5 @@
-// AssignedRides.tsx
-
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  RefreshControl,
-} from 'react-native';
-import ThemedView from '@/components/ThemedView';
+import {View, StyleSheet, TouchableOpacity,} from 'react-native';
 import ThemedText from '@/components/ThemedText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -18,156 +8,116 @@ import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 
 type AssignedRidesNavigationProp = StackNavigationProp<RootStackParamList, 'AssignedRides'>;
 
-interface Ride {
-  id: string;
-  pickupLocation: string;
-  dropoffLocation: string;
-  pickupTime: string;
-  status: string; // e.g., 'assigned', 'completed'
-  // Add other relevant fields as needed
-}
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api'; // Update this if necessary
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 const AssignedRides: React.FC = () => {
-  const navigation = useNavigation<AssignedRidesNavigationProp>();
-  const [rides, setRides] = useState<Ride[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
+    const navigation = useNavigation<AssignedRidesNavigationProp>();
+    const [ride, setRide] = useState({
+        rider: '',
+        pickup_location: '',
+        dropoff_location: '',
+        pickup_time: '',
+        num_passengers: 0,
+    });
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-  // Function to fetch assigned rides from the API
-  const fetchAssignedRides = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const accessToken = await AsyncStorage.getItem('accessToken');
-      if (!accessToken) {
-        // If no access token, navigate to Login
-        navigation.navigate('Login');
-        return;
-      }
+    const fetchAssignedRides = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const accessToken = await AsyncStorage.getItem('accessToken');
+            if (!accessToken) {
+                navigation.navigate('Login');
+                return;
+            }
+            const storedUsername = await AsyncStorage.getItem('username');
+            const response = await fetch(`${API_BASE_URL}/rides/get-by-driver-id/${storedUsername}/status/in_progress/`);
+            const data = await response.json();
+            if (response.ok) {
+                setRide({
+                    rider: data.riderName,
+                    pickup_location: data.pickup_location,
+                    dropoff_location: data.dropoff_location,
+                    pickup_time: data.pickup_time,
+                    num_passengers: data.num_passengers,
+                });
+            } else {
+                setRide({
+                    rider: '',
+                    pickup_location: '',
+                    dropoff_location: '',
+                    pickup_time: '',
+                    num_passengers: 0,
+                });
+            }
+        } catch (err) {
+            console.error('Error fetching assigned rides:', err);
+        } finally {
+            setLoading(false);
+        }
+    }, [navigation]);
 
-      const response = await fetch(`${API_BASE_URL}/rides/assigned/`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
+    useEffect(() => {
+        fetchAssignedRides();
+    }, [fetchAssignedRides]);
 
-      if (response.ok) {
-        const data = await response.json();
-        setRides(data.rides || []);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Failed to fetch assigned rides.');
-      }
-    } catch (err) {
-      console.error('Error fetching assigned rides:', err);
-      setError('An unexpected error occurred.');
-    } finally {
-      setLoading(false);
+    const handleMessageRider = () => {
+        // Add messaging logic here
+    };
+
+    const handleEndRide = () => {
+
     }
-  }, [navigation]);
 
-  useEffect(() => {
-    fetchAssignedRides();
-  }, [fetchAssignedRides]);
-
-  // Function to handle pull-to-refresh
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await fetchAssignedRides();
-    setRefreshing(false);
-  }, [fetchAssignedRides]);
-
-  // Render each ride item
-  const renderRide = ({ item }: { item: Ride }) => (
-    <View style={styles.rideCard}>
-      <ThemedText type="defaultSemiBold" style={styles.rideTitle}>
-        Ride ID: {item.id}
-      </ThemedText>
-      <ThemedText>Pickup: {item.pickupLocation}</ThemedText>
-      <ThemedText>Dropoff: {item.dropoffLocation}</ThemedText>
-      <ThemedText>
-        Pickup Time: {new Date(item.pickupTime).toLocaleString()}
-      </ThemedText>
-      <ThemedText>Status: {item.status}</ThemedText>
-      {/* Add more details or actions if needed */}
-    </View>
-  );
-
-  if (loading) {
     return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </ThemedView>
-    );
-  }
+        <View style={styles.container}>
+            {loading ? (
+                <ThemedText>Loading...</ThemedText>
+            ) : ride.rider ? (
+                <>
+                    <ThemedText style={styles.labelText}>Rider:</ThemedText>
+                    <ThemedText style={styles.infoText}>{ride.rider}</ThemedText>
 
-  return (
-    <ThemedView style={styles.container}>
-      {rides.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <ThemedText style={styles.emptyText}>No rides yet.</ThemedText>
+                    <ThemedText style={styles.labelText}>Pickup Location:</ThemedText>
+                    <ThemedText style={styles.infoText}>{ride.pickup_location}</ThemedText>
+
+                    <ThemedText style={styles.labelText}>Dropoff Location:</ThemedText>
+                    <ThemedText style={styles.infoText}>{ride.dropoff_location}</ThemedText>
+
+                    <ThemedText style={styles.labelText}>Pickup Time:</ThemedText>
+                    <ThemedText style={styles.infoText}>{ride.pickup_time}</ThemedText>
+
+                    <ThemedText style={styles.labelText}>Number of Passengers:</ThemedText>
+                    <ThemedText style={styles.infoText}>{ride.num_passengers}</ThemedText>
+
+                    <TouchableOpacity onPress={handleEndRide} style={styles.endButton}>
+                        <ThemedText style={styles.buttonText}>End Ride</ThemedText>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={handleMessageRider} style={styles.messageButton}>
+                        <ThemedText style={styles.buttonText}>Message Rider</ThemedText>
+                    </TouchableOpacity>
+                </>
+            ) : (
+                <ThemedText style={styles.infoText}>No current ride.</ThemedText>
+            )}
+
+            {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
         </View>
-      ) : (
-        <FlatList
-          data={rides}
-          keyExtractor={(item) => item.id}
-          renderItem={renderRide}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          contentContainerStyle={styles.listContainer}
-        />
-      )}
-      {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
-    </ThemedView>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 18,
-    color: 'gray',
-  },
-  rideCard: {
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    marginBottom: 15,
-    backgroundColor: '#f9f9f9',
-  },
-  rideTitle: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
+    container: {flex: 1, padding: 20, backgroundColor: 'white'},
+    emptyContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+    buttonText: { color: 'white', fontSize: 16 },
+    endButton: { backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 20 },
+    messageButton: { backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 10 },
+    errorText: {color: 'red', textAlign: 'center', marginTop: 10},
+    labelText: { fontSize: 16, fontWeight: 'bold', color: '#444', marginTop: 10 },
+    infoText: { fontSize: 16, color: 'black', marginBottom: 10 },
 });
 
 export default AssignedRides;

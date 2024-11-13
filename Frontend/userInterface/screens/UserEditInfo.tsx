@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Platform} from 'react-native';
+import {View, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Platform, Text} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -118,24 +118,28 @@ const UserEditInfo: React.FC = () => {
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
                 <View>
+                    <Text style={styles.label}>Name</Text>
                     <TextInput
                         placeholder="Name"
                         value={user.name}
                         onChangeText={(text) => setUser({ ...user, name: text })}
                         style={styles.input}
                     />
+                    <Text style={styles.label}>Email</Text>
                     <TextInput
                         placeholder="Email"
                         value={user.email}
                         onChangeText={(text) => setUser({ ...user, email: text })}
                         style={styles.input}
                     />
+                    <Text style={styles.label}>Phone Number</Text>
                     <TextInput
                         placeholder="Phone Number"
                         value={user.phone_number}
                         onChangeText={(text) => setUser({ ...user, phone_number: text })}
                         style={styles.input}
                     />
+                    <Text style={styles.label}>Address</Text>
                     <TextInput
                         placeholder="Address"
                         value={user.address}
@@ -174,6 +178,7 @@ const styles = StyleSheet.create({
     deleteButton: { backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10 },
     backButton: { backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10 },
     buttonText: { color: 'white', fontSize: 16 },
+    label: { fontSize: 16, marginBottom: 5, color: '#333' },
 });
 
 export default UserEditInfo;

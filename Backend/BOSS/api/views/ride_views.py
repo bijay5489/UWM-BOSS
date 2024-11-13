@@ -54,9 +54,10 @@ def get_ride_by_id(request, ride_id):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def get_ride_by_driver(request, driver_id, ride_status=None):
+def get_ride_by_driver(request, driver_id, ride_status):
     try:
-        ride = RideManagement().get_by_id(driver_id, 'driver', ride_status)
+        driver = User.objects.get(username=driver_id)
+        ride = Ride.objects.get(driver=driver, status=ride_status)
     except Ride.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = RideSerializer(ride)
@@ -111,9 +112,9 @@ def create_ride(request):
             return Response({"message": "Ride created successfully.", "ride_id": ride.id, "driver": ride.driver.name}, status=status.HTTP_201_CREATED)
         except Ride.DoesNotExist:
             return Response({"error": "Ride in progress not found"}, status=status.HTTP_404_NOT_FOUND)
-
+    ride = Ride.objects.get(rider=rider, status='pending')
     pending_count = Ride.objects.filter(status='pending').count()
-    return Response({"message": "Ride created but no available drivers", "queue_position": pending_count}, status=status.HTTP_200_OK)
+    return Response({"message": "Ride created but no available drivers", "queue_position": pending_count, "ride_id": ride.id}, status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
 def edit_ride(request, ride_id):

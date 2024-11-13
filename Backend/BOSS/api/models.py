@@ -73,6 +73,7 @@ class Ride(models.Model):
     driver = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'user_type': 'D'}, null=True,
                                blank=True, related_name='driver')
     driverName = models.CharField(max_length=50,null=True,blank=True)
+    riderName = models.CharField(max_length=50, null=True, blank=True)
     van = models.ForeignKey(Van, on_delete=models.CASCADE, null=True, blank=True)
     pickup_location = models.CharField(max_length=200)
     dropoff_location = models.CharField(max_length=200)
