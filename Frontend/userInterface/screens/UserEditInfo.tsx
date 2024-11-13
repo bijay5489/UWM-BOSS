@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import {View, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Platform, Text} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/components/navigation/NavigationTypes";
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {StackNavigationProp} from "@react-navigation/stack";
+import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type UserEditInfoNavigationProp = StackNavigationProp<RootStackParamList, 'UserEditInfo'>;
@@ -13,16 +13,17 @@ type RouteParams = { username: string };
 const UserEditInfo: React.FC = () => {
     const navigation = useNavigation<UserEditInfoNavigationProp>();
     const route = useRoute();
-    const { username } = route.params as RouteParams;
-
+    const {username} = route.params as RouteParams;
     const [user, setUser] = useState({
         name: '',
         email: '',
         phone_number: '',
         address: '',
-        password: '',  // Added password field
+        password: '',
     });
     const [loading, setLoading] = useState<boolean>(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         fetchUserDetails();
@@ -40,10 +41,10 @@ const UserEditInfo: React.FC = () => {
                     email: userData.email,
                     phone_number: userData.phone_number,
                     address: userData.address,
-                    password: '', // Reset password field
+                    password: '',
                 });
             } else {
-                console.error('Error', data.error || 'Failed to fetch user details.');
+                console.error('Error', data.error);
             }
         } catch (error) {
             console.error('Error', 'Failed to fetch user details.');
@@ -53,27 +54,30 @@ const UserEditInfo: React.FC = () => {
     };
 
     const handleUpdateInfo = async () => {
+        if(!oldPassword.trim()){
+            setErrorMessage('Please enter your current password!')
+            return;
+        }
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     username,
+                    oldPassword,
                     edit_info: {
                         ...user,
-                        password: user.password,
                     },
                 }),
             });
             const data = await response.json();
             if (response.ok) {
-                Alert.alert('Success', 'User updated successfully.');
-                navigation.goBack();
+                setErrorMessage(data.message);
             } else {
-                console.error('Error', data.error || 'Error updating user.');
+                setErrorMessage(data.error);
             }
         } catch (error) {
-            console.error('Error', 'Failed to update user.');
+            setErrorMessage("Current password incorrect!");
         }
     };
 
@@ -86,6 +90,10 @@ const UserEditInfo: React.FC = () => {
     };
 
     const handleDeleteAccount = async () => {
+        if(!oldPassword.trim()){
+            setErrorMessage('Please enter your current password!')
+            return;
+        }
         if (Platform.OS === 'web') {
             if (window.confirm("Are you sure? This action cannot be undone.")) {
                 try {
@@ -115,44 +123,60 @@ const UserEditInfo: React.FC = () => {
     return (
         <ThemedView style={styles.container}>
             {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#0000ff"/>
             ) : (
                 <View>
                     <Text style={styles.label}>Name</Text>
                     <TextInput
                         placeholder="Name"
                         value={user.name}
-                        onChangeText={(text) => setUser({ ...user, name: text })}
+                        onChangeText={(text) => setUser({...user, name: text})}
                         style={styles.input}
+                        placeholderTextColor="gray"
                     />
                     <Text style={styles.label}>Email</Text>
                     <TextInput
                         placeholder="Email"
                         value={user.email}
-                        onChangeText={(text) => setUser({ ...user, email: text })}
+                        onChangeText={(text) => setUser({...user, email: text})}
                         style={styles.input}
+                        placeholderTextColor="gray"
                     />
                     <Text style={styles.label}>Phone Number</Text>
                     <TextInput
                         placeholder="Phone Number"
                         value={user.phone_number}
-                        onChangeText={(text) => setUser({ ...user, phone_number: text })}
+                        onChangeText={(text) => setUser({...user, phone_number: text})}
                         style={styles.input}
+                        placeholderTextColor="gray"
                     />
                     <Text style={styles.label}>Address</Text>
                     <TextInput
                         placeholder="Address"
                         value={user.address}
-                        onChangeText={(text) => setUser({ ...user, address: text })}
+                        onChangeText={(text) => setUser({...user, address: text})}
                         style={styles.input}
+                        placeholderTextColor="gray"
+                    />
+                    <Text style={styles.label}>Current Password*</Text>
+                    <TextInput
+                        placeholder="Current Password"
+                        value={oldPassword}
+                        onChangeText={setOldPassword}
+                        style={styles.input}
+                        secureTextEntry
+                        placeholderTextColor="gray"
                     />
                     <TextInput
                         placeholder="New Password"
                         value={user.password}
-                        onChangeText={(text) => setUser({ ...user, password: text })}
+                        onChangeText={(text) => setUser({...user, password: text})}
                         style={styles.input}
                         secureTextEntry // Secure entry for password
+                        placeholderTextColor="gray"
                     />
+
+                    {errorMessage && <ThemedText style={styles.errorText}>{errorMessage}</ThemedText>}
 
                     <TouchableOpacity onPress={handleUpdateInfo} style={styles.updateButton}>
                         <ThemedText style={styles.buttonText}>Update Info</ThemedText>
@@ -172,13 +196,14 @@ const UserEditInfo: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20 },
-    input: { height: 50, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10 },
-    updateButton: { backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10 },
-    deleteButton: { backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10 },
-    backButton: { backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10 },
-    buttonText: { color: 'white', fontSize: 16 },
-    label: { fontSize: 16, marginBottom: 5, color: '#333' },
+    container: {flex: 1, padding: 20},
+    input: {height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
+    updateButton: {backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10},
+    deleteButton: {backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10},
+    backButton: {backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10},
+    buttonText: {color: 'white', fontSize: 16},
+    label: {fontSize: 16, marginBottom: 5, color: 'black'},
+    errorText: { color: 'red', textAlign: 'center', marginBottom: 10 },
 });
 
 export default UserEditInfo;

@@ -13,7 +13,8 @@ from .users_view import (
 )
 
 from .login_views import (
-    LoginView
+    LoginView,
+    ResetPasswordView
 )
 
 from .register_views import (

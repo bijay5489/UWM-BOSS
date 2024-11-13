@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {View, StyleSheet, TouchableOpacity,} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View,} from 'react-native';
 import ThemedText from '@/components/ThemedText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '@/components/navigation/NavigationTypes'; 
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 
 type AssignedRidesNavigationProp = StackNavigationProp<RootStackParamList, 'AssignedRides'>;
 
