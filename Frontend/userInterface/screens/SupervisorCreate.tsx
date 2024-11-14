@@ -121,9 +121,11 @@ const SupervisorCreate: React.FC = () => {
                     <TouchableOpacity
                         key={type}
                         style={styles.radioButton}
-                        onPress={() => setUserType(type[0])} // Store the first letter for simplicity
+                        onPress={() => setUserType(type[0])}
                     >
-                        <View style={user_type === type[0] ? styles.selectedRadio : styles.unselectedRadio}/>
+                        <View style={styles.radioOuterCircle}>
+                            {user_type === type[0] && <View style={styles.radioInnerCircle} />}
+                        </View>
                         <Text>{type}</Text>
                     </TouchableOpacity>
                 ))}
@@ -142,10 +144,10 @@ const styles = StyleSheet.create({
     errorText: {color: 'red', marginBottom: 10},
     createAccountButton: {backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10},
     createAccountText: {color: 'white'},
-    radioContainer: {flexDirection: 'row', alignItems: 'flex-start', marginVertical: 15},
+    radioContainer: {flexDirection: 'row', alignItems: 'flex-start', marginVertical: 15, justifyContent: 'center'},
     radioButton: {flexDirection: 'row', alignItems: 'center', marginRight: 15},
-    selectedRadio: {width: 20, height: 20, borderRadius: 10, backgroundColor: 'blue', marginRight: 10, },
-    unselectedRadio: {width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: 'gray', marginRight: 10},
+    radioOuterCircle: {width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: 'gray', justifyContent: 'center', alignItems: 'center', margin: 10},
+    radioInnerCircle: {width: 10, height: 10, borderRadius: 5, backgroundColor: 'blue'},
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
 });
 

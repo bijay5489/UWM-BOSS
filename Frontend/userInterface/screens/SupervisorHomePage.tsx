@@ -22,11 +22,6 @@ const SupervisorHomePage: React.FC = () => {
 
     const menuItems: any = [
         {
-            label: "View Reports",
-            icon: "document",
-            nav: 'ViewReports',
-        },
-        {
             label: "Message Driver",
             icon: "chatbubbles",
             nav: 'CreateAccount',
@@ -53,6 +48,14 @@ const SupervisorHomePage: React.FC = () => {
             await AsyncStorage.removeItem('accesstoken');
             await AsyncStorage.removeItem('refreshtoken');
             navigation.navigate('Login');
+        } catch (error) {
+            Alert.alert('Error', 'An error occurred while logging out. Please try again.');
+        }
+    };
+
+    const handleViewReports = async () => {
+        try {
+            navigation.navigate('ViewReports');
         } catch (error) {
             Alert.alert('Error', 'An error occurred while logging out. Please try again.');
         }
@@ -91,12 +94,10 @@ const SupervisorHomePage: React.FC = () => {
             {/* Cards Section */}
             <View style={styles.cardsContainer}>
                 <Card
-                    title="Switch View"
-                    description="Switch to a driver or student rider view."
-                    buttonLabel="Switch"
-                    onPress={() => {
-                        // switch view logic
-                    }}
+                    title="View Reports"
+                    description="See all currently active reports in the system"
+                    buttonLabel="Reports"
+                    onPress={handleViewReports}
                 />
                 <Card
                     title="Users"
