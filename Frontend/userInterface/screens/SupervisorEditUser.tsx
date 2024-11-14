@@ -115,7 +115,7 @@ const SupervisorEditUser: React.FC = () => {
                 </TouchableOpacity>
                 <ThemedText type="title" style={styles.headerText}>Edit User</ThemedText>
                 <TouchableOpacity onPress={handleDeleteUser}>
-                    <Ionicons name="trash" size={30} color="red" />
+                    <Ionicons name="trash" size={30} color="red"/>
                 </TouchableOpacity>
             </View>
             {loading ? (
@@ -163,7 +163,7 @@ const SupervisorEditUser: React.FC = () => {
                                 onPress={() => setUser({...user, user_type: type[0]})}
                             >
                                 <View style={styles.radioOuterCircle}>
-                                    {user.user_type === type[0] && <View style={styles.radioInnerCircle} />}
+                                    {user.user_type === type[0] && <View style={styles.radioInnerCircle}/>}
                                 </View>
                                 <Text>{type}</Text>
                             </TouchableOpacity>
@@ -181,7 +181,14 @@ const SupervisorEditUser: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {flex: 1, padding: 20},
-    input: {height: 40, borderColor: 'black', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
+    input: {
+        height: 40,
+        borderColor: 'black',
+        borderWidth: 1,
+        marginBottom: 15,
+        paddingHorizontal: 10,
+        borderRadius: 10
+    },
     radioContainer: {flexDirection: 'row', alignItems: 'flex-start', marginVertical: 15, justifyContent: "center"},
     radioButton: {flexDirection: 'row', alignItems: 'center', marginRight: 15},
     selectedRadio: {width: 20, height: 20, borderRadius: 10, backgroundColor: 'blue', marginRight: 10},
@@ -193,7 +200,16 @@ const styles = StyleSheet.create({
     header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
     headerText: {flex: 0.9, fontSize: 28, textAlign: 'center',},
     label: {fontSize: 16, marginBottom: 7, color: 'black'},
-    radioOuterCircle: {width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: 'gray', justifyContent: 'center', alignItems: 'center', margin: 10},
+    radioOuterCircle: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10
+    },
     radioInnerCircle: {width: 10, height: 10, borderRadius: 5, backgroundColor: 'blue'},
 });
 

@@ -30,7 +30,7 @@ const LoginScreen: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({username, password}),
             });
 
             const data = await response.json();
@@ -43,9 +43,9 @@ const LoginScreen: React.FC = () => {
 
                 if (data.user_type === "S") {
                     navigation.navigate('SupervisorHome');
-                } else if(data.user_type === "R"){
+                } else if (data.user_type === "R") {
                     navigation.navigate('RiderDashboard');
-                } else if(data.user_type === "D"){
+                } else if (data.user_type === "D") {
                     navigation.navigate('DriverDashboard');
                 }
             } else if (response.status === 400) {
@@ -54,7 +54,7 @@ const LoginScreen: React.FC = () => {
                 setErrorMessage('Something went wrong. Please try again.');
             }
         } catch (error) {
-              setErrorMessage('Failed to connect. Please check your internet connection.');
+            setErrorMessage('Failed to connect. Please check your internet connection.');
         }
     };
 
@@ -65,7 +65,7 @@ const LoginScreen: React.FC = () => {
     return (
         <ThemedView style={styles.container}>
             <View style={styles.logoContainer}>
-                <Image source={require('../assets/images/UWM.png')} style={styles.logo} />
+                <Image source={require('../assets/images/UWM.png')} style={styles.logo}/>
             </View>
 
             <View style={styles.inputContainer}>
@@ -104,18 +104,25 @@ const LoginScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: 'white', justifyContent: 'center' },
-    logoContainer: { alignItems: 'center', marginBottom: 30 },
-    logo: { width: 150, height: 150 },
-    inputContainer: { marginBottom: 30 },
-    input: {height: 50, borderColor: 'black', borderWidth: 1, borderRadius: 10, marginBottom: 15, paddingHorizontal: 15,},
-    errorText: { color: 'red', textAlign: 'center', marginBottom: 10 },
+    container: {flex: 1, padding: 20, backgroundColor: 'white', justifyContent: 'center'},
+    logoContainer: {alignItems: 'center', marginBottom: 30},
+    logo: {width: 190, height: 190},
+    inputContainer: {marginBottom: 30},
+    input: {
+        height: 50,
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 10,
+        marginBottom: 15,
+        paddingHorizontal: 15,
+    },
+    errorText: {color: 'red', textAlign: 'center', marginBottom: 10},
     loginButton: {backgroundColor: 'blue', padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 15,},
-    loginText: { color: 'white', fontSize: 16 },
+    loginText: {color: 'white', fontSize: 16},
     createAccountButton: {padding: 15, alignItems: 'center',},
-    createAccountText: { color: 'blue', fontSize: 16 },
-    resetButton: {padding: 15, alignItems: 'center' },
-    resetText: { color: 'blue', fontSize: 16,},
+    createAccountText: {color: 'blue', fontSize: 16},
+    resetButton: {padding: 15, alignItems: 'center'},
+    resetText: {color: 'blue', fontSize: 16,},
 });
 
 export default LoginScreen;

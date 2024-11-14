@@ -56,11 +56,11 @@ const UserEditInfo: React.FC = () => {
     };
 
     const handleUpdateInfo = async () => {
-        if(!oldPassword.trim()){
+        if (!oldPassword.trim()) {
             setErrorMessage('Please enter your current password!')
             return;
         }
-        if (!user.password.trim()){
+        if (!user.password.trim()) {
             if (user.password != RePassword) {
                 setErrorMessage("Passwords do not match, re-enter your new password.");
                 return;
@@ -99,7 +99,7 @@ const UserEditInfo: React.FC = () => {
     };
 
     const handleDeleteAccount = async () => {
-        if(!oldPassword.trim()){
+        if (!oldPassword.trim()) {
             setErrorMessage('Please enter your current password!')
             return;
         }
@@ -110,6 +110,7 @@ const UserEditInfo: React.FC = () => {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
+                            oldPassword,
                             username,
                             delete: true,
                         }),
@@ -137,10 +138,10 @@ const UserEditInfo: React.FC = () => {
                 </TouchableOpacity>
                 <ThemedText type="title" style={styles.headerText}>Edit Account</ThemedText>
                 <TouchableOpacity onPress={handleDeleteAccount}>
-                    <Ionicons name="trash" size={30} color="red" />
+                    <Ionicons name="trash" size={30} color="red"/>
                 </TouchableOpacity>
             </View>
-                {loading ? (
+            {loading ? (
                 <ActivityIndicator size="large" color="#0000ff"/>
             ) : (
                 <View>

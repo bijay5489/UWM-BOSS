@@ -48,7 +48,7 @@ const AssignedRides: React.FC = () => {
             const data = await response.json();
             if (response.status === 200) {
                 setRide({
-                    id:data.id,
+                    id: data.id,
                     rider: data.riderName,
                     pickup_location: data.pickup_location,
                     dropoff_location: data.dropoff_location,
@@ -60,7 +60,7 @@ const AssignedRides: React.FC = () => {
                 });
             } else {
                 setRide({
-                    id:'',
+                    id: '',
                     rider: '',
                     pickup_location: '',
                     dropoff_location: '',
@@ -78,7 +78,7 @@ const AssignedRides: React.FC = () => {
     const endRide = async () => {
         const ride_code = await AsyncStorage.getItem('ride_code');
         const enteredCode = EndCode.join('');
-        if(enteredCode != ride_code){
+        if (enteredCode != ride_code) {
             setMessage('Invalid Code!');
             return;
         }
@@ -95,7 +95,7 @@ const AssignedRides: React.FC = () => {
 
             const data = await response.json();
             if (response.ok) {
-                showAlert('Ride Ended','Ride completed successfully!');
+                showAlert('Ride Ended', 'Ride completed successfully!');
                 navigation.navigate('DriverDashboard');
             } else {
                 setErrorMessage(data.message);
@@ -226,12 +226,12 @@ const AssignedRides: React.FC = () => {
 const styles = StyleSheet.create({
     container: {flex: 1, padding: 20, backgroundColor: 'white'},
     emptyContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
-    buttonText: { color: 'white', fontSize: 16 },
-    endButton: { backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 20 },
-    messageButton: { backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 10 },
+    buttonText: {color: 'white', fontSize: 16},
+    endButton: {backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 20},
+    messageButton: {backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10, marginTop: 10},
     errorText: {color: 'red', textAlign: 'center', marginTop: 10},
-    labelText: { fontSize: 16, fontWeight: 'bold', color: '#444', marginTop: 10 },
-    infoText: { fontSize: 16, color: 'black', marginBottom: 10 },
+    labelText: {fontSize: 16, fontWeight: 'bold', color: '#444', marginTop: 10},
+    infoText: {fontSize: 16, color: 'black', marginBottom: 10},
     header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
     headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
     modalContainer: {
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         textAlign: 'center',
     },
-    modalActions: { flexDirection: 'row', justifyContent: 'space-between' },
+    modalActions: {flexDirection: 'row', justifyContent: 'space-between'},
     modalButton: {
         backgroundColor: '#4a90e2',
         padding: 10,
