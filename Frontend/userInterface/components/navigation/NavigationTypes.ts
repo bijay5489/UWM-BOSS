@@ -16,4 +16,5 @@ export type RootStackParamList = {
   DisplayRideInfo: { rideId: number, driverName: string };
   DriverDashboard: undefined;
   ForgetPassword: undefined;
+  SupervisorPrivacy: undefined;
 };

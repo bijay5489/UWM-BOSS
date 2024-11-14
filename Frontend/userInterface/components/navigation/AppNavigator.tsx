@@ -17,6 +17,7 @@ import DisplayRideInfo from "@/screens/DisplayRideInfo";
 import AssignedRides from '@/screens/AssignedRides';
 import DriverDashboard from "@/screens/DriverDashboard";
 import ForgetPassword from "@/screens/ForgetPassword";
+import SupervisorPrivacy from '@/screens/SupervisorPrivacy';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -40,6 +41,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="AssignedRides" component={AssignedRides} />
         <Stack.Screen name="DriverDashboard" component={DriverDashboard} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+        <Stack.Screen name="SupervisorPrivacy" component={SupervisorPrivacy} />
     </Stack.Navigator>
     );
 };
