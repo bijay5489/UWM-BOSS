@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import ThemedText from "@/components/ThemedText";
+import {Ionicons} from "@expo/vector-icons";
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -63,6 +64,12 @@ const SupervisorCreate: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
+                <ThemedText type="title" style={styles.headerText}>Create Account</ThemedText>
+            </View>
             <Text style={styles.label}>Username:</Text>
             <TextInput
                 placeholder="Username"
@@ -149,6 +156,8 @@ const styles = StyleSheet.create({
     radioOuterCircle: {width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: 'gray', justifyContent: 'center', alignItems: 'center', margin: 10},
     radioInnerCircle: {width: 10, height: 10, borderRadius: 5, backgroundColor: 'blue'},
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
 });
 
 export default SupervisorCreate;

@@ -31,6 +31,7 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
             if (response.status === 202) {
                 window.alert("A driver has been assigned to your ride!")
                 setRideId(data.ride_id)
+                await AsyncStorage.setItem('inProgress', 'true');
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver})
             } else if (response.status === 200) {
                 setCurrentPosition(data.queue_position);

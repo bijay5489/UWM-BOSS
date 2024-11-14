@@ -82,8 +82,12 @@ const SupervisorSettings: React.FC = () => {
 
     return (
         <ThemedView style={styles.container}>
-            <ThemedText type="title" style={styles.headerText}>Supervisor Settings</ThemedText>
-
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
+                <ThemedText type="title" style={styles.headerText}>Supervisor Settings</ThemedText>
+            </View>
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
@@ -133,7 +137,7 @@ const SupervisorSettings: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, backgroundColor: 'white' },
-    headerText: { fontSize: 28, fontWeight: 'bold', marginBottom: 20 },
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
     userInfoContainer: {
         backgroundColor: '#f0f0f0',
         padding: 10,
@@ -160,6 +164,7 @@ const styles = StyleSheet.create({
     },
     icon: { marginRight: 10 },
     buttonText: { color: 'white', fontSize: 16 },
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
 });
 
 export default SupervisorSettings;

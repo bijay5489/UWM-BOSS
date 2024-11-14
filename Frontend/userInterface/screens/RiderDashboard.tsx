@@ -1,18 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
+import {Ionicons} from "@expo/vector-icons";
 
 type RiderDashboardNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const RiderDashboard: React.FC = () => {
     const navigation = useNavigation<RiderDashboardNavigationProp>();
     const [username, setUsername] = useState<string | null>(null);
+    const [inProgress, setInProgress] = useState<boolean>(false);
 
     const handleLogout = async () => {
         try {
@@ -24,18 +26,23 @@ const RiderDashboard: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        const checkLoginStatus = async () => {
-            const accessToken = await AsyncStorage.getItem('accessToken');
-            const storedUsername = await AsyncStorage.getItem('username'); // Retrieve username from AsyncStorage
-            if (!accessToken) {
-                navigation.navigate('Login');
-            } else if (storedUsername) {
-                setUsername(storedUsername);
-            }
-        };
-        checkLoginStatus();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            const checkLoginStatus = async () => {
+                const accessToken = await AsyncStorage.getItem('accessToken');
+                const storedUsername = await AsyncStorage.getItem('username'); // Retrieve username from AsyncStorage
+                const progressStatus = await AsyncStorage.getItem('inProgress');
+                setInProgress(progressStatus === 'true');
+                console.log(inProgress);
+                if (!accessToken) {
+                    navigation.navigate('Login');
+                } else if (storedUsername) {
+                    setUsername(storedUsername);
+                }
+            };
+            checkLoginStatus();
+        }, [])
+    );
 
     const handleEdit = async () => {
         if (username) {
@@ -53,6 +60,17 @@ const RiderDashboard: React.FC = () => {
         navigation.navigate('CreateRide');
     };
 
+    const handleViewRide = async () => {
+        const rideIdString = await AsyncStorage.getItem('ride_id_view');
+        const driverName = await AsyncStorage.getItem('ride_driverName');
+
+        const rideId = rideIdString !== null ? parseInt(rideIdString, 10) : null;
+
+        if (rideId !== null && driverName !== null) {
+            navigation.navigate('DisplayRideInfo', { rideId, driverName });
+        }
+    }
+
     return (
         <ThemedView style={styles.container}>
             {/* Header Section */}
@@ -60,6 +78,11 @@ const RiderDashboard: React.FC = () => {
                 <View style={styles.titleContainer}>
                     <ThemedText type="title" style={styles.title}>UWM Boss</ThemedText>
                     <ThemedText type="subtitle" style={styles.subtitle}>Rider View</ThemedText>
+                    {inProgress && (
+                        <TouchableOpacity onPress={handleViewRide}>
+                            <Ionicons name="car-sport" size={30} color="black" />
+                        </TouchableOpacity>
+                    )}
                 </View>
             </View>
 
