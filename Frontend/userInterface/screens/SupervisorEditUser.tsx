@@ -86,10 +86,12 @@ const SupervisorEditUser: React.FC = () => {
         if (Platform.OS === 'web') {
             if (window.confirm("Are you sure? This action cannot be undone.")) {
                 try {
+                    const bypass = true;
                     const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
+                            bypass,
                             username,
                             delete: true,
                         }),

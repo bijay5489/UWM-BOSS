@@ -32,7 +32,7 @@ class ManageUsersView(APIView):
         user = User.objects.get(username=username)
 
         if 'delete' in data and data['delete']:
-            if check_password(old_password, user.password):
+            if check_password(old_password, user.password) or data.get('bypass'):
                 # Delete the user
                 success = user_functions.delete(username)
                 if success:
