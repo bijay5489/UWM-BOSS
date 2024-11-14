@@ -52,7 +52,10 @@ const AssignedRides: React.FC = () => {
                     rider: data.riderName,
                     pickup_location: data.pickup_location,
                     dropoff_location: data.dropoff_location,
-                    pickup_time: data.pickup_time,
+                    pickup_time: new Date(data.pickup_time).toLocaleString(undefined, {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                    }),
                     num_passengers: data.num_passengers,
                 });
             } else {

@@ -182,7 +182,7 @@ const SupervisorEditUser: React.FC = () => {
 const styles = StyleSheet.create({
     container: {flex: 1, padding: 20},
     input: {height: 40, borderColor: 'black', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
-    radioContainer: {flexDirection: 'row', alignItems: 'flex-start', marginVertical: 15},
+    radioContainer: {flexDirection: 'row', alignItems: 'flex-start', marginVertical: 15, justifyContent: "center"},
     radioButton: {flexDirection: 'row', alignItems: 'center', marginRight: 15},
     selectedRadio: {width: 20, height: 20, borderRadius: 10, backgroundColor: 'blue', marginRight: 10},
     unselectedRadio: {width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: 'gray', marginRight: 10},

@@ -88,7 +88,10 @@ const CreateRide: React.FC = () => {
 
             const data = await response.json();
             await AsyncStorage.setItem('ride_code', data.ride_code);
+            await AsyncStorage.setItem('inProgress', data.inProgress);
             if (response.status === 201) {
+                await AsyncStorage.setItem('ride_id_view', data.ride_id);
+                await AsyncStorage.setItem('ride_driverName', data.driver);
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver});
             } else if (response.status === 200) {
                 navigation.navigate('Queue', {

@@ -108,16 +108,18 @@ def create_ride(request):
     ride_info = request.data
     result = RideManagement().create(rider, ride_info)
     ride_code = random.randint(1000, 9999)
+    inProgress = False
 
     if result:
         try:
             ride = Ride.objects.get(rider=rider, status='in_progress')
-            return Response({"message": "Ride created successfully.", "ride_id": ride.id, "driver": ride.driver.name, "ride_code": ride_code}, status=status.HTTP_201_CREATED)
+            inProgress = True
+            return Response({"message": "Ride created successfully.", "ride_id": ride.id, "driver": ride.driver.name, "ride_code": ride_code, "inProgress": inProgress}, status=status.HTTP_201_CREATED)
         except Ride.DoesNotExist:
             return Response({"error": "Ride in progress not found"}, status=status.HTTP_404_NOT_FOUND)
     ride = Ride.objects.get(rider=rider, status='pending')
     pending_count = Ride.objects.filter(status='pending').count()
-    return Response({"message": "Ride created but no available drivers", "queue_position": pending_count, "ride_id": ride.id, "ride_code": ride_code}, status=status.HTTP_200_OK)
+    return Response({"message": "Ride created but no available drivers", "queue_position": pending_count, "ride_id": ride.id, "ride_code": ride_code, "inProgress": inProgress}, status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
 def edit_ride(request, ride_id):
@@ -136,7 +138,6 @@ def get_queue_position(request, rider_id):
     queue_position = Ride.objects.filter(status='pending', id__lt=ride.id).count() + 1
     if not ride:
         return Response({"error": "Ride not found or already assigned.", "queue_position": 0}, status=status.HTTP_404_NOT_FOUND)
-
 
     if queue_position == 1:
         if RideManagement().assign_driver(ride.id):

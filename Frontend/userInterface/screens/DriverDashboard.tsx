@@ -70,8 +70,8 @@ const DriverDashboard: React.FC = () => {
             {/* Cards Section */}
             <View style={styles.cardsContainer}>
                 <Card
-                    title="Check My Rides"
-                    description="View and manage your assigned rides."
+                    title="My Ride"
+                    description="View and manage your assigned ride."
                     buttonLabel="Check"
                     onPress={handleCheckRides}
                 />

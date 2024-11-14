@@ -81,6 +81,7 @@ const UserEditInfo: React.FC = () => {
             const data = await response.json();
             if (response.ok) {
                 setErrorMessage(data.message);
+                setOldPassword('');
             } else {
                 setErrorMessage(data.error);
             }

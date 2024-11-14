@@ -89,6 +89,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
             });
 
             if (response.ok) {
+                await AsyncStorage.setItem('inProgress', 'false');
                 navigation.navigate('RiderDashboard');
             } else {
                 showAlert('Error', 'Failed to cancel ride.');
@@ -116,9 +117,16 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
         }
     };
 
+    const handleGoBack = async () => {
+        navigation.navigate('RiderDashboard');
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
+                <TouchableOpacity onPress={handleGoBack}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
                 <ThemedText type="title" style={styles.headerText}>Ride Details</ThemedText>
             </View>
             <ThemedText style={styles.labelText}>Driver:</ThemedText>
