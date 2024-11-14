@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import ThemedText from "@/components/ThemedText";
+import {Ionicons} from "@expo/vector-icons";
 
 type ForgetPasswordNavigationProp = StackNavigationProp<RootStackParamList, 'ForgetPassword'>;
 
@@ -44,6 +45,12 @@ const ForgetPassword: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
+                <ThemedText type="title" style={styles.headerText}>Reset Password</ThemedText>
+            </View>
             <Text style={styles.label}>Username</Text>
             <TextInput
                 placeholder="Username"
@@ -72,9 +79,6 @@ const ForgetPassword: React.FC = () => {
             <TouchableOpacity onPress={handleForgetPassword} style={styles.resetButton}>
                 <Text style={styles.resetText}>Reset Password</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
-                <Text style={styles.backText}>Back</Text>
-            </TouchableOpacity>
         </View>
     );
 };
@@ -88,6 +92,8 @@ const styles = StyleSheet.create({
     backButton: { backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10 },
     backText: { color: 'white', fontSize: 16 },
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
 });
 
 export default ForgetPassword;

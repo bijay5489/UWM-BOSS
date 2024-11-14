@@ -52,6 +52,9 @@ const ViewReports: React.FC = () => {
         <ThemedView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
                 <ThemedText type="title" style={styles.headerText}>View Reports</ThemedText>
                 <TouchableOpacity style={styles.squareButton} onPress={handleGenerateReport}>
                     <Ionicons name="create-outline" size={24} color="white"/>
@@ -84,8 +87,8 @@ const styles = StyleSheet.create({
     scrollContainer: {paddingBottom: 20},
     loadingIndicator: {marginTop: 20},
     squareButton: {
-        width: 40,
-        height: 40,
+        width: 35,
+        height: 35,
         backgroundColor: 'green',
         alignItems: 'center',
         justifyContent: 'center',

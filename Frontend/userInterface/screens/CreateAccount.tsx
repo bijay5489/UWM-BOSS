@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import ThemedText from "@/components/ThemedText";
+import {Ionicons} from "@expo/vector-icons";
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -67,6 +68,9 @@ const CreateAccount: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <ThemedText type="title" style={styles.headerText}>Create Account</ThemedText>
+            </View>
             <Text style={styles.label}>Username:</Text>
             <TextInput
                 placeholder="Username"
@@ -148,6 +152,8 @@ const styles = StyleSheet.create({
     loginButton: {marginTop: 10, alignItems: 'center'},
     loginText: {color: 'blue'},
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
 });
 
 export default CreateAccount;

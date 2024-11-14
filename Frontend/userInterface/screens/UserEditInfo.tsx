@@ -6,6 +6,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Ionicons} from "@expo/vector-icons";
 
 type UserEditInfoNavigationProp = StackNavigationProp<RootStackParamList, 'UserEditInfo'>;
 type RouteParams = { username: string };
@@ -24,6 +25,7 @@ const UserEditInfo: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [oldPassword, setOldPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [RePassword, setRePassword] = useState('');
 
     useEffect(() => {
         fetchUserDetails();
@@ -57,6 +59,12 @@ const UserEditInfo: React.FC = () => {
         if(!oldPassword.trim()){
             setErrorMessage('Please enter your current password!')
             return;
+        }
+        if (!user.password.trim()){
+            if (user.password != RePassword) {
+                setErrorMessage("Passwords do not match, re-enter your new password.");
+                return;
+            }
         }
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
@@ -122,11 +130,20 @@ const UserEditInfo: React.FC = () => {
 
     return (
         <ThemedView style={styles.container}>
-            {loading ? (
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
+                <ThemedText type="title" style={styles.headerText}>Edit Account</ThemedText>
+                <TouchableOpacity onPress={handleDeleteAccount}>
+                    <Ionicons name="trash" size={30} color="red" />
+                </TouchableOpacity>
+            </View>
+                {loading ? (
                 <ActivityIndicator size="large" color="#0000ff"/>
             ) : (
                 <View>
-                    <Text style={styles.label}>Name</Text>
+                    <Text style={styles.label}>Name:</Text>
                     <TextInput
                         placeholder="Name"
                         value={user.name}
@@ -134,7 +151,7 @@ const UserEditInfo: React.FC = () => {
                         style={styles.input}
                         placeholderTextColor="gray"
                     />
-                    <Text style={styles.label}>Email</Text>
+                    <Text style={styles.label}>Email:</Text>
                     <TextInput
                         placeholder="Email"
                         value={user.email}
@@ -142,7 +159,7 @@ const UserEditInfo: React.FC = () => {
                         style={styles.input}
                         placeholderTextColor="gray"
                     />
-                    <Text style={styles.label}>Phone Number</Text>
+                    <Text style={styles.label}>Phone Number:</Text>
                     <TextInput
                         placeholder="Phone Number"
                         value={user.phone_number}
@@ -150,7 +167,7 @@ const UserEditInfo: React.FC = () => {
                         style={styles.input}
                         placeholderTextColor="gray"
                     />
-                    <Text style={styles.label}>Address</Text>
+                    <Text style={styles.label}>Address:</Text>
                     <TextInput
                         placeholder="Address"
                         value={user.address}
@@ -158,7 +175,7 @@ const UserEditInfo: React.FC = () => {
                         style={styles.input}
                         placeholderTextColor="gray"
                     />
-                    <Text style={styles.label}>Current Password*</Text>
+                    <Text style={styles.label}>Current Password*:</Text>
                     <TextInput
                         placeholder="Current Password"
                         value={oldPassword}
@@ -167,6 +184,7 @@ const UserEditInfo: React.FC = () => {
                         secureTextEntry
                         placeholderTextColor="gray"
                     />
+                    <Text style={styles.label}>New Password: (leave blank to keep current password)</Text>
                     <TextInput
                         placeholder="New Password"
                         value={user.password}
@@ -175,19 +193,19 @@ const UserEditInfo: React.FC = () => {
                         secureTextEntry // Secure entry for password
                         placeholderTextColor="gray"
                     />
+                    <TextInput
+                        placeholder="Confirm Password"
+                        value={RePassword}
+                        onChangeText={setRePassword}
+                        secureTextEntry
+                        style={styles.input}
+                        placeholderTextColor="gray"
+                    />
 
                     {errorMessage && <ThemedText style={styles.errorText}>{errorMessage}</ThemedText>}
 
                     <TouchableOpacity onPress={handleUpdateInfo} style={styles.updateButton}>
                         <ThemedText style={styles.buttonText}>Update Info</ThemedText>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={handleDeleteAccount} style={styles.deleteButton}>
-                        <ThemedText style={styles.buttonText}>Delete Account</ThemedText>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <ThemedText style={styles.buttonText}>Back</ThemedText>
                     </TouchableOpacity>
                 </View>
             )}
@@ -198,12 +216,15 @@ const UserEditInfo: React.FC = () => {
 const styles = StyleSheet.create({
     container: {flex: 1, padding: 20},
     input: {height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
-    updateButton: {backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10},
-    deleteButton: {backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10},
-    backButton: {backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10},
+    updateButton: {backgroundColor: 'blue', padding: 10, alignItems: 'center', borderRadius: 10, marginBottom: 10},
+    deleteButton: {backgroundColor: 'red', padding: 10, alignItems: 'center', borderRadius: 10, marginBottom: 10},
+    backButton: {backgroundColor: 'gray', padding: 10, alignItems: 'center', borderRadius: 10},
     buttonText: {color: 'white', fontSize: 16},
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
-    errorText: { color: 'red', textAlign: 'center', marginBottom: 10 },
+    errorText: {color: 'red', textAlign: 'center', marginBottom: 10},
+    squareButton: {alignItems: 'center', justifyContent: 'center'},
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
 });
 
 export default UserEditInfo;

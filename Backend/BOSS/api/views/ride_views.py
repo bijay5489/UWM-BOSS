@@ -59,9 +59,9 @@ def get_ride_by_driver(request, driver_id, ride_status):
         driver = User.objects.get(username=driver_id)
         ride = Ride.objects.get(driver=driver, status=ride_status)
     except Ride.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_202_ACCEPTED)
     serializer = RideSerializer(ride)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_rides_by_rider(request, rider_id, ride_status=None):

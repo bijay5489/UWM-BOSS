@@ -1,10 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View,} from 'react-native';
+import {Alert, Modal, Platform, StyleSheet, TextInput, TouchableOpacity, View,} from 'react-native';
 import ThemedText from '@/components/ThemedText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
+import {Ionicons} from "@expo/vector-icons";
 
 type AssignedRidesNavigationProp = StackNavigationProp<RootStackParamList, 'AssignedRides'>;
 
@@ -14,6 +15,7 @@ const API_BASE_URL = 'http://127.0.0.1:8000/api';
 const AssignedRides: React.FC = () => {
     const navigation = useNavigation<AssignedRidesNavigationProp>();
     const [ride, setRide] = useState({
+        id: '',
         rider: '',
         pickup_location: '',
         dropoff_location: '',
@@ -21,11 +23,14 @@ const AssignedRides: React.FC = () => {
         num_passengers: 0,
     });
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [EndCode, setEndCode] = useState('');
+    const [Message, setMessage] = useState<string | null>(null);
 
     const fetchAssignedRides = useCallback(async () => {
         setLoading(true);
-        setError(null);
+        setErrorMessage(null);
         try {
             const accessToken = await AsyncStorage.getItem('accessToken');
             if (!accessToken) {
@@ -35,8 +40,9 @@ const AssignedRides: React.FC = () => {
             const storedUsername = await AsyncStorage.getItem('username');
             const response = await fetch(`${API_BASE_URL}/rides/get-by-driver-id/${storedUsername}/status/in_progress/`);
             const data = await response.json();
-            if (response.ok) {
+            if (response.status === 200) {
                 setRide({
+                    id:data.id,
                     rider: data.riderName,
                     pickup_location: data.pickup_location,
                     dropoff_location: data.dropoff_location,
@@ -45,6 +51,7 @@ const AssignedRides: React.FC = () => {
                 });
             } else {
                 setRide({
+                    id:'',
                     rider: '',
                     pickup_location: '',
                     dropoff_location: '',
@@ -53,11 +60,43 @@ const AssignedRides: React.FC = () => {
                 });
             }
         } catch (err) {
-            console.error('Error fetching assigned rides:', err);
+            setMessage('Failed to connect. Please check your internet connection.');
         } finally {
             setLoading(false);
         }
     }, [navigation]);
+
+    const endRide = async () => {
+        try {
+            const updatedInfo = {status: 'completed'};
+
+            const response = await fetch(`http://127.0.0.1:8000/api/rides/edit/${ride.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedInfo),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                showAlert('Ride Ended:','Ride Ended Successfully!');
+                navigation.navigate('DriverDashboard');
+            } else {
+                setErrorMessage(data.message);
+            }
+        } catch (error) {
+            setErrorMessage('Failed to connect. Please check your internet connection.');
+        }
+    };
+
+    const showAlert = (title: string, message: string) => {
+        if (Platform.OS === 'web') {
+            window.alert(`${title}: ${message}`);
+        } else {
+            Alert.alert(title, message);
+        }
+    };
 
     useEffect(() => {
         fetchAssignedRides();
@@ -68,11 +107,22 @@ const AssignedRides: React.FC = () => {
     };
 
     const handleEndRide = () => {
+        setIsModalVisible(true);
+    };
 
-    }
+    const handleEndModal = () => {
+        setIsModalVisible(false);
+        setEndCode('');
+    };
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
+                <ThemedText type="title" style={styles.headerText}>Current Ride</ThemedText>
+            </View>
             {loading ? (
                 <ThemedText>Loading...</ThemedText>
             ) : ride.rider ? (
@@ -99,12 +149,40 @@ const AssignedRides: React.FC = () => {
                     <TouchableOpacity onPress={handleMessageRider} style={styles.messageButton}>
                         <ThemedText style={styles.buttonText}>Message Rider</ThemedText>
                     </TouchableOpacity>
+
+                    <Modal
+                        transparent={true}
+                        visible={isModalVisible}
+                        animationType="fade"
+                        onRequestClose={handleEndModal}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                                <ThemedText style={styles.modalTitle}>Please provide the code from rider</ThemedText>
+                                <TextInput
+                                    value={EndCode}
+                                    onChangeText={setEndCode}
+                                    placeholder="Enter end code"
+                                    style={styles.inputBox}
+                                    multiline
+                                />
+                                <View style={styles.modalActions}>
+                                    <TouchableOpacity onPress={handleEndModal} style={styles.modalButton}>
+                                        <ThemedText style={styles.buttonText}>Cancel</ThemedText>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={endRide} style={styles.modalButton}>
+                                        <ThemedText style={styles.buttonText}>Confirm</ThemedText>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                 </>
             ) : (
                 <ThemedText style={styles.infoText}>No current ride.</ThemedText>
             )}
 
-            {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
+            {errorMessage && <ThemedText style={styles.errorText}>{errorMessage}</ThemedText>}
         </View>
     );
 };
@@ -118,6 +196,21 @@ const styles = StyleSheet.create({
     errorText: {color: 'red', textAlign: 'center', marginTop: 10},
     labelText: { fontSize: 16, fontWeight: 'bold', color: '#444', marginTop: 10 },
     infoText: { fontSize: 16, color: 'black', marginBottom: 10 },
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
+    modalContainer: {flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)'},
+    modalContent: {width: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10},
+    modalTitle: {fontSize: 18, fontWeight: 'bold', marginBottom: 10},
+    inputBox: {height: 100, borderColor: '#ddd', borderWidth: 1, borderRadius: 12, padding: 15, marginBottom: 20},
+    modalActions: {flexDirection: 'row', justifyContent: 'space-between'},
+    modalButton: {
+        backgroundColor: '#4a90e2',
+        padding: 10,
+        borderRadius: 10,
+        flex: 1,
+        marginHorizontal: 5,
+        alignItems: 'center'
+    },
 });
 
 export default AssignedRides;

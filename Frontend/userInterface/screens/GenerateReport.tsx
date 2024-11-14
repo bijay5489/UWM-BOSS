@@ -6,6 +6,7 @@ import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomDropdown from '@/components/CustomDropdown';
 import ThemedText from '@/components/ThemedText';
+import {Ionicons} from "@expo/vector-icons";
 
 type GenerateReportNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -75,25 +76,34 @@ const GenerateReport: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <CustomDropdown
-                items={[
-                    {label: 'Safety Issue', value: 'safety'},
-                    {label: 'Service Issue', value: 'service'},
-                    {label: 'Delay', value: 'delay'},
-                    {label: 'Vehicle Condition', value: 'vehicle'},
-                    {label: 'Other', value: 'other'},
-                ]}
-                selectedValue={reportType}
-                onSelect={setReportType}
-                placeholder="Select Report Type"
-            />
-
-            <CustomDropdown
-                items={rides.map(ride => ({label: ride.name, value: ride.id.toString()}))}
-                selectedValue={selectedRideId}
-                onSelect={setSelectedRideId}
-                placeholder="Select Ride"
-            />
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
+                <ThemedText type="title" style={styles.headerText}>Generate Report</ThemedText>
+            </View>
+            <View style={styles.dropdownContainer}>
+                <CustomDropdown
+                    items={[
+                        {label: 'Safety Issue', value: 'safety'},
+                        {label: 'Service Issue', value: 'service'},
+                        {label: 'Delay', value: 'delay'},
+                        {label: 'Vehicle Condition', value: 'vehicle'},
+                        {label: 'Other', value: 'other'},
+                    ]}
+                    selectedValue={reportType}
+                    onSelect={setReportType}
+                    placeholder="Select Report Type"
+                />
+            </View>
+            <View style={styles.dropdownContainer}>
+                <CustomDropdown
+                    items={rides.map(ride => ({label: ride.name, value: ride.id.toString()}))}
+                    selectedValue={selectedRideId}
+                    onSelect={setSelectedRideId}
+                    placeholder="Select Ride"
+                />
+            </View>
 
             <TextInput
                 placeholder="Enter report details"
@@ -141,7 +151,10 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
     submitText: {color: 'white', fontWeight: '600'},
+    dropdownContainer: {marginBottom: 20,},
 });
 
 export default GenerateReport;

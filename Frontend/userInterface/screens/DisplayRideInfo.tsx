@@ -4,6 +4,8 @@ import ThemedText from '../components/ThemedText';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {RouteProp, useNavigation} from "@react-navigation/native";
+import CustomDropdown from "@/components/CustomDropdown";
+import {Ionicons} from "@expo/vector-icons";
 
 
 type DisplayRideInfoNavigationProp = StackNavigationProp<RootStackParamList, 'DisplayRideInfo'>;
@@ -20,6 +22,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
     });
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [cancelReason, setCancelReason] = useState('');
+    const [showTextInput, setShowTextInput] = useState(false);
 
     useEffect(() => {
         fetchRideInfo();
@@ -100,9 +103,21 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
     const handleMessageDriver = () => {
         // Add messaging logic here
     };
+    const handleSelectReason = (value: React.SetStateAction<string>) => {
+        setCancelReason(value);
+        if (value === 'other') {
+            setCancelReason('');
+            setShowTextInput(true);
+        } else {
+            setShowTextInput(false);
+        }
+    };
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <ThemedText type="title" style={styles.headerText}>Ride Details</ThemedText>
+            </View>
             <ThemedText style={styles.labelText}>Driver:</ThemedText>
             <ThemedText style={styles.infoText}>{rideInfo.driver}</ThemedText>
 
@@ -132,13 +147,26 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <ThemedText style={styles.modalTitle}>Please provide a reason</ThemedText>
-                        <TextInput
-                            value={cancelReason}
-                            onChangeText={setCancelReason}
-                            placeholder="Enter cancellation reason"
-                            style={styles.inputBox}
-                            multiline
+                        <CustomDropdown
+                            items={[
+                                { label: 'Change of plans', value: 'change_of_plans' },
+                                { label: 'Driver delay', value: 'driver_delay' },
+                                { label: 'Found alternate transport', value: 'alternate_transport' },
+                                { label: 'Other', value: 'other' },
+                            ]}
+                            selectedValue={cancelReason}
+                            onSelect={handleSelectReason}
+                            placeholder="Select a reason"
                         />
+                        {showTextInput && (
+                            <TextInput
+                                value={cancelReason} // only use if "other" is selected
+                                onChangeText={setCancelReason}
+                                placeholder="Enter your reason"
+                                style={styles.inputBox}
+                                multiline
+                            />
+                        )}
                         <View style={styles.modalActions}>
                             <TouchableOpacity onPress={handleCancelModal} style={styles.modalButton}>
                                 <ThemedText style={styles.buttonText}>Cancel</ThemedText>
@@ -164,8 +192,8 @@ const styles = StyleSheet.create({
     modalContainer: {flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)'},
     modalContent: {width: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10},
     modalTitle: {fontSize: 18, fontWeight: 'bold', marginBottom: 10},
-    inputBox: {height: 100, borderColor: '#ddd', borderWidth: 1, borderRadius: 12, padding: 15, marginBottom: 20},
-    modalActions: {flexDirection: 'row', justifyContent: 'space-between'},
+    inputBox: {height: 100, borderColor: '#ddd', borderWidth: 1, borderRadius: 12, padding: 15, marginBottom: 20, marginTop: 10},
+    modalActions: {flexDirection: 'row', justifyContent: 'space-between', marginTop: 10},
     modalButton: {
         backgroundColor: '#4a90e2',
         padding: 10,
@@ -174,6 +202,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         alignItems: 'center'
     },
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
 });
 
 export default DisplayRideInfo;

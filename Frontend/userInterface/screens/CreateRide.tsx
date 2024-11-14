@@ -9,7 +9,7 @@ import Slider from '@react-native-community/slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {FontAwesome} from "@expo/vector-icons";
+import {FontAwesome, Ionicons} from "@expo/vector-icons";
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
@@ -87,7 +87,6 @@ const CreateRide: React.FC = () => {
             });
 
             const data = await response.json();
-            console.log(data);
 
             if (response.status === 201) {
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver});
@@ -109,6 +108,12 @@ const CreateRide: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
+                <ThemedText type="title" style={styles.headerText}>Request Ride</ThemedText>
+            </View>
             {/* Pickup Location Title and Input */}
             <Text style={styles.label}>Pickup Location:</Text>
             <TextInput
@@ -272,6 +277,8 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         backgroundColor: '#fff',
     },
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
 });
 
 export default CreateRide;
