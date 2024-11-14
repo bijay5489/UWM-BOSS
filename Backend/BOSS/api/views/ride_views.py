@@ -1,3 +1,5 @@
+import random
+
 from django.conf import settings
 import requests
 from rest_framework import status
@@ -105,16 +107,17 @@ def create_ride(request):
 
     ride_info = request.data
     result = RideManagement().create(rider, ride_info)
+    ride_code = random.randint(1000, 9999)
 
     if result:
         try:
             ride = Ride.objects.get(rider=rider, status='in_progress')
-            return Response({"message": "Ride created successfully.", "ride_id": ride.id, "driver": ride.driver.name}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Ride created successfully.", "ride_id": ride.id, "driver": ride.driver.name, "ride_code": ride_code}, status=status.HTTP_201_CREATED)
         except Ride.DoesNotExist:
             return Response({"error": "Ride in progress not found"}, status=status.HTTP_404_NOT_FOUND)
     ride = Ride.objects.get(rider=rider, status='pending')
     pending_count = Ride.objects.filter(status='pending').count()
-    return Response({"message": "Ride created but no available drivers", "queue_position": pending_count, "ride_id": ride.id}, status=status.HTTP_200_OK)
+    return Response({"message": "Ride created but no available drivers", "queue_position": pending_count, "ride_id": ride.id, "ride_code": ride_code}, status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
 def edit_ride(request, ride_id):

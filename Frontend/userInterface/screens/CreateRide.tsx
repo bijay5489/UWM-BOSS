@@ -87,7 +87,7 @@ const CreateRide: React.FC = () => {
             });
 
             const data = await response.json();
-
+            await AsyncStorage.setItem('ride_code', data.ride_code);
             if (response.status === 201) {
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver});
             } else if (response.status === 200) {

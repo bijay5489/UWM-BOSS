@@ -6,6 +6,7 @@ import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {RouteProp, useNavigation} from "@react-navigation/native";
 import CustomDropdown from "@/components/CustomDropdown";
 import {Ionicons} from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 type DisplayRideInfoNavigationProp = StackNavigationProp<RootStackParamList, 'DisplayRideInfo'>;
@@ -23,6 +24,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [cancelReason, setCancelReason] = useState('');
     const [showTextInput, setShowTextInput] = useState(false);
+    const [ride_code, setRide_code] = useState<string | null>(null);
 
     useEffect(() => {
         fetchRideInfo();
@@ -42,6 +44,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
                         timeStyle: 'short',
                     }),
                 });
+                setRide_code(await AsyncStorage.getItem('ride_code'))
             } else {
                 console.error('Error', 'Failed to fetch ride information.');
             }
@@ -129,6 +132,9 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
 
             <ThemedText style={styles.labelText}>Pickup Time:</ThemedText>
             <ThemedText style={styles.infoText}>{rideInfo.pickupTime}</ThemedText>
+
+            <ThemedText style={styles.labelText}>Ride Code: (Provide to the Driver upon ride completion)</ThemedText>
+            <ThemedText style={styles.infoText}>{ride_code}</ThemedText>
 
             <TouchableOpacity onPress={handleCancelRide} style={styles.cancelButton}>
                 <ThemedText style={styles.buttonText}>Cancel Ride</ThemedText>

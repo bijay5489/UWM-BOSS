@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Alert, Modal, Platform, StyleSheet, TextInput, TouchableOpacity, View,} from 'react-native';
 import ThemedText from '@/components/ThemedText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,8 +25,14 @@ const AssignedRides: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [EndCode, setEndCode] = useState('');
+    const [EndCode, setEndCode] = useState(['', '', '', '']);
     const [Message, setMessage] = useState<string | null>(null);
+    const inputRefs = [
+        useRef<TextInput>(null),
+        useRef<TextInput>(null),
+        useRef<TextInput>(null),
+        useRef<TextInput>(null),
+    ];
 
     const fetchAssignedRides = useCallback(async () => {
         setLoading(true);
@@ -67,6 +73,12 @@ const AssignedRides: React.FC = () => {
     }, [navigation]);
 
     const endRide = async () => {
+        const ride_code = await AsyncStorage.getItem('ride_code');
+        const enteredCode = EndCode.join('');
+        if(enteredCode != ride_code){
+            setMessage('Invalid Code!');
+            return;
+        }
         try {
             const updatedInfo = {status: 'completed'};
 
@@ -80,7 +92,7 @@ const AssignedRides: React.FC = () => {
 
             const data = await response.json();
             if (response.ok) {
-                showAlert('Ride Ended:','Ride Ended Successfully!');
+                showAlert('Ride Ended','Ride completed successfully!');
                 navigation.navigate('DriverDashboard');
             } else {
                 setErrorMessage(data.message);
@@ -112,7 +124,19 @@ const AssignedRides: React.FC = () => {
 
     const handleEndModal = () => {
         setIsModalVisible(false);
-        setEndCode('');
+        setEndCode(['', '', '', '']);
+        setMessage('');
+    };
+    const handleChangeText = (text: string, index: number) => {
+        const newEndCode = [...EndCode];
+        newEndCode[index] = text;
+        setEndCode(newEndCode);
+        if (text && index < 3) {
+            inputRefs[index + 1].current?.focus();
+        }
+        if (!text && index > 0) {
+            inputRefs[index - 1].current?.focus();
+        }
     };
 
     return (
@@ -159,14 +183,23 @@ const AssignedRides: React.FC = () => {
                         <View style={styles.modalContainer}>
                             <View style={styles.modalContent}>
                                 <ThemedText style={styles.modalTitle}>Please provide the code from rider</ThemedText>
-                                <TextInput
-                                    value={EndCode}
-                                    onChangeText={setEndCode}
-                                    placeholder="Enter end code"
-                                    style={styles.inputBox}
-                                    multiline
-                                />
+                                <View style={styles.inputContainer}>
+                                    {EndCode.map((digit, index) => (
+                                        <TextInput
+                                            key={index}
+                                            value={digit}
+                                            onChangeText={(text) => handleChangeText(text, index)}
+                                            keyboardType="numeric"
+                                            maxLength={1}
+                                            style={styles.inputBox}
+                                            ref={inputRefs[index]}
+                                            textAlign="center"
+                                            autoFocus={index === 0}
+                                        />
+                                    ))}
+                                </View>
                                 <View style={styles.modalActions}>
+                                    {Message && <ThemedText style={styles.errorText}>{Message}</ThemedText>}
                                     <TouchableOpacity onPress={handleEndModal} style={styles.modalButton}>
                                         <ThemedText style={styles.buttonText}>Cancel</ThemedText>
                                     </TouchableOpacity>
@@ -198,11 +231,29 @@ const styles = StyleSheet.create({
     infoText: { fontSize: 16, color: 'black', marginBottom: 10 },
     header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
     headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
-    modalContainer: {flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)'},
-    modalContent: {width: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10},
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+    },
     modalTitle: {fontSize: 18, fontWeight: 'bold', marginBottom: 10},
-    inputBox: {height: 100, borderColor: '#ddd', borderWidth: 1, borderRadius: 12, padding: 15, marginBottom: 20},
-    modalActions: {flexDirection: 'row', justifyContent: 'space-between'},
+    inputBox: {
+        height: 50,
+        width: 50,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 8,
+        fontSize: 24,
+        textAlign: 'center',
+    },
+    modalActions: { flexDirection: 'row', justifyContent: 'space-between' },
     modalButton: {
         backgroundColor: '#4a90e2',
         padding: 10,
@@ -210,6 +261,11 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 5,
         alignItems: 'center'
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
     },
 });
 
