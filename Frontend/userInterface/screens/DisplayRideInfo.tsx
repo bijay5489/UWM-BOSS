@@ -163,10 +163,12 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
                         <ThemedText style={styles.modalTitle}>Please provide a reason</ThemedText>
                         <CustomDropdown
                             items={[
-                                { label: 'Change of plans', value: 'change_of_plans' },
-                                { label: 'Driver delay', value: 'driver_delay' },
-                                { label: 'Found alternate transport', value: 'alternate_transport' },
-                                { label: 'Other', value: 'other' },
+                                {label: 'Change of plans', value: 'Rider changed their plan'},
+                                {label: 'Driver delay', value: 'Driver got delayed'},
+                                {label: 'Found alternate transport', value: 'Rider found alternate transport'},
+                                {label: 'Wrong Pickup location', value: 'Rider picked wrong pickup location'},
+                                {label: 'Requested a ride by mistake', value: 'Rider requested a ride by mistake'},
+                                {label: 'Other', value: 'Other'},
                             ]}
                             selectedValue={cancelReason}
                             onSelect={handleSelectReason}
@@ -206,7 +208,15 @@ const styles = StyleSheet.create({
     modalContainer: {flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)'},
     modalContent: {width: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10},
     modalTitle: {fontSize: 18, fontWeight: 'bold', marginBottom: 10},
-    inputBox: {height: 100, borderColor: '#ddd', borderWidth: 1, borderRadius: 12, padding: 15, marginBottom: 20, marginTop: 10},
+    inputBox: {
+        height: 100,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 12,
+        padding: 15,
+        marginBottom: 20,
+        marginTop: 10
+    },
     modalActions: {flexDirection: 'row', justifyContent: 'space-between', marginTop: 10},
     modalButton: {
         backgroundColor: '#4a90e2',

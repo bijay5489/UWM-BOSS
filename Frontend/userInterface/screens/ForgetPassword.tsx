@@ -20,7 +20,7 @@ const ForgetPassword: React.FC = () => {
             setErrorMessage('Please enter a username.');
             return;
         }
-        if (password != RePassword){
+        if (password != RePassword) {
             setErrorMessage('Passwords do not match, re-enter your new password.');
             return;
         }
@@ -84,13 +84,13 @@ const ForgetPassword: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', padding: 20 },
-    input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
-    errorText: { color: 'red', marginBottom: 10 },
-    resetButton: { backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10},
-    resetText: { color: 'white' },
-    backButton: { backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10 },
-    backText: { color: 'white', fontSize: 16 },
+    container: {flex: 1, justifyContent: 'center', padding: 20},
+    input: {height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
+    errorText: {color: 'red', marginBottom: 10},
+    resetButton: {backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10},
+    resetText: {color: 'white'},
+    backButton: {backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10},
+    backText: {color: 'white', fontSize: 16},
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
     header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
     headerText: {flex: 1, fontSize: 28, textAlign: 'center',},

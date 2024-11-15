@@ -16,15 +16,16 @@ const CreateAccount: React.FC = () => {
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [address, setAddress] = useState('');
-    const [email, setEmail] = useState('');
+    const [emailPrefix, setEmailPrefix] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleCreateAccount = async () => {
+        const email = `${emailPrefix}@uwm.edu`;
         if (!username || !password || !name || !phoneNumber || !address || !email) {
             setErrorMessage('Please fill in all fields.');
             return;
         }
-        if (password != RePassword){
+        if (password != RePassword) {
             setErrorMessage("Passwords do not match, re-enter your new password.");
             return;
         }
@@ -105,13 +106,20 @@ const CreateAccount: React.FC = () => {
                 placeholderTextColor="gray"
             />
             <Text style={styles.label}>Email Address:</Text>
-            <TextInput
-                placeholder="johndoe@uwm.edu"
-                value={email}
-                onChangeText={setEmail}
-                style={styles.input}
-                placeholderTextColor="gray"
-            />
+            <View style={styles.emailContainer}>
+                <TextInput
+                    placeholder="Enter email address"
+                    value={emailPrefix}
+                    onChangeText={(text) => {
+                        if (!text.includes('@')) setEmailPrefix(text);
+                    }}
+                    style={styles.emailInput}
+                    placeholderTextColor="gray"
+                />
+                <View style={styles.verticalLine}/>
+                <Text style={styles.emailDomain}>@uwm.edu</Text>
+            </View>
+            <Text style={styles.helperText}>You can use letters, numbers & periods</Text>
             <Text style={styles.label}>Password:</Text>
             <TextInput
                 placeholder="Password"
@@ -145,7 +153,14 @@ const CreateAccount: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: {flex: 1, justifyContent: 'center', padding: 20},
-    input: {height: 40, borderColor: 'black', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
+    input: {
+        height: 40,
+        borderColor: 'black',
+        borderWidth: 1,
+        marginBottom: 15,
+        paddingHorizontal: 10,
+        borderRadius: 10
+    },
     errorText: {color: 'red', marginBottom: 10},
     createAccountButton: {backgroundColor: 'blue', padding: 15, alignItems: 'center', borderRadius: 10},
     createAccountText: {color: 'white'},
@@ -154,6 +169,30 @@ const styles = StyleSheet.create({
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
     header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
     headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
+    emailContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 0,
+        marginBottom: 5,
+        height: 35,
+    },
+    emailInput: {
+        flex: 1,
+        color: 'black',
+        fontSize: 16,
+        borderRadius: 10,
+        borderBottomRightRadius: 0,
+        borderTopRightRadius: 0,
+        paddingLeft: 10,
+        height: '100%',
+        width: '90%',
+    },
+    emailDomain: {fontSize: 16, color: 'black', marginRight: 3,},
+    helperText: {fontSize: 12, color: '#b0b0b0', marginBottom: 15,},
+    verticalLine: {width: 2, height: '100%', backgroundColor: 'gray', marginHorizontal: 1,},
 });
 
 export default CreateAccount;

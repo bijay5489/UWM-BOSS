@@ -33,7 +33,6 @@ const RiderDashboard: React.FC = () => {
                 const storedUsername = await AsyncStorage.getItem('username'); // Retrieve username from AsyncStorage
                 const progressStatus = await AsyncStorage.getItem('inProgress');
                 setInProgress(progressStatus === 'true');
-                console.log(inProgress);
                 if (!accessToken) {
                     navigation.navigate('Login');
                 } else if (storedUsername) {
@@ -67,7 +66,7 @@ const RiderDashboard: React.FC = () => {
         const rideId = rideIdString !== null ? parseInt(rideIdString, 10) : null;
 
         if (rideId !== null && driverName !== null) {
-            navigation.navigate('DisplayRideInfo', { rideId, driverName });
+            navigation.navigate('DisplayRideInfo', {rideId, driverName});
         }
     }
 
@@ -80,7 +79,7 @@ const RiderDashboard: React.FC = () => {
                     <ThemedText type="subtitle" style={styles.subtitle}>Rider View</ThemedText>
                     {inProgress && (
                         <TouchableOpacity onPress={handleViewRide}>
-                            <Ionicons name="car-sport" size={30} color="black" />
+                            <Ionicons name="car-sport" size={30} color="black"/>
                         </TouchableOpacity>
                     )}
                 </View>
