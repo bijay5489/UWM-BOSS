@@ -15,15 +15,24 @@ const SupervisorCreate: React.FC = () => {
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [address, setAddress] = useState('');
-    const [email, setEmail] = useState('');
+    const [emailUsername, setEmailUsername] = useState(''); // Renamed from 'email'
     const [user_type, setUserType] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleCreateAccount = async () => {
-        if (!username || !password || !name || !phoneNumber || !address || !email || !user_type) {
+        if (!username || !password || !name || !phoneNumber || !address || !emailUsername || !user_type) {
             setErrorMessage('Please fill in all fields.');
             return;
         }
+
+        // Basic email username validation (optional but recommended)
+        const emailRegex = /^[a-zA-Z0-9._-]+$/;
+        if (!emailRegex.test(emailUsername)) {
+            setErrorMessage('Invalid email username. Only letters, numbers, dots, underscores, and hyphens are allowed.');
+            return;
+        }
+
+        const email = `${emailUsername}@uwm.edu`; // Append fixed domain
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
@@ -37,7 +46,7 @@ const SupervisorCreate: React.FC = () => {
                     name,
                     phone_number: phoneNumber,
                     address,
-                    email,
+                    email, // Use concatenated email
                     user_type,
                 }),
             });
@@ -92,6 +101,7 @@ const SupervisorCreate: React.FC = () => {
                 placeholder="Phone Number"
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
+                keyboardType="phone-pad" // Numeric keyboard for phone numbers
                 style={styles.input}
                 placeholderTextColor="gray"
             />
@@ -103,6 +113,18 @@ const SupervisorCreate: React.FC = () => {
                 style={styles.input}
                 placeholderTextColor="gray"
             />
+
+            {/* Email Username Input with Fixed Domain */}
+            <View style={styles.emailContainer}>
+                <TextInput
+                    placeholder="Email Username"
+                    value={emailUsername}
+                    onChangeText={setEmailUsername}
+                    style={[styles.input, { flex: 1 }]} // Flex to occupy available space
+                    autoCapitalize="none" // Prevent automatic capitalization
+                />
+                <Text style={styles.emailSuffix}>@uwm.edu</Text> {/* Fixed domain */}
+            </View>
             <Text style={styles.label}>Email Address:</Text>
             <TextInput
                 placeholder="johndoe@uwm.edu"
@@ -141,7 +163,7 @@ const SupervisorCreate: React.FC = () => {
             <TouchableOpacity onPress={handleCreateAccount} style={styles.createAccountButton}>
                 <Text style={styles.createAccountText}>Create Account</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 

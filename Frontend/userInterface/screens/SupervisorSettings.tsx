@@ -8,7 +8,7 @@ import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import {Ionicons} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type SettingsNavigationProp = StackNavigationProp<RootStackParamList, 'UserEditInfo'>;
+type SettingsNavigationProp = StackNavigationProp<RootStackParamList, 'SupervisorSettings'>;
 
 const SupervisorSettings: React.FC = () => {
     const navigation = useNavigation<SettingsNavigationProp>();
@@ -63,6 +63,10 @@ const SupervisorSettings: React.FC = () => {
         } else {
             Alert.alert('Error', 'Username is not available.');
         }
+    };
+
+    const handleNotifications = () => {
+        navigation.navigate('Notifications');
     };
 
     const getUserType = (type: string) => {
@@ -122,7 +126,7 @@ const SupervisorSettings: React.FC = () => {
                         <ThemedText type="defaultSemiBold" style={styles.buttonText}>Edit Account</ThemedText>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={handleNotifications}>
                         <Ionicons name="notifications-outline" size={24} color="white" style={styles.icon}/>
                         <ThemedText type="defaultSemiBold" style={styles.buttonText}>Notifications</ThemedText>
                     </TouchableOpacity>

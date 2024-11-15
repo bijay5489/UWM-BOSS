@@ -30,6 +30,15 @@ const CreateAccount: React.FC = () => {
             return;
         }
 
+        // Basic email username validation (optional but recommended)
+        const emailRegex = /^[a-zA-Z0-9._-]+$/;
+        if (!emailRegex.test(emailUsername)) {
+            setErrorMessage('Invalid email username. Only letters, numbers, dots, underscores, and hyphens are allowed.');
+            return;
+        }
+
+        const email = `${emailUsername}@uwm.edu`;
+
         try {
             const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
                 method: 'POST',
