@@ -4,7 +4,6 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import ThemedText from "@/components/ThemedText";
-import {Ionicons} from "@expo/vector-icons";
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -30,15 +29,6 @@ const CreateAccount: React.FC = () => {
             return;
         }
 
-        // Basic email username validation (optional but recommended)
-        const emailRegex = /^[a-zA-Z0-9._-]+$/;
-        if (!emailRegex.test(emailUsername)) {
-            setErrorMessage('Invalid email username. Only letters, numbers, dots, underscores, and hyphens are allowed.');
-            return;
-        }
-
-        const email = `${emailUsername}@uwm.edu`;
-
         try {
             const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
                 method: 'POST',
@@ -60,7 +50,6 @@ const CreateAccount: React.FC = () => {
             if (response.status === 201) {
                 navigation.navigate('Login');
             } else {
-                // Parse the error response and display simplified messages
                 if (data.username) {
                     setErrorMessage('Username already exists.');
                 } else if (data.email) {

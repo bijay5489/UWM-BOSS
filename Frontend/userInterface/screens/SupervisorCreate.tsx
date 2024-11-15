@@ -15,24 +15,16 @@ const SupervisorCreate: React.FC = () => {
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [address, setAddress] = useState('');
-    const [emailUsername, setEmailUsername] = useState(''); // Renamed from 'email'
+    const [emailPrefix, setEmailPrefix] = useState('');
     const [user_type, setUserType] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleCreateAccount = async () => {
-        if (!username || !password || !name || !phoneNumber || !address || !emailUsername || !user_type) {
+        const email = `${emailPrefix}@uwm.edu`;
+        if (!username || !password || !name || !phoneNumber || !address || !email || !user_type) {
             setErrorMessage('Please fill in all fields.');
             return;
         }
-
-        // Basic email username validation (optional but recommended)
-        const emailRegex = /^[a-zA-Z0-9._-]+$/;
-        if (!emailRegex.test(emailUsername)) {
-            setErrorMessage('Invalid email username. Only letters, numbers, dots, underscores, and hyphens are allowed.');
-            return;
-        }
-
-        const email = `${emailUsername}@uwm.edu`; // Append fixed domain
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
@@ -46,7 +38,7 @@ const SupervisorCreate: React.FC = () => {
                     name,
                     phone_number: phoneNumber,
                     address,
-                    email, // Use concatenated email
+                    email,
                     user_type,
                 }),
             });
@@ -101,7 +93,6 @@ const SupervisorCreate: React.FC = () => {
                 placeholder="Phone Number"
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
-                keyboardType="phone-pad" // Numeric keyboard for phone numbers
                 style={styles.input}
                 placeholderTextColor="gray"
             />
@@ -113,26 +104,21 @@ const SupervisorCreate: React.FC = () => {
                 style={styles.input}
                 placeholderTextColor="gray"
             />
-
-            {/* Email Username Input with Fixed Domain */}
+            <Text style={styles.label}>Email Address:</Text>
             <View style={styles.emailContainer}>
                 <TextInput
-                    placeholder="Email Username"
-                    value={emailUsername}
-                    onChangeText={setEmailUsername}
-                    style={[styles.input, { flex: 1 }]} // Flex to occupy available space
-                    autoCapitalize="none" // Prevent automatic capitalization
+                    placeholder="Enter email address"
+                    value={emailPrefix}
+                    onChangeText={(text) => {
+                        if (!text.includes('@') && !text.includes('+')) setEmailPrefix(text);
+                    }}
+                    style={styles.emailInput}
+                    placeholderTextColor="gray"
                 />
-                <Text style={styles.emailSuffix}>@uwm.edu</Text> {/* Fixed domain */}
+                <View style={styles.verticalLine}/>
+                <Text style={styles.emailDomain}>@uwm.edu</Text>
             </View>
-            <Text style={styles.label}>Email Address:</Text>
-            <TextInput
-                placeholder="johndoe@uwm.edu"
-                value={email}
-                onChangeText={setEmail}
-                style={styles.input}
-                placeholderTextColor="gray"
-            />
+            <Text style={styles.helperText}>You can use letters, numbers & periods</Text>
             <Text style={styles.label}>Password:</Text>
             <TextInput
                 placeholder="Password"
@@ -163,7 +149,7 @@ const SupervisorCreate: React.FC = () => {
             <TouchableOpacity onPress={handleCreateAccount} style={styles.createAccountButton}>
                 <Text style={styles.createAccountText}>Create Account</Text>
             </TouchableOpacity>
-        </ScrollView>
+        </View>
     );
 };
 
@@ -196,6 +182,30 @@ const styles = StyleSheet.create({
     label: {fontSize: 16, marginBottom: 5, color: 'black'},
     header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
     headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
+    emailContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 0,
+        marginBottom: 5,
+        height: 35,
+    },
+    emailInput: {
+        flex: 1,
+        color: 'black',
+        fontSize: 16,
+        borderRadius: 10,
+        borderBottomRightRadius: 0,
+        borderTopRightRadius: 0,
+        paddingLeft: 10,
+        height: '100%',
+        width: '90%',
+    },
+    emailDomain: {fontSize: 16, color: 'black', marginRight: 3,},
+    helperText: {fontSize: 12, color: '#b0b0b0', marginBottom: 15,},
+    verticalLine: {width: 2, height: '100%', backgroundColor: 'gray', marginHorizontal: 1,},
 });
 
 export default SupervisorCreate;

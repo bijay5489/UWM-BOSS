@@ -54,12 +54,14 @@ const SupervisorEditUser: React.FC = () => {
 
     const handleUpdateUser = async () => {
         try {
+            const bypass = true;
             const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     username,
                     edit_info: user,
+                    bypass,
                 }),
             });
             const data = await response.json();
@@ -158,7 +160,7 @@ const SupervisorEditUser: React.FC = () => {
                     />
 
                     <View style={styles.radioContainer}>
-                        {['Rider', 'Driver'].map((type) => (
+                        {['Rider', 'Driver', 'Supervisor'].map((type) => (
                             <TouchableOpacity
                                 key={type}
                                 style={styles.radioButton}
