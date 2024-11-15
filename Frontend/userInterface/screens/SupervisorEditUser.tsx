@@ -17,11 +17,11 @@ const SupervisorEditUser: React.FC = () => {
 
     const [user, setUser] = useState({
         name: '',
-        email: '',
         phone_number: '',
         address: '',
         user_type: '',
     });
+    const [emailPrefix, setEmailPrefix] = useState('');
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -37,11 +37,12 @@ const SupervisorEditUser: React.FC = () => {
                 const userData = data[0];
                 setUser({
                     name: userData.name,
-                    email: userData.email,
                     phone_number: userData.phone_number,
                     address: userData.address,
                     user_type: userData.user_type,
                 });
+                const [prefix] = userData.email.split('@');
+                setEmailPrefix(prefix);
             } else {
                 console.error('Error', data.error || 'Failed to fetch user details.');
             }
@@ -53,6 +54,7 @@ const SupervisorEditUser: React.FC = () => {
     };
 
     const handleUpdateUser = async () => {
+        const email = `${emailPrefix}@uwm.edu`;
         try {
             const bypass = true;
             const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
@@ -60,7 +62,7 @@ const SupervisorEditUser: React.FC = () => {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     username,
-                    edit_info: user,
+                    edit_info: { ...user, email },
                     bypass,
                 }),
             });
@@ -135,13 +137,20 @@ const SupervisorEditUser: React.FC = () => {
                         placeholderTextColor="gray"
                     />
                     <Text style={styles.label}>Email:</Text>
-                    <TextInput
-                        placeholder="Email"
-                        value={user.email}
-                        onChangeText={(text) => setUser({...user, email: text})}
-                        style={styles.input}
-                        placeholderTextColor="gray"
-                    />
+                    <View style={styles.emailContainer}>
+                        <TextInput
+                            placeholder="Enter email address"
+                            value={emailPrefix}
+                            onChangeText={(text) => {
+                                if (!text.includes('@')) setEmailPrefix(text);
+                            }}
+                            style={styles.emailInput}
+                            placeholderTextColor="gray"
+                        />
+                        <View style={styles.verticalLine} />
+                        <Text style={styles.emailDomain}>@uwm.edu</Text>
+                    </View>
+                    <Text style={styles.helperText}>You can use letters, numbers & periods</Text>
                     <Text style={styles.label}>Phone Number:</Text>
                     <TextInput
                         placeholder="Phone Number"
@@ -215,6 +224,30 @@ const styles = StyleSheet.create({
         margin: 10
     },
     radioInnerCircle: {width: 10, height: 10, borderRadius: 5, backgroundColor: 'blue'},
+    emailContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 0,
+        marginBottom: 5,
+        height: 35,
+    },
+    emailInput: {
+        flex: 1,
+        color: 'black',
+        fontSize: 16,
+        borderRadius: 10,
+        borderBottomRightRadius: 0,
+        borderTopRightRadius: 0,
+        paddingLeft: 10,
+        height: '100%',
+        width: '90%',
+    },
+    emailDomain: {fontSize: 16, color: 'black', marginRight: 3,},
+    helperText: {fontSize: 12, color: '#b0b0b0', marginBottom: 15,},
+    verticalLine: {width: 2, height: '100%', backgroundColor: 'gray', marginHorizontal: 1,},
 });
 
 export default SupervisorEditUser;

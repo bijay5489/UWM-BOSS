@@ -110,7 +110,7 @@ const SupervisorCreate: React.FC = () => {
                     placeholder="Enter email address"
                     value={emailPrefix}
                     onChangeText={(text) => {
-                        if (!text.includes('@') && !text.includes('+')) setEmailPrefix(text);
+                        if (!text.includes('@')) setEmailPrefix(text);
                     }}
                     style={styles.emailInput}
                     placeholderTextColor="gray"

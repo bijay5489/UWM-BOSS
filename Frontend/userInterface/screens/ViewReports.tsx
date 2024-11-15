@@ -72,6 +72,7 @@ const ViewReports: React.FC = () => {
                             title={`Report Type: ${report.report_type}`}
                             description={`Reporter: ${report.reporter}\nContext: ${report.context}`}
                             buttonLabel={undefined} onPress={undefined}
+                            iconName="alert-circle"
                         />
                     ))}
                 </ScrollView>

@@ -96,6 +96,7 @@ const AssignedRides: React.FC = () => {
             const data = await response.json();
             if (response.ok) {
                 showAlert('Ride Ended', 'Ride completed successfully!');
+                await AsyncStorage.setItem('inProgress', 'false');
                 navigation.navigate('DriverDashboard');
             } else {
                 setErrorMessage(data.message);

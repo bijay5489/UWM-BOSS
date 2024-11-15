@@ -22,6 +22,11 @@ const SupervisorHomePage: React.FC = () => {
 
     const menuItems: any = [
         {
+          label: "Generate Report",
+          icon: "document",
+          nav: 'GenerateReport',
+        },
+        {
             label: "Message Driver",
             icon: "chatbubbles",
             nav: 'CreateAccount',
@@ -98,21 +103,24 @@ const SupervisorHomePage: React.FC = () => {
                     description="See all currently active reports in the system"
                     buttonLabel="Reports"
                     onPress={handleViewReports}
-                />
-                <Card
+                    iconName="bar-chart"
+                  />
+                  <Card
                     title="Users"
-                    description="View and manage user profiles and access."
+                    description="View and manage user profiles and access"
                     buttonLabel="Users"
                     onPress={handleUserList}
-                />
-                <Card
-                    title="Generate Report"
-                    description="Generate detailed reports on user activity."
-                    buttonLabel="Go"
+                    iconName="people"
+                  />
+                  <Card
+                    title="Vans"
+                    description="Manage, view or create new vans"
+                    buttonLabel="Vans"
                     onPress={() => {
                         // generate report logic
                     }}
-                />
+                    iconName="car"
+                  />
             </View>
 
             {/* Log Out Button */}

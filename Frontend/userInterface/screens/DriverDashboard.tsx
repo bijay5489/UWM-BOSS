@@ -74,18 +74,21 @@ const DriverDashboard: React.FC = () => {
                     description="View and manage your assigned ride."
                     buttonLabel="Check"
                     onPress={handleCheckRides}
+                    iconName="bus"
                 />
                 <Card
                     title="Edit Information"
                     description="Edit your account information."
                     buttonLabel="Edit"
                     onPress={handleEdit}
+                    iconName="person"
                 />
                 <Card
                     title="Generate Report"
                     description="Generate detailed reports on ride experience."
                     buttonLabel="Go"
                     onPress={handleReport}
+                    iconName="document-text"
                 />
             </View>
 

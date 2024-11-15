@@ -51,6 +51,21 @@ const SupervisorUserPage: React.FC = () => {
         navigation.navigate('SupervisorCreate'); // Navigate to SupervisorCreate screen
     };
 
+    const getUserType = (type: string) => {
+        switch (type) {
+            case 'A':
+                return 'Admin';
+            case 'S':
+                return 'Supervisor';
+            case 'D':
+                return 'Driver';
+            case 'R':
+                return 'Rider';
+            default:
+                return 'Unknown';
+        }
+    };
+
     return (
         <ThemedView style={styles.container}>
             {/* Header */}
@@ -73,11 +88,12 @@ const SupervisorUserPage: React.FC = () => {
                         <Card
                             key={user.username}
                             title={user.name}
-                            description={`Email: ${user.email}\nType: ${user.user_type}\nAddress: ${user.address}\nPhone Number: ${user.phone_number}`}
+                            description={`Email: ${user.email}\nType: ${getUserType(user.user_type)}\nAddress: ${user.address}\nPhone Number: ${user.phone_number}`}
                             buttonLabel="Edit"
                             onPress={() => {
                                 navigation.navigate('SupervisorEdit', {username: user.username});
                             }}
+                            iconName="person"
                         />
                     ))}
                 </ScrollView>

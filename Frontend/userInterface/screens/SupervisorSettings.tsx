@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import {Ionicons} from '@expo/vector-icons';
@@ -21,17 +21,6 @@ const SupervisorSettings: React.FC = () => {
         user_type: '',
     });
     const [loading, setLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        const fetchUsername = async () => {
-            const storedUsername = await AsyncStorage.getItem('username');
-            if (storedUsername) {
-                setUsername(storedUsername);
-                fetchUserDetails(storedUsername);
-            }
-        };
-        fetchUsername();
-    }, []);
 
     const fetchUserDetails = async (username: string) => {
         setLoading(true);
@@ -56,6 +45,20 @@ const SupervisorSettings: React.FC = () => {
             setLoading(false);
         }
     };
+
+    const loadUserData = useCallback(async () => {
+        const storedUsername = await AsyncStorage.getItem('username');
+            if (storedUsername) {
+                setUsername(storedUsername);
+                fetchUserDetails(storedUsername);
+            }
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            loadUserData();
+        }, [loadUserData])
+    );
 
     const handleEditAcc = async () => {
         if (username) {
