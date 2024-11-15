@@ -1,11 +1,15 @@
 import React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import {Ionicons} from "@expo/vector-icons";
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {useNavigation} from "@react-navigation/native";
+import privacyStyles from '../styles/Privacy';
+import baseStyles from '../styles/General';
+
+const styles = { ...baseStyles, ...privacyStyles };
 
 type SettingsNavigationProp = StackNavigationProp<RootStackParamList, 'UserEditInfo'>;
 
@@ -58,14 +62,5 @@ const PrivacyAndSecurity: React.FC = () => {
         </ThemedView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 20, backgroundColor: 'white'},
-    section: {marginBottom: 20},
-    sectionHeader: {fontSize: 20, fontWeight: 'bold', marginBottom: 10},
-    sectionText: {fontSize: 16, color: '#333'},
-    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
-    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
-});
 
 export default PrivacyAndSecurity;

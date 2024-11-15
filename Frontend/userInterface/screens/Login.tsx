@@ -1,11 +1,15 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
+import baseStyles from '../styles/General';
+import loginStyles from '../styles/Login';
+
+const styles = { ...baseStyles, ...loginStyles };
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -102,27 +106,5 @@ const LoginScreen: React.FC = () => {
         </ThemedView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 20, backgroundColor: 'white', justifyContent: 'center'},
-    logoContainer: {alignItems: 'center', marginBottom: 30},
-    logo: {width: 190, height: 190},
-    inputContainer: {marginBottom: 30},
-    input: {
-        height: 50,
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 10,
-        marginBottom: 15,
-        paddingHorizontal: 15,
-    },
-    errorText: {color: 'red', textAlign: 'center', marginBottom: 10},
-    loginButton: {backgroundColor: 'blue', padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 15,},
-    loginText: {color: 'white', fontSize: 16},
-    createAccountButton: {padding: 15, alignItems: 'center',},
-    createAccountText: {color: 'blue', fontSize: 16},
-    resetButton: {padding: 15, alignItems: 'center'},
-    resetText: {color: 'blue', fontSize: 16,},
-});
 
 export default LoginScreen;

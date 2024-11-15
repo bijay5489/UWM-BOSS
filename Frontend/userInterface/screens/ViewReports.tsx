@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Alert, ScrollView, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
@@ -7,6 +7,10 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {Ionicons} from "@expo/vector-icons";
+import viewReportStyles from '../styles/ViewReports';
+import baseStyles from '../styles/General';
+
+const styles = { ...baseStyles, ...viewReportStyles };
 
 type Report = {
     id: number;
@@ -80,21 +84,5 @@ const ViewReports: React.FC = () => {
         </ThemedView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 20, backgroundColor: 'white'},
-    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20},
-    headerText: {flex: 1, fontSize: 28, textAlign: 'center'},
-    scrollContainer: {paddingBottom: 20},
-    loadingIndicator: {marginTop: 20},
-    squareButton: {
-        width: 35,
-        height: 35,
-        backgroundColor: 'green',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 5,
-    },
-});
 
 export default ViewReports;

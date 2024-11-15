@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Alert, Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -7,6 +7,10 @@ import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {Ionicons} from "@expo/vector-icons";
+import baseStyles from '../styles/General';
+import editInfo from '../styles/EditInfo';
+
+const styles = { ...baseStyles, ...editInfo};
 
 type UserEditInfoNavigationProp = StackNavigationProp<RootStackParamList, 'UserEditInfo'>;
 type RouteParams = { username: string };
@@ -224,43 +228,5 @@ const UserEditInfo: React.FC = () => {
         </ThemedView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 20},
-    input: {height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
-    updateButton: {backgroundColor: 'blue', padding: 10, alignItems: 'center', borderRadius: 10, marginBottom: 10},
-    deleteButton: {backgroundColor: 'red', padding: 10, alignItems: 'center', borderRadius: 10, marginBottom: 10},
-    backButton: {backgroundColor: 'gray', padding: 10, alignItems: 'center', borderRadius: 10},
-    buttonText: {color: 'white', fontSize: 16},
-    label: {fontSize: 16, marginBottom: 5, color: 'black'},
-    errorText: {color: 'red', textAlign: 'center', marginBottom: 10},
-    squareButton: {alignItems: 'center', justifyContent: 'center'},
-    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
-    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
-    emailContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: 0,
-        marginBottom: 5,
-        height: 35,
-    },
-    emailInput: {
-        flex: 1,
-        color: 'black',
-        fontSize: 16,
-        borderRadius: 10,
-        borderBottomRightRadius: 0,
-        borderTopRightRadius: 0,
-        paddingLeft: 10,
-        height: '100%',
-        width: '90%',
-    },
-    emailDomain: {fontSize: 16, color: 'black', marginRight: 3,},
-    helperText: {fontSize: 12, color: '#b0b0b0', marginBottom: 15,},
-    verticalLine: {width: 2, height: '100%', backgroundColor: 'gray', marginHorizontal: 1,},
-});
 
 export default UserEditInfo;

@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import styles from '../styles/Queue';
 
 type QueueScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Queue'>;
 type QueuePositionScreenProps = { route: RouteProp<RootStackParamList, 'Queue'>; };
 
 const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
     const navigation = useNavigation<QueueScreenNavigationProp>();
-    const {queuePosition, rideId, driverName} = route.params;
+    const {queuePosition} = route.params;
     const [currentPosition, setCurrentPosition] = useState(queuePosition);
     const [ride_id, setRideId] = useState();
 
@@ -88,41 +89,5 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    queueText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    positionText: {
-        fontSize: 48,
-        fontWeight: 'bold',
-        marginBottom: 40,
-    },
-    leaveQueueButton: {
-        backgroundColor: 'blue',
-        padding: 15,
-        alignItems: 'center',
-        borderRadius: 5,
-        width: '100%',
-    },
-    leaveQueueText: {
-        color: 'white',
-        fontSize: 18,
-    },
-    nextRideText: {
-        fontSize: 16,
-        color: 'red',
-        textAlign: 'center',
-        marginVertical: 20,
-    },
-});
 
 export default QueuePositionScreen;
