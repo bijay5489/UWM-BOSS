@@ -17,11 +17,11 @@ const UserEditInfo: React.FC = () => {
     const {username} = route.params as RouteParams;
     const [user, setUser] = useState({
         name: '',
-        email: '',
         phone_number: '',
         address: '',
         password: '',
     });
+    const [emailPrefix, setEmailPrefix] = useState('');
     const [loading, setLoading] = useState<boolean>(false);
     const [oldPassword, setOldPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -38,13 +38,14 @@ const UserEditInfo: React.FC = () => {
             const data = await response.json();
             if (response.ok && data.length > 0) {
                 const userData = data[0];
+                const [prefix] = userData.email.split('@');
                 setUser({
                     name: userData.name,
-                    email: userData.email,
                     phone_number: userData.phone_number,
                     address: userData.address,
                     password: '',
                 });
+                setEmailPrefix(prefix);
             } else {
                 console.error('Error', data.error);
             }
@@ -66,6 +67,7 @@ const UserEditInfo: React.FC = () => {
                 return;
             }
         }
+        const email = `${emailPrefix}@uwm.edu`;
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
                 method: 'POST',
@@ -74,7 +76,7 @@ const UserEditInfo: React.FC = () => {
                     username,
                     oldPassword,
                     edit_info: {
-                        ...user,
+                        ...user, email
                     },
                 }),
             });
@@ -154,13 +156,20 @@ const UserEditInfo: React.FC = () => {
                         placeholderTextColor="gray"
                     />
                     <Text style={styles.label}>Email:</Text>
-                    <TextInput
-                        placeholder="Email"
-                        value={user.email}
-                        onChangeText={(text) => setUser({...user, email: text})}
-                        style={styles.input}
-                        placeholderTextColor="gray"
-                    />
+                    <View style={styles.emailContainer}>
+                        <TextInput
+                            placeholder="Enter email address"
+                            value={emailPrefix}
+                            onChangeText={(text) => {
+                                if (!text.includes('@')) setEmailPrefix(text);
+                            }}
+                            style={styles.emailInput}
+                            placeholderTextColor="gray"
+                        />
+                        <View style={styles.verticalLine}/>
+                        <Text style={styles.emailDomain}>@uwm.edu</Text>
+                    </View>
+                    <Text style={styles.helperText}>You can use letters, numbers & periods</Text>
                     <Text style={styles.label}>Phone Number:</Text>
                     <TextInput
                         placeholder="Phone Number"
@@ -186,7 +195,8 @@ const UserEditInfo: React.FC = () => {
                         secureTextEntry
                         placeholderTextColor="gray"
                     />
-                    <Text style={styles.label}>New Password: (leave blank to keep current password)</Text>
+                    <Text style={styles.label}>New Password:</Text>
+                    <Text style={styles.helperText}>Leave blank to keep current password!</Text>
                     <TextInput
                         placeholder="New Password"
                         value={user.password}
@@ -227,6 +237,30 @@ const styles = StyleSheet.create({
     squareButton: {alignItems: 'center', justifyContent: 'center'},
     header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
     headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
+    emailContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 0,
+        marginBottom: 5,
+        height: 35,
+    },
+    emailInput: {
+        flex: 1,
+        color: 'black',
+        fontSize: 16,
+        borderRadius: 10,
+        borderBottomRightRadius: 0,
+        borderTopRightRadius: 0,
+        paddingLeft: 10,
+        height: '100%',
+        width: '90%',
+    },
+    emailDomain: {fontSize: 16, color: 'black', marginRight: 3,},
+    helperText: {fontSize: 12, color: '#b0b0b0', marginBottom: 15,},
+    verticalLine: {width: 2, height: '100%', backgroundColor: 'gray', marginHorizontal: 1,},
 });
 
 export default UserEditInfo;
