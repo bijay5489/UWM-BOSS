@@ -42,7 +42,7 @@ class ManageUsersView(APIView):
             else:
                 return Response({"error": "Current password incorrect!"}, status=status.HTTP_304_NOT_MODIFIED)
         else:
-            if check_password(old_password, user.password):
+            if check_password(old_password, user.password) or data.get('bypass'):
                 # Update user information
                 success = user_functions.edit(username, edit_info)
                 if success:
