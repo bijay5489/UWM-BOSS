@@ -12,6 +12,7 @@ export type RootStackParamList = {
   ViewReports: undefined;
   SupervisorSettings: undefined;
   CreateRide: undefined;
+  Notifications: undefined;
   Queue: { queuePosition: number, rideId: number, driverName: string };
   DisplayRideInfo: { rideId: number, driverName: string };
 };

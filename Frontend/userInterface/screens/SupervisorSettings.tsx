@@ -8,7 +8,7 @@ import { RootStackParamList } from '@/components/navigation/NavigationTypes';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-type SettingsNavigationProp = StackNavigationProp<RootStackParamList, 'UserEditInfo'>;
+type SettingsNavigationProp = StackNavigationProp<RootStackParamList, 'SupervisorSettings'>;
 
 const SupervisorSettings: React.FC = () => {
     const navigation = useNavigation<SettingsNavigationProp>();
@@ -32,6 +32,15 @@ const SupervisorSettings: React.FC = () => {
         }
     };
 
+    const handleNotifications = () => {
+        navigation.navigate('Notifications'); // Navigate to Notifications screen
+    };
+
+    const handlePrivacySecurity = () => {
+        // Placeholder for Privacy & Security functionality
+        Alert.alert('Privacy & Security', 'This is a dummy Privacy & Security screen.');
+    };
+
     return (
         <ThemedView style={styles.container}>
             <ThemedText type="title" style={styles.headerText}>Supervisor Settings</ThemedText>
@@ -42,13 +51,14 @@ const SupervisorSettings: React.FC = () => {
                 <ThemedText type="defaultSemiBold" style={styles.buttonText}>Edit Account</ThemedText>
             </TouchableOpacity>
 
-            {/* Additional SupervisorSettings Options */}
-            <TouchableOpacity style={styles.button}>
+            {/* Notifications Button */}
+            <TouchableOpacity style={styles.button} onPress={handleNotifications}>
                 <Ionicons name="notifications-outline" size={24} color="white" style={styles.icon} />
                 <ThemedText type="defaultSemiBold" style={styles.buttonText}>Notifications</ThemedText>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button}>
+            {/* Privacy & Security Button */}
+            <TouchableOpacity style={styles.button} onPress={handlePrivacySecurity}>
                 <Ionicons name="shield-checkmark-outline" size={24} color="white" style={styles.icon} />
                 <ThemedText type="defaultSemiBold" style={styles.buttonText}>Privacy & Security</ThemedText>
             </TouchableOpacity>

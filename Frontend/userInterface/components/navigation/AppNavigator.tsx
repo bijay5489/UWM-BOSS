@@ -15,6 +15,7 @@ import CreateRide from "@/screens/CreateRide";
 import QueuePositionScreen from "@/screens/QueuePositionScreen";
 import DisplayRideInfo from "@/screens/DisplayRideInfo";
 import AssignedRides from '@/screens/AssignedRides'; 
+import Notifications from '@/screens/Notifications'; 
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -36,6 +37,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="Queue" component={QueuePositionScreen} />
         <Stack.Screen name="DisplayRideInfo" component={DisplayRideInfo} />
         <Stack.Screen name="AssignedRides" component={AssignedRides} />
+        <Stack.Screen name="Notifications" component={Notifications} />
     </Stack.Navigator>
     );
 };
