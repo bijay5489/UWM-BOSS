@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 
@@ -13,21 +13,21 @@ const Notifications: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { 
-        flex: 1, 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
         backgroundColor: 'white',
     },
-    headerText: { 
-        fontSize: 28, 
-        fontWeight: 'bold', 
-        marginBottom: 20 
+    headerText: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        marginBottom: 20
     },
-    text: { 
-        fontSize: 16, 
-        textAlign: 'center' 
+    text: {
+        fontSize: 16,
+        textAlign: 'center'
     },
 });
 

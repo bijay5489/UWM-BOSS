@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, Platform, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {FlatList, Platform, Switch, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
@@ -10,6 +10,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {FontAwesome, Ionicons} from "@expo/vector-icons";
+import baseStyles from '../styles/General';
+import createRide from '../styles/CreateRide';
+
+const styles = { ...baseStyles, ...createRide};
 
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
@@ -234,54 +238,5 @@ const CreateRide: React.FC = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 20, backgroundColor: '#f2f2f2', justifyContent: 'center'},
-    input: {
-        height: 50,
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        marginBottom: 15,
-        backgroundColor: '#fff'
-    },
-    label: {fontSize: 16, marginBottom: 5, color: 'black'},
-    timePickerContainer: {alignItems: 'center', justifyContent: 'center', marginBottom: 10, zIndex: 10},
-    timeButton: {
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-        backgroundColor: '#fff'
-    },
-    timeText: {fontSize: 16, color: '#333'},
-    slider: {width: '100%', height: 40, marginBottom: 15},
-    toggleContainer: {flexDirection: 'row', alignItems: 'center', marginBottom: 15, gap: 10},
-    createRideButton: {
-        height: 50,
-        backgroundColor: '#007bff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 10
-    },
-    createRideText: {color: '#fff', fontSize: 18, fontWeight: 'bold'},
-    suggestionContainer: {backgroundColor: 'white', borderRadius: 5, elevation: 3, padding: 5},
-    suggestion: {padding: 10},
-    errorText: {color: 'red', marginTop: 10, textAlign: 'center'},
-    timeInput: {
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        marginBottom: 15,
-        backgroundColor: '#fff',
-    },
-    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
-    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
-});
 
 export default CreateRide;

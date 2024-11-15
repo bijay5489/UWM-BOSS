@@ -1,12 +1,16 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {ActivityIndicator, Alert, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import {Ionicons} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import settingsStyles from '../styles/Settings';
+import baseStyles from '../styles/General';
+
+const styles = { ...baseStyles, ...settingsStyles };
 
 type SettingsNavigationProp = StackNavigationProp<RootStackParamList, 'SupervisorSettings'>;
 
@@ -143,37 +147,5 @@ const SupervisorSettings: React.FC = () => {
         </ThemedView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 20, backgroundColor: 'white'},
-    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
-    userInfoContainer: {
-        backgroundColor: '#f0f0f0',
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 20,
-    },
-    userInfoRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 5,
-    },
-    userInfoText: {
-        fontSize: 16,
-        color: '#333',
-        marginLeft: 10,
-    },
-    button: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#4CAF50',
-        padding: 15,
-        marginBottom: 10,
-        borderRadius: 10,
-    },
-    icon: {marginRight: 10},
-    buttonText: {color: 'white', fontSize: 16},
-    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
-});
 
 export default SupervisorSettings;

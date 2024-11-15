@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import ThemedText from "@/components/ThemedText";
 import {Ionicons} from "@expo/vector-icons";
+import forgetPassword from '../styles/ForgetPassword';
+import baseStyles from '../styles/General';
+
+const styles = { ...baseStyles, ...forgetPassword };
 
 type ForgetPasswordNavigationProp = StackNavigationProp<RootStackParamList, 'ForgetPassword'>;
 
@@ -82,18 +86,5 @@ const ForgetPassword: React.FC = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, justifyContent: 'center', padding: 20},
-    input: {height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 15, paddingHorizontal: 10, borderRadius: 10},
-    errorText: {color: 'red', marginBottom: 10},
-    resetButton: {backgroundColor: 'red', padding: 15, alignItems: 'center', borderRadius: 10, marginBottom: 10},
-    resetText: {color: 'white'},
-    backButton: {backgroundColor: 'gray', padding: 15, alignItems: 'center', borderRadius: 10},
-    backText: {color: 'white', fontSize: 16},
-    label: {fontSize: 16, marginBottom: 5, color: 'black'},
-    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
-    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
-});
 
 export default ForgetPassword;

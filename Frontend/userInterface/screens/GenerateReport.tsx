@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
@@ -7,6 +7,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomDropdown from '@/components/CustomDropdown';
 import ThemedText from '@/components/ThemedText';
 import {Ionicons} from "@expo/vector-icons";
+import baseStyles from '../styles/General';
+import reportStyles from '../styles/Report';
+
+const styles = { ...baseStyles, ...reportStyles };
 
 type GenerateReportNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -121,40 +125,5 @@ const GenerateReport: React.FC = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 20, backgroundColor: '#f4f4f8', justifyContent: 'center'},
-    input: {
-        height: 100,
-        borderColor: '#ddd',
-        borderWidth: 1,
-        borderRadius: 12,
-        backgroundColor: '#fff',
-        padding: 15,
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 1},
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 3,
-    },
-    errorText: {color: 'red', textAlign: 'center', marginBottom: 15, fontWeight: 'bold'},
-    submitButton: {
-        backgroundColor: '#4a90e2',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginBottom: 15,
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20,},
-    headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
-    submitText: {color: 'white', fontWeight: '600'},
-    dropdownContainer: {marginBottom: 20,},
-});
 
 export default GenerateReport;
