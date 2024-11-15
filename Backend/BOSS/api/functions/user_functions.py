@@ -71,9 +71,9 @@ class UserFunctions:
         for field in ['password', 'name', 'email', 'phone_number', 'address', 'user_type']:
             if field in info:
                 # Hash the password if it is being changed
-                if field == 'password':
+                if field == 'password' and info[field]:
                     setattr(temp_user, field, make_password(info[field]))
-                else:
+                elif field != 'password':
                     setattr(temp_user, field, info[field])
 
         temp_user.save()
@@ -127,7 +127,8 @@ class UserFunctions:
                 'email': user['email'],
                 'phone_number': user['phone_number'],
                 'address': user['address'],
-                'user_type': user['user_type']
+                'user_type': user['user_type'],
+                'password': user.get('password'),
             }
             """Add to list"""
             return_list.append(temp_dic)

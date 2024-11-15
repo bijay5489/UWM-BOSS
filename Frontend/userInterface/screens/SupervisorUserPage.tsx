@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import {View, ScrollView, StyleSheet, ActivityIndicator, Alert, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
-import HamburgerMenu from '../components/HamburgerMenu';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/components/navigation/NavigationTypes";
-import { useFocusEffect} from "@react-navigation/native";
+import {Ionicons} from '@expo/vector-icons';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from "@react-navigation/stack";
+import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 
 type User = {
     username: string;
@@ -38,9 +36,7 @@ const SupervisorUserPage: React.FC = () => {
         try {
             const response = await fetch('http://127.0.0.1:8000/api/manage-users/', {
                 method: 'GET',
-                headers: {
-
-                },
+                headers: {},
             });
             const data = await response.json();
             setUsers(data);
@@ -51,10 +47,6 @@ const SupervisorUserPage: React.FC = () => {
         }
     };
 
-    const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
-    };
-
     const handleCreateUser = () => {
         navigation.navigate('SupervisorCreate'); // Navigate to SupervisorCreate screen
     };
@@ -63,15 +55,18 @@ const SupervisorUserPage: React.FC = () => {
         <ThemedView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
                 <ThemedText type="title" style={styles.headerText}>Manage Users</ThemedText>
                 <TouchableOpacity style={styles.squareButton} onPress={handleCreateUser}>
-                    <Ionicons name="create-outline" size={24} color="white" />
+                    <Ionicons name="create-outline" size={24} color="white"/>
                 </TouchableOpacity>
             </View>
 
             {/* Content Area */}
             {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
+                <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator}/>
             ) : (
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     {users.map((user) => (
@@ -81,7 +76,7 @@ const SupervisorUserPage: React.FC = () => {
                             description={`Email: ${user.email}\nType: ${user.user_type}\nAddress: ${user.address}\nPhone Number: ${user.phone_number}`}
                             buttonLabel="Edit"
                             onPress={() => {
-                                navigation.navigate('SupervisorEdit', { username: user.username });
+                                navigation.navigate('SupervisorEdit', {username: user.username});
                             }}
                         />
                     ))}
@@ -97,7 +92,14 @@ const styles = StyleSheet.create({
     headerText: {flex: 1, fontSize: 28, textAlign: 'center',},
     scrollContainer: {paddingBottom: 20,},
     loadingIndicator: {marginTop: 20,},
-    squareButton: {width: 40, height: 40, backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius: 5,},
+    squareButton: {
+        width: 35,
+        height: 35,
+        backgroundColor: 'green',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5,
+    },
 });
 
 export default SupervisorUserPage;

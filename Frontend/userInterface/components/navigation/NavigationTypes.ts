@@ -15,4 +15,7 @@ export type RootStackParamList = {
   Notifications: undefined;
   Queue: { queuePosition: number, rideId: number, driverName: string };
   DisplayRideInfo: { rideId: number, driverName: string };
+  DriverDashboard: undefined;
+  ForgetPassword: undefined;
+  SupervisorPrivacy: undefined;
 };

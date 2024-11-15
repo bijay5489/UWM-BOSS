@@ -10,6 +10,7 @@ class RideManagement:
 
         ride = Ride(
             rider=rider,
+            riderName=rider.name,
             pickup_location=ride_info.get('pickup_location'),
             dropoff_location=ride_info.get('dropoff_location'),
             num_passengers=ride_info.get('num_passengers', 1),
@@ -63,11 +64,12 @@ class RideManagement:
         except Ride.DoesNotExist:
             return False
 
-        available_drivers = User.objects.filter(user_type='D', status__iexact='Available')
+        available_drivers = User.objects.filter(user_type='D', status='available')
         if not available_drivers.exists():
             return False
         driver = available_drivers.first()
         ride.driver = driver
+        ride.driverName = driver.name
         ride.van = Van.objects.get(driver=driver)
         ride.status = 'in_progress'
         ride.save()

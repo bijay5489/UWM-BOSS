@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import {View, ScrollView, StyleSheet, ActivityIndicator, Alert, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/components/navigation/NavigationTypes";
-import { useFocusEffect } from "@react-navigation/native";
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from "@react-navigation/stack";
+import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {Ionicons} from "@expo/vector-icons";
 
 type Report = {
@@ -53,15 +52,18 @@ const ViewReports: React.FC = () => {
         <ThemedView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                </TouchableOpacity>
                 <ThemedText type="title" style={styles.headerText}>View Reports</ThemedText>
                 <TouchableOpacity style={styles.squareButton} onPress={handleGenerateReport}>
-                    <Ionicons name="create-outline" size={24} color="white" />
+                    <Ionicons name="create-outline" size={24} color="white"/>
                 </TouchableOpacity>
             </View>
 
             {/* Content Area */}
             {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
+                <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator}/>
             ) : (
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     {reports.map((report) => (
@@ -79,12 +81,19 @@ const ViewReports: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: 'white' },
-    header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-    headerText: { flex: 1, fontSize: 28, textAlign: 'center' },
-    scrollContainer: { paddingBottom: 20 },
-    loadingIndicator: { marginTop: 20 },
-    squareButton: {width: 40, height: 40, backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', borderRadius: 5,},
+    container: {flex: 1, padding: 20, backgroundColor: 'white'},
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20},
+    headerText: {flex: 1, fontSize: 28, textAlign: 'center'},
+    scrollContainer: {paddingBottom: 20},
+    loadingIndicator: {marginTop: 20},
+    squareButton: {
+        width: 35,
+        height: 35,
+        backgroundColor: 'green',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5,
+    },
 });
 
 export default ViewReports;

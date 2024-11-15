@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: '65%',
-    height: '44.5%',
+    height: 300,
     backgroundColor: 'white',
     padding: 20,
     zIndex: 1000,

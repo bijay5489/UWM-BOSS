@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import ThemedText from '../components/ThemedText';
 import ThemedView from '../components/ThemedView';
 import Card from '../components/Card';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '@/components/navigation/NavigationTypes';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '@/components/navigation/NavigationTypes';
+import {Ionicons} from "@expo/vector-icons";
 
-type SupervisorHomePageNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+type RiderDashboardNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const RiderDashboard: React.FC = () => {
-    const navigation = useNavigation<SupervisorHomePageNavigationProp>();
+    const navigation = useNavigation<RiderDashboardNavigationProp>();
     const [username, setUsername] = useState<string | null>(null);
+    const [inProgress, setInProgress] = useState<boolean>(false);
 
     const handleLogout = async () => {
         try {
@@ -21,28 +22,32 @@ const RiderDashboard: React.FC = () => {
             await AsyncStorage.removeItem('refreshtoken');
             navigation.navigate('Login');
         } catch (error) {
-            Alert.alert('Error', 'An error occurred while logging out. Please try again.');
+            console.error('Error', 'An error occurred while logging out. Please try again.');
         }
     };
 
-    useEffect(() => {
-        const checkLoginStatus = async () => {
-            const accessToken = await AsyncStorage.getItem('accessToken');
-            const storedUsername = await AsyncStorage.getItem('username'); // Retrieve username from AsyncStorage
-            if (!accessToken) {
-                navigation.navigate('Login');
-            } else if (storedUsername) {
-                setUsername(storedUsername);
-            }
-        };
-        checkLoginStatus();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            const checkLoginStatus = async () => {
+                const accessToken = await AsyncStorage.getItem('accessToken');
+                const storedUsername = await AsyncStorage.getItem('username'); // Retrieve username from AsyncStorage
+                const progressStatus = await AsyncStorage.getItem('inProgress');
+                setInProgress(progressStatus === 'true');
+                if (!accessToken) {
+                    navigation.navigate('Login');
+                } else if (storedUsername) {
+                    setUsername(storedUsername);
+                }
+            };
+            checkLoginStatus();
+        }, [])
+    );
 
     const handleEdit = async () => {
         if (username) {
-            navigation.navigate('UserEditInfo', { username });
+            navigation.navigate('UserEditInfo', {username});
         } else {
-            Alert.alert('Error', 'Username is not available.');
+            console.error('Error', 'Username is not available.');
         }
     };
 
@@ -54,6 +59,17 @@ const RiderDashboard: React.FC = () => {
         navigation.navigate('CreateRide');
     };
 
+    const handleViewRide = async () => {
+        const rideIdString = await AsyncStorage.getItem('ride_id_view');
+        const driverName = await AsyncStorage.getItem('ride_driverName');
+
+        const rideId = rideIdString !== null ? parseInt(rideIdString, 10) : null;
+
+        if (rideId !== null && driverName !== null) {
+            navigation.navigate('DisplayRideInfo', {rideId, driverName});
+        }
+    }
+
     return (
         <ThemedView style={styles.container}>
             {/* Header Section */}
@@ -61,6 +77,11 @@ const RiderDashboard: React.FC = () => {
                 <View style={styles.titleContainer}>
                     <ThemedText type="title" style={styles.title}>UWM Boss</ThemedText>
                     <ThemedText type="subtitle" style={styles.subtitle}>Rider View</ThemedText>
+                    {inProgress && (
+                        <TouchableOpacity onPress={handleViewRide}>
+                            <Ionicons name="car-sport" size={30} color="black"/>
+                        </TouchableOpacity>
+                    )}
                 </View>
             </View>
 
@@ -95,14 +116,14 @@ const RiderDashboard: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: 'white' },
-    header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-    titleContainer: { flex: 1, alignItems: 'center' },
-    title: { fontSize: 28, fontWeight: 'bold' },
-    subtitle: { fontSize: 20, marginTop: 5, color: 'gray' },
-    cardsContainer: { flex: 1, justifyContent: 'space-around' },
-    logoutButton: { backgroundColor: 'red', padding: 15, borderRadius: 10, marginTop: 20, alignItems: 'center' },
-    logoutText: { color: 'white', fontSize: 16 },
+    container: {flex: 1, padding: 20, backgroundColor: 'white'},
+    header: {flexDirection: 'row', alignItems: 'center', marginBottom: 20},
+    titleContainer: {flex: 1, alignItems: 'center'},
+    title: {fontSize: 28, fontWeight: 'bold'},
+    subtitle: {fontSize: 20, marginTop: 5, color: 'gray'},
+    cardsContainer: {flex: 1, justifyContent: 'space-around'},
+    logoutButton: {backgroundColor: 'red', padding: 15, borderRadius: 10, marginTop: 20, alignItems: 'center'},
+    logoutText: {color: 'white', fontSize: 16},
 });
 
 export default RiderDashboard;
