@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, Alert, ScrollView, TouchableOpacity, View} from 'react-native';
-import ThemedText from '../components/ThemedText';
-import ThemedView from '../components/ThemedView';
-import Card from '../components/Card';
+import ThemedText from '../../components/ThemedText';
+import ThemedView from '../../components/ThemedView';
+import Card from '../../components/Card';
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
-import baseStyles from '../styles/General';
-import userPageStyles from '../styles/UserPage';
+import baseStyles from '../../styles/General';
+import userPageStyles from '../../styles/UserPage';
 
 const styles = { ...baseStyles, ...userPageStyles};
 

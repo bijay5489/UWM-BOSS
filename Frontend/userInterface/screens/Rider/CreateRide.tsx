@@ -10,8 +10,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {FontAwesome, Ionicons} from "@expo/vector-icons";
-import baseStyles from '../styles/General';
-import createRide from '../styles/CreateRide';
+import baseStyles from '../../styles/General';
+import createRide from '../../styles/CreateRide';
 
 const styles = { ...baseStyles, ...createRide};
 
@@ -91,20 +91,21 @@ const CreateRide: React.FC = () => {
             });
 
             const data = await response.json();
-            await AsyncStorage.setItem('ride_code', data.ride_code);
             await AsyncStorage.setItem('inProgress', data.inProgress);
             if (response.status === 201) {
+                await AsyncStorage.setItem('ride_code', data.ride_code);
                 await AsyncStorage.setItem('ride_id_view', data.ride_id);
                 await AsyncStorage.setItem('ride_driverName', data.driver);
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver});
             } else if (response.status === 200) {
+                await AsyncStorage.setItem('ride_code', data.ride_code);
                 navigation.navigate('Queue', {
                     queuePosition: data.queue_position,
                     rideId: data.ride_id,
                     driverName: data.driver
                 });
             } else {
-                setErrorMessage(data.message || 'Error creating ride. Please check your inputs.');
+                setErrorMessage(data.message);
             }
         } catch (error) {
             setErrorMessage('Failed to connect. Please check your internet connection.');

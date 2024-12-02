@@ -4,7 +4,7 @@ import {RouteProp, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import styles from '../styles/Queue';
+import styles from '../../styles/Queue';
 
 type QueueScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Queue'>;
 type QueuePositionScreenProps = { route: RouteProp<RootStackParamList, 'Queue'>; };

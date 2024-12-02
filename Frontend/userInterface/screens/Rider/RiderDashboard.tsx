@@ -1,14 +1,14 @@
 import React, {useCallback, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
-import ThemedText from '../components/ThemedText';
-import ThemedView from '../components/ThemedView';
-import Card from '../components/Card';
+import ThemedText from '../../components/ThemedText';
+import ThemedView from '../../components/ThemedView';
+import Card from '../../components/Card';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import {Ionicons} from "@expo/vector-icons";
-import styles from '../styles/Dashboard';
+import styles from '../../styles/Dashboard';
 
 type RiderDashboardNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -52,12 +52,15 @@ const RiderDashboard: React.FC = () => {
         }
     };
 
-    const handleReport = async () => {
-        navigation.navigate('GenerateReport');
+    const handleRideHistory = async () => {
+        await AsyncStorage.setItem('driver', 'false');
+        navigation.navigate('RideHistory');
     };
 
     const handleCreateRide = async () => {
-        navigation.navigate('CreateRide');
+        if(!inProgress){
+            navigation.navigate('CreateRide');
+        }
     };
 
     const handleViewRide = async () => {
@@ -103,10 +106,10 @@ const RiderDashboard: React.FC = () => {
                     iconName="person"
                 />
                 <Card
-                    title="Generate Report"
-                    description="Generate detailed reports on ride experience."
-                    buttonLabel="Go"
-                    onPress={handleReport}
+                    title="Rides"
+                    description="View and manage your previous rides."
+                    buttonLabel="View rides"
+                    onPress={handleRideHistory}
                     iconName="document-text"
                 />
             </View>

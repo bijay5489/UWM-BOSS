@@ -1,13 +1,13 @@
 import React from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
-import ThemedText from '../components/ThemedText';
-import ThemedView from '../components/ThemedView';
+import ThemedText from '../../components/ThemedText';
+import ThemedView from '../../components/ThemedView';
 import {Ionicons} from "@expo/vector-icons";
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {useNavigation} from "@react-navigation/native";
-import privacyStyles from '../styles/Privacy';
-import baseStyles from '../styles/General';
+import privacyStyles from '../../styles/Privacy';
+import baseStyles from '../../styles/General';
 
 const styles = { ...baseStyles, ...privacyStyles };
 

@@ -9,5 +9,19 @@ const styles = StyleSheet.create({
     cardsContainer: {flex: 1, justifyContent: 'space-around'},
     logoutButton: {backgroundColor: 'red', padding: 15, borderRadius: 10, marginTop: 20, alignItems: 'center'},
     logoutText: {color: 'white', fontSize: 16},
+    cardWrapper: {
+        position: 'relative',
+    },
+    notificationCircle: {
+        position: 'absolute',
+        top: -5,
+        right: -5,
+        width: 15,
+        height: 15,
+        backgroundColor: 'red',
+        borderRadius: 7.5,
+        borderWidth: 2,
+        borderColor: 'white',
+    },
 });
 export default styles;

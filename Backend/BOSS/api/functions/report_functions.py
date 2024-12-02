@@ -12,6 +12,7 @@ class ReportManager:
 
         report = Report(
             reporter= user,
+            report_ride=info['ride'],
             report_type = info['report_type'],
             context = info['context'],
         )

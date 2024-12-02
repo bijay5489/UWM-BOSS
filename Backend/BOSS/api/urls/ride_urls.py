@@ -8,8 +8,8 @@ from ..views.ride_views import (
 
 urlpatterns = [
     path('get-by-driver-id/<str:driver_id>/status/<str:ride_status>/', get_ride_by_driver),
-    path('get-by-rider-id/<int:rider_id>/status/<str:ride_status>/', get_rides_by_rider),
-    path('get-by-rider-id/<int:rider_id>/', get_rides_by_rider),
+    path('get-by-rider-id/<str:rider_id>/status/<str:ride_status>/', get_rides_by_rider),
+    path('get-by-rider-id/<str:rider_id>/', get_rides_by_rider),
     path('get-by-van-id/<int:van_id>/status/<str:ride_status>/', get_ride_by_van),
     path('get-by-van-id/<int:van_id>/', get_ride_by_van),
     path('assign-driver/<int:ride_id>/', assign_driver),
