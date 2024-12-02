@@ -1,24 +1,25 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from "@/screens/Login";
-import SupervisorHomePage from "@/screens/SupervisorHomePage";
-import SupervisorUserPage from "@/screens/SupervisorUserPage";
+import SupervisorHomePage from "@/screens/Supervisor/SupervisorHomePage";
+import SupervisorUserPage from "@/screens/Supervisor/SupervisorUserPage";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import CreateAccount from "@/screens/CreateAccount";
-import SupervisorEditUser from "@/screens/SupervisorEditUser";
-import SupervisorCreate from "@/screens/SupervisorCreate";
-import RiderDashboard from "@/screens/RiderDashboard";
+import SupervisorEditUser from "@/screens/Supervisor/SupervisorEditUser";
+import SupervisorCreate from "@/screens/Supervisor/SupervisorCreate";
+import RiderDashboard from "@/screens/Rider/RiderDashboard";
 import UserEditInfo from "@/screens/UserEditInfo";
 import GenerateReport from "@/screens/GenerateReport";
-import ViewReports from "@/screens/ViewReports";
-import SupervisorSettings from "@/screens/SupervisorSettings";
-import CreateRide from "@/screens/CreateRide";
-import QueuePositionScreen from "@/screens/QueuePositionScreen";
+import ViewReports from "@/screens/Supervisor/ViewReports";
+import SupervisorSettings from "@/screens/Supervisor/SupervisorSettings";
+import CreateRide from "@/screens/Rider/CreateRide";
+import QueuePositionScreen from "@/screens/Rider/QueuePositionScreen";
 import DisplayRideInfo from "@/screens/DisplayRideInfo";
 import Notifications from '@/screens/Notifications'; 
-import AssignedRides from '@/screens/AssignedRides';
-import DriverDashboard from "@/screens/DriverDashboard";
+import AssignedRides from '@/screens/Driver/AssignedRides';
+import DriverDashboard from "@/screens/Driver/DriverDashboard";
 import ForgetPassword from "@/screens/ForgetPassword";
-import SupervisorPrivacy from '@/screens/SupervisorPrivacy';
+import SupervisorPrivacy from '@/screens/Supervisor/SupervisorPrivacy';
+import RideHistory from "@/screens/RideHistory";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -44,6 +45,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="DriverDashboard" component={DriverDashboard} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="SupervisorPrivacy" component={SupervisorPrivacy} />
+        <Stack.Screen name="RideHistory" component={RideHistory} />
     </Stack.Navigator>
     );
 };

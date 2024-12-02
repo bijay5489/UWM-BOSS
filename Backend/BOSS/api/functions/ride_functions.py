@@ -94,7 +94,8 @@ class RideManagement:
             if _status is not None:
                 rides = Ride.objects.filter(id=_id, status__iexact=_status)
             else:
-                rides = Ride.objects.filter(id=_id)
+                rides = Ride.objects.get(id=_id)
+                return rides
         elif entity == 'driver':
             if _status is not None:
                 rides = Ride.objects.filter(driver__id=_id, status__iexact=_status)

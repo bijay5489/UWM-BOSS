@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, Platform, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import ThemedText from '../components/ThemedText';
-import ThemedView from '../components/ThemedView';
+import ThemedText from '../../components/ThemedText';
+import ThemedView from '../../components/ThemedView';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import {Ionicons} from "@expo/vector-icons";
-import baseStyles from '../styles/General';
-import superEdit from '../styles/SuperEdit';
+import baseStyles from '../../styles/General';
+import superEdit from '../../styles/SuperEdit';
 
 const styles = { ...baseStyles, ...superEdit};
 

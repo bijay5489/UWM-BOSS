@@ -6,8 +6,8 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
 import {Ionicons} from "@expo/vector-icons";
-import baseStyles from '../styles/General';
-import rideStyles from '../styles/AssignedRide';
+import baseStyles from '../../styles/General';
+import rideStyles from '../../styles/AssignedRide';
 
 const styles = { ...baseStyles, ...rideStyles };
 

@@ -18,4 +18,5 @@ export type RootStackParamList = {
   DriverDashboard: undefined;
   ForgetPassword: undefined;
   SupervisorPrivacy: undefined;
+  RideHistory: undefined;
 };

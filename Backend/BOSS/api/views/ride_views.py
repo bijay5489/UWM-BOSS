@@ -68,9 +68,17 @@ def get_ride_by_driver(request, driver_id, ride_status):
 @api_view(['GET'])
 def get_rides_by_rider(request, rider_id, ride_status=None):
     try:
-        User.objects.get(id=rider_id)
+        user = User.objects.get(id=rider_id)
     except User.DoesNotExist:
         return Response({"error": "Rider not found"}, status=status.HTTP_404_NOT_FOUND)
+    if user.user_type == 'D':
+        rides = RideManagement().get_by_id(rider_id, 'driver')
+        serializer = RideSerializer(rides, many=True)
+        return Response(serializer.data)
+    if ride_status is None:
+        rides = RideManagement().get_by_id(rider_id, 'rider')
+        serializer = RideSerializer(rides, many=True)
+        return Response(serializer.data)
     rides = RideManagement().get_by_id(rider_id, 'rider', ride_status)
     serializer = RideSerializer(rides, many=True)
     return Response(serializer.data)
@@ -100,15 +108,23 @@ def delete_ride(request, ride_id):
 @api_view(['POST'])
 def create_ride(request):
     rider_username = request.data.get('username')
+    inProgress = False
     try:
         rider = User.objects.get(username=rider_username)
     except User.DoesNotExist:
         return Response({"error": "Rider not found"}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        inprogress = Ride.objects.get(rider=rider, status='in_progress')
+        if inprogress:
+            inProgress = True
+            return Response({"message": "Ride already in-progress.", "inProgress": inProgress}, status=status.HTTP_400_BAD_REQUEST)
+    except Ride.DoesNotExist:
+        test = None
 
     ride_info = request.data
     result = RideManagement().create(rider, ride_info)
     ride_code = random.randint(1000, 9999)
-    inProgress = False
+
 
     if result:
         try:

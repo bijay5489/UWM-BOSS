@@ -7,13 +7,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '@/components/navigation/NavigationTypes';
-import styles from '../styles/Dashboard';
+import styles from '../../styles/Dashboard';
 
 type DriverDashboardNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const DriverDashboard: React.FC = () => {
     const navigation = useNavigation<DriverDashboardNavigationProp>();
     const [username, setUsername] = useState<string | null>(null);
+    const [hasNotification, setHasNotification] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -35,7 +36,22 @@ const DriverDashboard: React.FC = () => {
                 setUsername(storedUsername);
             }
         };
+        const checkInProgressRide = async () => {
+            const storedUsername = await AsyncStorage.getItem('username');
+            if (storedUsername) {
+                const response = await fetch(
+                    `http://127.0.0.1:8000/api/rides/get-by-driver-id/${storedUsername}/status/in_progress/`
+                );
+                if (response.status === 200) {
+                    setHasNotification(true);
+                } else {
+                    setHasNotification(false);
+                }
+            }
+        };
+
         checkLoginStatus();
+        checkInProgressRide();
     }, []);
 
     const handleEdit = async () => {
@@ -47,7 +63,8 @@ const DriverDashboard: React.FC = () => {
     };
 
     const handleReport = async () => {
-        navigation.navigate('GenerateReport');
+        await AsyncStorage.setItem('driver', 'true');
+        navigation.navigate('RideHistory');
     };
 
     const handleCheckRides = async () => {
@@ -70,13 +87,18 @@ const DriverDashboard: React.FC = () => {
 
             {/* Cards Section */}
             <View style={styles.cardsContainer}>
-                <Card
-                    title="My Ride"
-                    description="View and manage your assigned ride."
-                    buttonLabel="Check"
-                    onPress={handleCheckRides}
-                    iconName="bus"
-                />
+                <View style={styles.cardWrapper}>
+                    <Card
+                        title="My Ride"
+                        description="View and manage your assigned ride."
+                        buttonLabel="Check"
+                        onPress={handleCheckRides}
+                        iconName="bus"
+                    />
+                    {hasNotification && (
+                        <View style={styles.notificationCircle} />
+                    )}
+                </View>
                 <Card
                     title="Edit Information"
                     description="Edit your account information."

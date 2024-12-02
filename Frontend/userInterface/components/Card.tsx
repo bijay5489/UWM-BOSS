@@ -21,7 +21,7 @@ const Card = ({ title, description, buttonLabel, onPress, iconName }) => (
 );
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: '#f5f5f5', padding: 20, borderRadius: 10, marginVertical: 10 },
+  card: { backgroundColor: '#e3e3e3', padding: 20, borderRadius: 10, marginVertical: 10 },
   header: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
   icon: { marginRight: 10, color: '#007bff' },
   cardTitle: { fontSize: 18 },

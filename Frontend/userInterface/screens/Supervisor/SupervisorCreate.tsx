@@ -5,9 +5,9 @@ import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "@/components/navigation/NavigationTypes";
 import ThemedText from "@/components/ThemedText";
 import {Ionicons} from "@expo/vector-icons";
-import createBaseStyles from '../styles/CreateAccountCommon';
-import superStyles from '../styles/SuperCreate';
-import baseStyles from '../styles/General';
+import createBaseStyles from '../../styles/CreateAccountCommon';
+import superStyles from '../../styles/SuperCreate';
+import baseStyles from '../../styles/General';
 
 const styles = { ...baseStyles, ...superStyles, ...createBaseStyles };
 
