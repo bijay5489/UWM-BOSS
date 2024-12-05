@@ -22,12 +22,14 @@ class RideSerializer(serializers.ModelSerializer):
         model = Ride
         fields = '__all__'
 
+
 class ReportSerializer(serializers.ModelSerializer):
     reporter = serializers.StringRelatedField(source='reporter.name')
 
     class Meta:
         model = Report
         fields = ['id', 'reporter', 'report_type', 'context']
+
 
 class VanSerializer(serializers.ModelSerializer):
     driver = UserSerializer()

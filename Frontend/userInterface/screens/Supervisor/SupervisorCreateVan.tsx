@@ -8,6 +8,7 @@ import userPageStyles from '../../styles/SuperCreateVan';
 
 const styles = { ...baseStyles, ...userPageStyles };
 
+
 const SupervisorCreateVan: React.FC = () => {
     const [vanNumber, setVanNumber] = useState('');
     const [ADA, setADA] = useState(false);
@@ -49,7 +50,6 @@ const SupervisorCreateVan: React.FC = () => {
                     driver: selectedDriver,
                 }),
             });
-
             if (response.ok) {
                 Alert.alert('Success', 'Van created successfully.');
                 navigation.goBack();

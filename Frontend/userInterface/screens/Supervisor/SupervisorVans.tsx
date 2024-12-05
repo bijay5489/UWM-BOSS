@@ -50,6 +50,7 @@ const SupervisorVans: React.FC = () => {
                     <Ionicons name="arrow-back-circle" size={30} color="black" />
                 </TouchableOpacity>
                 <ThemedText type="title" style={styles.headerText}>Manage Vans</ThemedText>
+
                 <TouchableOpacity
                     style={styles.squareButton}
                     onPress={() => navigation.navigate('SupervisorCreateVan')}
@@ -57,7 +58,7 @@ const SupervisorVans: React.FC = () => {
                     <Ionicons name="create-outline" size={24} color="white" />
                 </TouchableOpacity>
             </View>
-
+        
             {/* Content Area */}
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
