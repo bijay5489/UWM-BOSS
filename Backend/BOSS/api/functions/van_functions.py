@@ -48,7 +48,7 @@ class VanManagement:
     Out: boolean indicating success
     """
 
-    def edit(self, van_number: int, info: dict) -> bool:
+    def edit(self, van_number: str, info: dict) -> bool:
         try:
             van = Van.objects.get(van_number=van_number)
         except ObjectDoesNotExist:

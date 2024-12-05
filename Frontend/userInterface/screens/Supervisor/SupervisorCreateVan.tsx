@@ -3,12 +3,16 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet, Switch, Alert } fr
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
-import styles from '../../styles/SuperCreateVan'
+import baseStyles from '../../styles/General';
+import userPageStyles from '../../styles/SuperCreateVan';
+
+const styles = { ...baseStyles, ...userPageStyles };
+
 
 const SupervisorCreateVan: React.FC = () => {
     const [vanNumber, setVanNumber] = useState('');
     const [ADA, setADA] = useState(false);
-    const [drivers, setDrivers] = useState([]);
+    const [drivers, setDrivers] = useState<any[]>([]);
     const [selectedDriver, setSelectedDriver] = useState('');
     const navigation = useNavigation();
 
@@ -18,7 +22,10 @@ const SupervisorCreateVan: React.FC = () => {
 
     const fetchDrivers = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/users?role=D');
+            const response = await fetch('http://127.0.0.1:8000/api/vans/get_all_drivers');
+            if (!response.ok) {
+                throw new Error('Failed to fetch drivers');
+            }
             const data = await response.json();
             setDrivers(data);
         } catch (error) {
@@ -28,16 +35,17 @@ const SupervisorCreateVan: React.FC = () => {
     };
 
     const handleCreateVan = async () => {
-        if (!vanNumber || !selectedDriver) {
+        if (!vanNumber.trim() || !selectedDriver.trim()) {
             Alert.alert('Validation Error', 'Please fill out all fields.');
             return;
         }
+
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/vans/', {
+            const response = await fetch('http://127.0.0.1:8000/api/vans/create_van', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    van_number: parseInt(vanNumber, 10),
+                    van_number: vanNumber,
                     ADA,
                     driver: selectedDriver,
                 }),
@@ -46,7 +54,8 @@ const SupervisorCreateVan: React.FC = () => {
                 Alert.alert('Success', 'Van created successfully.');
                 navigation.goBack();
             } else {
-                Alert.alert('Error', 'Failed to create van.');
+                const errorData = await response.json();
+                Alert.alert('Error', errorData.error || 'Failed to create van.');
             }
         } catch (error) {
             Alert.alert('Error', 'An error occurred while creating the van.');
@@ -58,7 +67,7 @@ const SupervisorCreateVan: React.FC = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back-circle" size={30} color="black"/>
+                    <Ionicons name="arrow-back-circle" size={30} color="black" />
                 </TouchableOpacity>
                 <Text style={styles.headerText}>Create Van</Text>
             </View>
@@ -86,7 +95,7 @@ const SupervisorCreateVan: React.FC = () => {
                 >
                     <Picker.Item label="Select a Driver" value="" />
                     {drivers.map((driver) => (
-                        <Picker.Item key={driver.id} label={driver.name} value={driver.id} />
+                        <Picker.Item key={driver.username} label={driver.name} value={driver.username} />
                     ))}
                 </Picker>
             </View>
