@@ -20,6 +20,9 @@ import DriverDashboard from "@/screens/Driver/DriverDashboard";
 import ForgetPassword from "@/screens/ForgetPassword";
 import SupervisorPrivacy from '@/screens/Supervisor/SupervisorPrivacy';
 import RideHistory from "@/screens/RideHistory";
+import SupervisorVans from '@/screens/Supervisor/SupervisorVans';
+import SupervisorCreateVan from '@/screens/Supervisor/SupervisorCreateVan';
+import SupervisorEditVan from '@/screens/Supervisor/SupervisorEditVan';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -46,6 +49,9 @@ export const AppNavigator = () => {
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="SupervisorPrivacy" component={SupervisorPrivacy} />
         <Stack.Screen name="RideHistory" component={RideHistory} />
+        <Stack.Screen name="SupervisorVans" component={SupervisorVans} />
+        <Stack.Screen name="SupervisorCreateVan" component={SupervisorCreateVan} />
+        <Stack.Screen name="SupervisorEditVan" component={SupervisorEditVan} />
     </Stack.Navigator>
     );
 };

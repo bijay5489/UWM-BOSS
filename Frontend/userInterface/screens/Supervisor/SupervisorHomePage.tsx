@@ -118,7 +118,7 @@ const SupervisorHomePage: React.FC = () => {
                     description="Manage, view or create new vans"
                     buttonLabel="Vans"
                     onPress={() => {
-                        // generate report logic
+                        navigation.navigate('SupervisorVans');
                     }}
                     iconName="car"
                   />

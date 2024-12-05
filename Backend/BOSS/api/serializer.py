@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import User, Ride, Report
+from .models import User, Ride, Report, Van
 import api.functions as functions
 
 
@@ -28,3 +28,10 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ['id', 'reporter', 'report_type', 'context']
+
+class VanSerializer(serializers.ModelSerializer):
+    driver = UserSerializer()
+
+    class Meta:
+        model = Van
+        fields = '__all__'
