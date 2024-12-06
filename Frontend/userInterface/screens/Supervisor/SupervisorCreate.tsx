@@ -49,7 +49,6 @@ const SupervisorCreate: React.FC = () => {
 
         // Check if all password requirements are met before submission
         if (unmetRequirements.length > 0) {
-            setErrorMessage("Please meet all password requirements before proceeding.");
             return;
         }
 
