@@ -28,8 +28,11 @@ def get_van_by_number(request, van_number):
 def create_van(request):
     """Create a new van."""
     van_info = request.data
-    driver = User.objects.get(username=van_info['driver'])
-    van_info['driver'] = driver
+    if 'driver' in van_info and van_info['driver']:
+        driver = User.objects.get(username=van_info['driver'])
+        van_info['driver'] = driver
+    else:
+        van_info['driver'] = None
     if VanManagement().create(van_info):
         return Response({"message": "Van created successfully."}, status=status.HTTP_201_CREATED)
     return Response({"error": "Invalid data or van already exists."}, status=status.HTTP_400_BAD_REQUEST)
