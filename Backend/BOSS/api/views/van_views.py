@@ -42,8 +42,9 @@ def create_van(request):
 def edit_van(request, van_number):
     """Edit van details."""
     updated_info = request.data
-    driver = User.objects.get(name=updated_info['driver'])
-    updated_info['driver'] = driver
+    if 'driver' in updated_info and updated_info['driver']:
+        driver = User.objects.get(name=updated_info['driver'])
+        updated_info['driver'] = driver
     if VanManagement().edit(van_number, updated_info):
         return Response({"message": "Van updated successfully."}, status=status.HTTP_200_OK)
     return Response({"error": "Van not found or invalid data."}, status=status.HTTP_400_BAD_REQUEST)
