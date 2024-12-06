@@ -18,51 +18,56 @@ import userPageStyles from '../../styles/SuperEditVan';
 const styles = { ...baseStyles, ...userPageStyles };
 
 const SupervisorEditVan: React.FC = () => {
-  const route = useRoute();
-  const { id } = route.params as { id: number };  // Get van id from route params
-  const [van, setVan] = useState({ van_number: '', ADA: false, driver: {username: '', name: ''}});
-  const [drivers, setDrivers] = useState<any[]>([]); // Store list of available drivers
-  const [loading, setLoading] = useState(true);
-  const navigation = useNavigation();
+    const route = useRoute();
+    const { id } = route.params as { id: number };  // Get van id from route params
+    const [van, setVan] = useState({ van_number: '', ADA: false, driver: {username: '', name: ''}});
+    const [drivers, setDrivers] = useState<any[]>([]); // Store list of available drivers
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchVanDetails();
-    fetchDriverList();
-  }, []);
+    useEffect(() => {
+        fetchVanDetails();
+        fetchDriverList();
+    }, []);
 
-  // Fetch van details by id (using query parameter)
-  const fetchVanDetails = async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/vans/get_van_by_id/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setVan(data); // Set the van details in state
-      } else {
-        Alert.alert('Error', 'Failed to fetch van details.');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred while fetching van details.');
-      console.error('Error fetching van:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Fetch van details by id (using query parameter)
+    const fetchVanDetails = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/vans/get_van_by_id/${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                setVan(data);
 
-  // Fetch available drivers for the dropdown list
-  const fetchDriverList = async () => {
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/vans/get_all_drivers');
-      if (response.ok) {
-        const data = await response.json();
-        setDrivers(data);  // Set the list of drivers in state
-      } else {
-        Alert.alert('Error', 'Failed to fetch drivers.');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred while fetching drivers.');
-      console.error('Error fetching drivers:', error);
-    }
-  };
+                if (data.driver) {
+                    setDrivers(prevDrivers => [data.driver, ...prevDrivers]);
+                }
+            } else {
+                Alert.alert('Error', 'Failed to fetch van details.');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'An error occurred while fetching van details.');
+            console.error('Error fetching van:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Fetch available drivers for the dropdown list
+    const fetchDriverList = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/vans/get_all_drivers');
+            if (response.ok) {
+                const data = await response.json();
+                setDrivers(data);
+            } else {
+                Alert.alert('Error', 'Failed to fetch drivers.');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'An error occurred while fetching drivers.');
+            console.error('Error fetching drivers:', error);
+        }
+    };
 
 
     const handleUpdateVan = async () => {
@@ -80,13 +85,14 @@ const SupervisorEditVan: React.FC = () => {
             });
 
             if (response.ok) {
-                Alert.alert('Success', 'Van updated successfully.');
                 navigation.goBack();
             } else {
-                Alert.alert('Error', 'Failed to update van.');
+                const errorData = await response.json();
+                setErrorMessage('Please enter a unique van number.');
+                console.error('Error:', errorData);
             }
         } catch (error) {
-            Alert.alert('Error', 'An error occurred while updating the van.');
+            setErrorMessage('An error occurred while updating the van.');
             console.error('Error:', error);
         }
     };
@@ -195,6 +201,9 @@ const SupervisorEditVan: React.FC = () => {
           ))}
         </Picker>
       </View>
+
+      {/* Error Message */}
+      {errorMessage && <Text style={baseStyles.errorText}>{errorMessage}</Text>}
 
       {/* Update Van Button */}
       <TouchableOpacity onPress={handleUpdateVan} style={styles.updateButton}>

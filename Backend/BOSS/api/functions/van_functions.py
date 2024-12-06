@@ -21,9 +21,6 @@ class VanManagement:
         if not all(field in info for field in required_fields):
             return False
 
-        if False in [info[field] for field in required_fields]:
-            return False
-
         # check for duplicate
         if Van.objects.filter(van_number=info['van_number']).exists():
             return False
@@ -53,6 +50,11 @@ class VanManagement:
             van = Van.objects.get(id=van_id)
         except ObjectDoesNotExist:
             return False
+
+        if 'van_number' in info:
+            van_number = info['van_number']
+            if not van_number or Van.objects.filter(van_number=van_number).exclude(id=van_id).exists():
+                return False
 
         for field in info:
             setattr(van, field, info[field])
