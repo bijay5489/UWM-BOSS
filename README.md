@@ -61,6 +61,7 @@ cd uwm-boss
     ```
 4. When the Expo CLI opens, press:
     - **`w`** to launch the app in your browser.
+   (Do not launch the application using the QR code)
 
 ---
 

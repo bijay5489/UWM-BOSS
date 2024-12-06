@@ -82,7 +82,7 @@ const AssignedRides: React.FC = () => {
     const endRide = async () => {
         const ride_code = await AsyncStorage.getItem('ride_code');
         const enteredCode = EndCode.join('');
-        if (enteredCode != ride_code) {
+        if (String(enteredCode) !== String(ride_code)) { // Compare both as strings
             setMessage('Invalid Code!');
             return;
         }

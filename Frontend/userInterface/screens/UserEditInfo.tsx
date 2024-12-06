@@ -106,33 +106,59 @@ const UserEditInfo: React.FC = () => {
 
     const handleDeleteAccount = async () => {
         if (!oldPassword.trim()) {
-            setErrorMessage('Please enter your current password!')
+            setErrorMessage('Please enter your current password!');
             return;
         }
+
         if (Platform.OS === 'web') {
+            // For web, use window.confirm for confirmation
             if (window.confirm("Are you sure? This action cannot be undone.")) {
-                try {
-                    const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/manage-users/`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            oldPassword,
-                            username,
-                            delete: true,
-                        }),
-                    });
-                    if (response.ok) {
-                        await AsyncStorage.removeItem('accessToken');
-                        await AsyncStorage.removeItem('refreshToken');
-                        showAlert("Account Deleted", "Your account has been deleted successfully!");
-                        navigation.navigate('Login');
-                    } else {
-                        console.error('Error', 'Error deleting user.');
-                    }
-                } catch (error) {
-                    console.error('Error', 'Failed to delete user.');
-                }
+                await deleteAccount();
             }
+        } else {
+            // For native, use React Native's Alert for confirmation
+            Alert.alert(
+                "Confirm Deletion",
+                "Are you sure? This action cannot be undone.",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    {
+                        text: "OK",
+                        onPress: async () => {
+                            await deleteAccount();
+                        }
+                    }
+                ]
+            );
+        }
+    };
+
+    const deleteAccount = async () => {
+        try {
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/manage-users/`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    oldPassword,
+                    username,
+                    delete: true,
+                }),
+            });
+
+            if (response.ok) {
+                // Removing tokens from AsyncStorage after deletion
+                await AsyncStorage.removeItem('accessToken');
+                await AsyncStorage.removeItem('refreshToken');
+                showAlert("Account Deleted", "Your account has been deleted successfully!");
+                navigation.navigate('Login');
+            } else {
+                console.error('Error', 'Error deleting user.');
+            }
+        } catch (error) {
+            console.error('Error', 'Failed to delete user.');
         }
     };
 

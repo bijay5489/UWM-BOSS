@@ -91,14 +91,14 @@ const CreateRide: React.FC = () => {
             });
 
             const data = await response.json();
-            await AsyncStorage.setItem('inProgress', data.inProgress);
+            await AsyncStorage.setItem('inProgress', JSON.stringify(data.inProgress));
             if (response.status === 201) {
-                await AsyncStorage.setItem('ride_code', data.ride_code);
+                await AsyncStorage.setItem('ride_code', JSON.stringify(data.ride_code));
                 await AsyncStorage.setItem('ride_id_view', data.ride_id);
                 await AsyncStorage.setItem('ride_driverName', data.driver);
                 navigation.navigate('DisplayRideInfo', {rideId: data.ride_id, driverName: data.driver});
             } else if (response.status === 200) {
-                await AsyncStorage.setItem('ride_code', data.ride_code);
+                await AsyncStorage.setItem('ride_code', JSON.stringify(data.ride_code));
                 navigation.navigate('Queue', {
                     queuePosition: data.queue_position,
                     rideId: data.ride_id,
