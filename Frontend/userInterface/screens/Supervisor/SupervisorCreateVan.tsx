@@ -35,7 +35,7 @@ const SupervisorCreateVan: React.FC = () => {
     };
 
     const handleCreateVan = async () => {
-        if (!vanNumber.trim() || !selectedDriver.trim()) {
+        if (!vanNumber.trim()) {
             Alert.alert('Validation Error', 'Please fill out all fields.');
             return;
         }

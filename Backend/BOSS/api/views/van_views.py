@@ -36,20 +36,22 @@ def create_van(request):
 
 
 @api_view(['PUT'])
-def edit_van(request, van_number):
+def edit_van(request, van_id):
     """Edit van details."""
     updated_info = request.data
-    driver = User.objects.get(name=updated_info['driver'])
-    updated_info['driver'] = driver
-    if VanManagement().edit(van_number, updated_info):
+    driver = updated_info.get('driver', None)
+    if driver:
+        driver = User.objects.get(username=driver['username'])
+        updated_info['driver'] = driver
+    if VanManagement().edit(van_id, updated_info):
         return Response({"message": "Van updated successfully."}, status=status.HTTP_200_OK)
     return Response({"error": "Van not found or invalid data."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['DELETE'])
-def delete_van(request, van_number):
+def delete_van(request, van_id):
     """Delete a van."""
-    if VanManagement().delete(van_number):
+    if VanManagement().delete(van_id):
         return Response({"message": "Van deleted successfully."}, status=status.HTTP_200_OK)
     return Response({"error": "Van not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -74,6 +76,7 @@ def get_van_by_driver(request, driver_username):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Van.DoesNotExist:
         return Response({"error": "No van found for the driver."}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['GET'])
 def get_all_drivers(request):
