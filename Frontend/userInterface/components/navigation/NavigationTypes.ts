@@ -19,4 +19,7 @@ export type RootStackParamList = {
   ForgetPassword: undefined;
   SupervisorPrivacy: undefined;
   RideHistory: undefined;
+  SupervisorVans: undefined;
+  SupervisorCreateVan: undefined;
+  SupervisorEditVan: { id: number }
 };

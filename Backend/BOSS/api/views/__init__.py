@@ -24,3 +24,15 @@ from .register_views import (
 from .report_views import (
     ReportView,
 )
+
+from .van_views import (
+    get_all_vans,
+    get_van_by_number,
+    create_van,
+    edit_van,
+    delete_van,
+    get_van_by_id,
+    get_van_by_driver,
+    get_all_drivers,
+)
+
