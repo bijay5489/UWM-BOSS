@@ -52,7 +52,6 @@ const CreateAccount: React.FC = () => {
         }
 
         if (unmetRequirements.length > 0) {
-            setErrorMessage("Please meet all password requirements before proceeding.");
             return;
         }
 
