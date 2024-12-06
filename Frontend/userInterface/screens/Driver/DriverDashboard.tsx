@@ -87,7 +87,6 @@ const DriverDashboard: React.FC = () => {
 
             {/* Cards Section */}
             <View style={styles.cardsContainer}>
-                <View style={styles.cardWrapper}>
                     <Card
                         title="My Ride"
                         description="View and manage your assigned ride."
@@ -98,7 +97,6 @@ const DriverDashboard: React.FC = () => {
                     {hasNotification && (
                         <View style={styles.notificationCircle} />
                     )}
-                </View>
                 <Card
                     title="Edit Information"
                     description="Edit your account information."

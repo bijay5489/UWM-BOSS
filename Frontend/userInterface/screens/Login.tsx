@@ -43,7 +43,7 @@ const LoginScreen: React.FC = () => {
                 await AsyncStorage.setItem('accessToken', data.access);
                 await AsyncStorage.setItem('refreshToken', data.refresh);
                 await AsyncStorage.setItem('username', username);
-                await AsyncStorage.setItem('riderId', data.riderId);
+                await AsyncStorage.setItem('riderId', JSON.stringify(data.riderId));
 
                 if (data.user_type === "S") {
                     navigation.navigate('SupervisorHome');
