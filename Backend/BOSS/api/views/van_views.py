@@ -26,7 +26,6 @@ def get_van_by_number(request, van_number):
 
 @api_view(['POST'])
 def create_van(request):
-    print(request.data)
     """Create a new van."""
     van_info = request.data
     if 'driver' in van_info and van_info['driver']:
