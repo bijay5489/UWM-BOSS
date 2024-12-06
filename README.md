@@ -74,6 +74,8 @@ cd uwm-boss
    - Click the **"Toggle Device Toolbar"** icon (📱) on the top-left corner of the developer tools.
    - Select a mobile device preset (e.g., iPhone, Pixel) from the dropdown menu.
   
+---
+  
 ## Supervisor Login Credentials
 To log in as a guest supervisor, use the following credentials:
 - **Username**: `Supervisor`
