@@ -48,15 +48,14 @@ class VanManagement:
     Out: boolean indicating success
     """
 
-    def edit(self, van_number: str, info: dict) -> bool:
+    def edit(self, van_id: str, info: dict) -> bool:
         try:
-            van = Van.objects.get(van_number=van_number)
+            van = Van.objects.get(id=van_id)
         except ObjectDoesNotExist:
             return False
 
-        for field in ['ADA', 'driver']:
-            if field in info and info[field] not in [None, '']:
-                setattr(van, field, info[field])
+        for field in info:
+            setattr(van, field, info[field])
 
         van.save()
         return True
@@ -71,9 +70,9 @@ class VanManagement:
     Out: boolean indicating success
     """
 
-    def delete(self, van_number: int) -> bool:
+    def delete(self, van_id: int) -> bool:
         try:
-            van = Van.objects.get(van_number=van_number)
+            van = Van.objects.get(id=van_id)
         except ObjectDoesNotExist:
             return False
 

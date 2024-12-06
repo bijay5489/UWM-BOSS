@@ -7,10 +7,11 @@ import {
   ActivityIndicator,
   Alert,
   Switch,
+  Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import baseStyles from '../../styles/General';
 import userPageStyles from '../../styles/SuperEditVan';
 
@@ -19,7 +20,7 @@ const styles = { ...baseStyles, ...userPageStyles };
 const SupervisorEditVan: React.FC = () => {
   const route = useRoute();
   const { id } = route.params as { id: number };  // Get van id from route params
-  const [van, setVan] = useState({ van_number: '', ADA: false, driver: ''});
+  const [van, setVan] = useState({ van_number: '', ADA: false, driver: {username: '', name: ''}});
   const [drivers, setDrivers] = useState<any[]>([]); // Store list of available drivers
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
@@ -63,59 +64,80 @@ const SupervisorEditVan: React.FC = () => {
     }
   };
 
-  // Handle van update (PUT request)
-  const handleUpdateVan = async () => {
-      // Only check for a driver if it's a new driver being selected
-      if (van.driver === '') {
 
-      }
+    const handleUpdateVan = async () => {
+        const updatedVanData = {
+            van_number: van.van_number,
+            ADA: van.ADA,
+            driver: van.driver || null,
+        };
 
-      // Prepare the data to send, removing the driver check if not modified
-      const updatedVanData = { ...van };
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/vans/edit_van/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedVanData),
+            });
 
-      // Send the PUT request to update van
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/vans/edit_van/${van.van_number}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedVanData),  // Send the updated van data
-        });
-
-        if (response.ok) {
-          Alert.alert('Success', 'Van updated successfully.');
-          navigation.goBack();
-        } else {
-          Alert.alert('Error', 'Failed to update van.');
+            if (response.ok) {
+                Alert.alert('Success', 'Van updated successfully.');
+                navigation.goBack();
+            } else {
+                Alert.alert('Error', 'Failed to update van.');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'An error occurred while updating the van.');
+            console.error('Error:', error);
         }
-      } catch (error) {
-        Alert.alert('Error', 'An error occurred while updating the van.');
-        console.error('Error:', error);
-      }
     };
 
-  // Handle van deletion (DELETE request)
-  const handleDeleteVan = async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/vans/delete_van/${van.van_number}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ van_id: id }),  // Send van id in body
-      });
-      if (response.ok) {
-        Alert.alert('Success', 'Van deleted successfully.');
-        navigation.goBack();
-      } else {
-        Alert.alert('Error', 'Failed to delete van.');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred while deleting the van.');
-      console.error('Error:', error);
-    }
-  };
+    // Handle van deletion (DELETE request)
+    const deleteVan = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/vans/delete_van/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (response.ok) {
+                Alert.alert('Success', 'Van deleted successfully.');
+                navigation.goBack();
+            } else {
+                Alert.alert('Error', 'Failed to delete van.');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'An error occurred while deleting the van.');
+            console.error('Error:', error);
+        }
+    };
 
-  return loading ? (
-    <ActivityIndicator size="large" color="#0000ff" />
-  ) : (
+    const handleDeleteVan = () => {
+        if (Platform.OS === 'web') {
+            if (window.confirm("Are you sure? This action cannot be undone.")) {
+                deleteVan();
+            }
+        } else {
+            Alert.alert(
+                'Confirm Deletion',
+                'Are you sure? This action cannot be undone.',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Delete',
+                        onPress: deleteVan,
+                    },
+                ]
+            );
+        }
+    };
+
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
+
+  return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -139,25 +161,37 @@ const SupervisorEditVan: React.FC = () => {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>ADA Accessible:</Text>
-        <Switch
-          value={van.ADA}
-          onValueChange={(value) => setVan({ ...van, ADA: value })}
-        />
+        <View style={styles.toggleContainer}>
+          <FontAwesome
+            name="wheelchair"
+            size={24}
+            color={van.ADA ? '#81b0ff' : '#767577'}
+          />
+          <Switch
+            value={van.ADA}
+            onValueChange={(value) => setVan({ ...van, ADA: value })}
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            thumbColor={van.ADA ? '#f5dd4b' : '#f4f3f4'}
+          />
+        </View>
       </View>
 
       {/* Driver selection dropdown */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Driver:</Text>
         <Text style={styles.input}>
-          {van.driver ? van.driver.name : 'No driver assigned'}
+          {van.driver ? van.driver.name : 'No Driver Assigned'}
         </Text>
         <Picker
-          selectedValue={van.driver}
-          onValueChange={(itemValue: any) => setVan({ ...van, driver: itemValue })}
+          selectedValue={van.driver?.username}
+          onValueChange={(itemValue) => {
+            const selectedDriver = drivers.find(driver => driver.username === itemValue);
+            setVan({ ...van, driver: selectedDriver });
+          }}
         >
           <Picker.Item label="Select Driver" value="" />
           {drivers.map((driver) => (
-            <Picker.Item key={driver.id} label={driver.name} value={driver.id} />
+            <Picker.Item key={driver.username} label={driver.name} value={driver.username} />
           ))}
         </Picker>
       </View>
