@@ -27,7 +27,7 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
     const fetchQueuePosition = async () => {
         try {
             const riderusername = await AsyncStorage.getItem('username');
-            const response = await fetch(`http://127.0.0.1:8000/api/rides/queue-position/${riderusername}`);
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/queue-position/${riderusername}`);
             const data = await response.json();
             if (response.status === 202) {
                 window.alert("A driver has been assigned to your ride!")
@@ -64,7 +64,7 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
 
     const deleteRide = async () => {
         try {
-            await fetch(`http://127.0.0.1:8000/api/rides/delete/${ride_id}`, {
+            await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/delete/${ride_id}`, {
                 method: 'DELETE',
             });
             window.alert("Ride Deleted you have left the queue.");

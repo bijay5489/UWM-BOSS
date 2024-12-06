@@ -34,7 +34,7 @@ const SupervisorEditVan: React.FC = () => {
     // Fetch van details by id (using query parameter)
     const fetchVanDetails = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/vans/get_van_by_id/${id}`);
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/vans/get_van_by_id/${id}`);
             if (response.ok) {
                 const data = await response.json();
                 setVan(data);
@@ -56,7 +56,7 @@ const SupervisorEditVan: React.FC = () => {
     // Fetch available drivers for the dropdown list
     const fetchDriverList = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/vans/get_all_drivers');
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/vans/get_all_drivers');
             if (response.ok) {
                 const data = await response.json();
                 setDrivers(data);
@@ -78,7 +78,7 @@ const SupervisorEditVan: React.FC = () => {
         };
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/vans/edit_van/${id}`, {
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/vans/edit_van/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedVanData),
@@ -100,7 +100,7 @@ const SupervisorEditVan: React.FC = () => {
     // Handle van deletion (DELETE request)
     const deleteVan = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/vans/delete_van/${id}`, {
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/vans/delete_van/${id}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             });

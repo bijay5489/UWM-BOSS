@@ -46,7 +46,7 @@ const RideHistory: React.FC = () => {
             const driver = await AsyncStorage.getItem('driver');
             setDriver(driver === 'true');
             const rider_id = await AsyncStorage.getItem('riderId');
-            const response = await fetch(`http://127.0.0.1:8000/api/rides/get-by-rider-id/${rider_id}/`);
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/get-by-rider-id/${rider_id}/`);
             const data = await response.json();
             setRides(data);
         } catch (error) {

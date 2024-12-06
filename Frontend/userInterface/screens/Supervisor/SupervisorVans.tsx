@@ -29,7 +29,7 @@ const SupervisorVans: React.FC = () => {
 
     const fetchVans = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/vans/get_all_vans'); // Fetch vans from the backend
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/vans/get_all_vans'); // Fetch vans from the backend
             if (!response.ok) {
                 throw new Error('Failed to fetch vans');
             }

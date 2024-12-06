@@ -36,7 +36,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
 
     const fetchRideInfo = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/rides/get-by-id/${rideId}`);
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/get-by-id/${rideId}`);
             const data = await response.json();
             if (response.ok) {
                 setRideInfo({
@@ -84,7 +84,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
         try {
             const updatedInfo = {status: 'cancelled', reason: cancelReason}; // Update the status to "canceled"
 
-            const response = await fetch(`http://127.0.0.1:8000/api/rides/edit/${rideId}`, {
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/edit/${rideId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

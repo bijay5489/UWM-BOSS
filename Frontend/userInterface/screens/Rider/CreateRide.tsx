@@ -15,7 +15,7 @@ import createRide from '../../styles/CreateRide';
 
 const styles = { ...baseStyles, ...createRide};
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'https://mohammadalsheikh.pythonanywhere.com/api';
 
 type CreateRideScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CreateRide'>;
 

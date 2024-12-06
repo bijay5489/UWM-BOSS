@@ -29,7 +29,7 @@ const SupervisorSettings: React.FC = () => {
     const fetchUserDetails = async (username: string) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/manage-users/?username=${username}`);
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/manage-users/?username=${username}`);
             const data = await response.json();
             if (response.ok && data.length > 0) {
                 const userData = data[0];

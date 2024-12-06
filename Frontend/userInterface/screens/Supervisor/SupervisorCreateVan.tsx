@@ -22,7 +22,7 @@ const SupervisorCreateVan: React.FC = () => {
 
     const fetchDrivers = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/vans/get_all_drivers');
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/vans/get_all_drivers');
             if (!response.ok) {
                 throw new Error('Failed to fetch drivers');
             }
@@ -41,7 +41,7 @@ const SupervisorCreateVan: React.FC = () => {
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/vans/create_van', {
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/vans/create_van', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
