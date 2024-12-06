@@ -8,6 +8,7 @@ Welcome to the UWM BOSS app repository! This project is designed to enhance the 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Running the App](#running-the-app)
+- [Supervisor Login Credentials](#supervisor-login-credentials)
 
 ---
 
@@ -72,3 +73,10 @@ cd uwm-boss
 2. Toggle device emulation:
    - Click the **"Toggle Device Toolbar"** icon (📱) on the top-left corner of the developer tools.
    - Select a mobile device preset (e.g., iPhone, Pixel) from the dropdown menu.
+  
+## Guest Supervisor Login Credentials
+To log in as a guest supervisor, use the following credentials:
+- **Username**: `Supervisor`
+- **Password**: `Password@1`
+
+This guest account is intended for testing and demonstration purposes only.
