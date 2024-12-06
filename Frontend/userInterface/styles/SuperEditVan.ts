@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native'
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20, justifyContent: 'center' },
     header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
-    headerText: { fontSize: 20, fontWeight: 'bold' },
+    headerText: { fontSize: 30, fontWeight: 'bold' },
     input: { borderBottomWidth: 1, marginBottom: 20, fontSize: 16 },
     buttonText: { color: '#fff', fontSize: 16 },
     inputContainer: {
@@ -44,6 +44,10 @@ const styles = StyleSheet.create({
         height: 50,
         width: '100%',
     },
+    squareButton: {
+        opacity: 0
+    }
+
 });
 
 export default styles;
