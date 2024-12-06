@@ -38,7 +38,7 @@ const SupervisorUserPage: React.FC = () => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/manage-users/', {
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/manage-users/', {
                 method: 'GET',
                 headers: {},
             });

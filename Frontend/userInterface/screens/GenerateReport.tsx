@@ -47,7 +47,7 @@ const GenerateReport: React.FC = () => {
                 if (!riderId) return;
 
                 try {
-                    const response = await fetch(`http://127.0.0.1:8000/api/rides/get-by-rider-id/${riderId}/`);
+                    const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/get-by-rider-id/${riderId}/`);
                     const data = await response.json();
                     setRides(data);
                 } catch (error) {
@@ -67,7 +67,7 @@ const GenerateReport: React.FC = () => {
         const reportData = {reporter, report_type: reportType, context, ride_id: selectedRideId};
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/report/generateReport/', {
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/report/generateReport/', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(reportData),

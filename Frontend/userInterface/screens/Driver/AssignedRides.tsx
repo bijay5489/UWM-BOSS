@@ -14,7 +14,7 @@ const styles = { ...baseStyles, ...rideStyles };
 type AssignedRidesNavigationProp = StackNavigationProp<RootStackParamList, 'AssignedRides'>;
 
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'https://mohammadalsheikh.pythonanywhere.com/api';
 
 const AssignedRides: React.FC = () => {
     const navigation = useNavigation<AssignedRidesNavigationProp>();
@@ -89,7 +89,7 @@ const AssignedRides: React.FC = () => {
         try {
             const updatedInfo = {status: 'completed'};
 
-            const response = await fetch(`http://127.0.0.1:8000/api/rides/edit/${ride.id}`, {
+            const response = await fetch(`${API_BASE_URL}/rides/edit/${ride.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

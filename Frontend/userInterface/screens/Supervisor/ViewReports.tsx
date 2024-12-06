@@ -35,7 +35,7 @@ const ViewReports: React.FC = () => {
     const fetchReports = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/report/generateReport/', {
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/report/generateReport/', {
                 method: 'GET',
                 headers: {},
             });

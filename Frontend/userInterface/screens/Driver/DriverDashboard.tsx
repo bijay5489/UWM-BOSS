@@ -40,7 +40,7 @@ const DriverDashboard: React.FC = () => {
             const storedUsername = await AsyncStorage.getItem('username');
             if (storedUsername) {
                 const response = await fetch(
-                    `http://127.0.0.1:8000/api/rides/get-by-driver-id/${storedUsername}/status/in_progress/`
+                    `https://mohammadalsheikh.pythonanywhere.com/api/rides/get-by-driver-id/${storedUsername}/status/in_progress/`
                 );
                 if (response.status === 200) {
                     setHasNotification(true);

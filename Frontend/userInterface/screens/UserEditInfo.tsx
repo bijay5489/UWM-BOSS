@@ -38,7 +38,7 @@ const UserEditInfo: React.FC = () => {
     const fetchUserDetails = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/manage-users/?username=${username}`);
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/manage-users/?username=${username}`);
             const data = await response.json();
             if (response.ok && data.length > 0) {
                 const userData = data[0];
@@ -73,7 +73,7 @@ const UserEditInfo: React.FC = () => {
         }
         const email = `${emailPrefix}@uwm.edu`;
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/manage-users/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -112,7 +112,7 @@ const UserEditInfo: React.FC = () => {
         if (Platform.OS === 'web') {
             if (window.confirm("Are you sure? This action cannot be undone.")) {
                 try {
-                    const response = await fetch(`http://127.0.0.1:8000/api/manage-users/`, {
+                    const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/manage-users/`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
