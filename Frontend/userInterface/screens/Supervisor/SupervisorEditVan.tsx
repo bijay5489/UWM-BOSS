@@ -19,7 +19,7 @@ const styles = { ...baseStyles, ...userPageStyles };
 const SupervisorEditVan: React.FC = () => {
   const route = useRoute();
   const { id } = route.params as { id: number };  // Get van id from route params
-  const [van, setVan] = useState({ van_number: '', is_ada_accessible: false, driver: ''});
+  const [van, setVan] = useState({ van_number: '', ADA: false, driver: ''});
   const [drivers, setDrivers] = useState<any[]>([]); // Store list of available drivers
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
@@ -140,15 +140,17 @@ const SupervisorEditVan: React.FC = () => {
       <View style={styles.inputContainer}>
         <Text style={styles.label}>ADA Accessible:</Text>
         <Switch
-          value={van.is_ada_accessible}
-          onValueChange={(value) => setVan({ ...van, is_ada_accessible: value })}
+          value={van.ADA}
+          onValueChange={(value) => setVan({ ...van, ADA: value })}
         />
       </View>
 
       {/* Driver selection dropdown */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Driver:</Text>
-        <Text style={styles.input}>{van.driver.name}</Text>
+        <Text style={styles.input}>
+          {van.driver ? van.driver.name : 'No driver assigned'}
+        </Text>
         <Picker
           selectedValue={van.driver}
           onValueChange={(itemValue: any) => setVan({ ...van, driver: itemValue })}

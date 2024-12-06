@@ -55,7 +55,7 @@ class VanManagement:
             return False
 
         for field in ['ADA', 'driver']:
-            if field in info:
+            if field in info and info[field] not in [None, '']:
                 setattr(van, field, info[field])
 
         van.save()
