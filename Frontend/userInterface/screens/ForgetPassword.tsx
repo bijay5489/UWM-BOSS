@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from "@react-navigation/stack";
@@ -18,6 +18,23 @@ const ForgetPassword: React.FC = () => {
     const [password, setPassword] = useState('');
     const [RePassword, setRePassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [unmetRequirements, setUnmetRequirements] = useState<string[]>([]);
+
+    const passwordRequirements = [
+        { test: (pw: string) => pw.length >= 8, message: "At least 8 characters long" },
+        { test: (pw: string) => /[A-Z]/.test(pw), message: "At least one uppercase letter" },
+        { test: (pw: string) => /[a-z]/.test(pw), message: "At least one lowercase letter" },
+        { test: (pw: string) => /[0-9]/.test(pw), message: "At least one number" },
+        { test: (pw: string) => /[@#!<%]/.test(pw), message: "At least one special character (@,#,!<%)" },
+    ];
+
+    useEffect(() => {
+        const unmet = passwordRequirements
+            .filter(req => !req.test(password))
+            .map(req => req.message);
+
+        setUnmetRequirements(unmet);
+    }, [password]);
 
     const handleForgetPassword = async () => {
         if (!username) {
@@ -26,6 +43,10 @@ const ForgetPassword: React.FC = () => {
         }
         if (password != RePassword) {
             setErrorMessage('Passwords do not match, re-enter your new password.');
+            return;
+        }
+
+        if (unmetRequirements.length > 0) {
             return;
         }
 
@@ -70,6 +91,16 @@ const ForgetPassword: React.FC = () => {
                 style={styles.input}
                 placeholderTextColor="gray"
             />
+            {/* Display unmet requirements */}
+            {unmetRequirements.length > 0 && (
+                <View style={{marginVertical: 5}}>
+                    {unmetRequirements.map((req, index) => (
+                        <Text key={index} style={{color: 'red', fontSize: 12}}>
+                            • {req}
+                        </Text>
+                    ))}
+                </View>
+            )}
             <TextInput
                 placeholder="Re-enter Password"
                 onChangeText={setRePassword}
