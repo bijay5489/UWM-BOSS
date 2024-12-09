@@ -94,6 +94,7 @@ const DisplayRideInfo: React.FC<DisplayRideInfoProps> = ({route}) => {
 
             if (response.ok) {
                 await AsyncStorage.setItem('inProgress', 'false');
+                setIsModalVisible(false);
                 navigation.navigate('RiderDashboard');
             } else {
                 showAlert('Error', 'Failed to cancel ride.');

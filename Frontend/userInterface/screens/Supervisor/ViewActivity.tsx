@@ -22,14 +22,15 @@ type Ride = {
     passengers: string;
     status: string;
     reason: string;
+    pickup_time: string;
 };
 
-type ViewLogsNavigationProp = StackNavigationProp<RootStackParamList, 'ViewLogs'>;
+type ViewActivityNavigationProp = StackNavigationProp<RootStackParamList, 'ViewActivity'>;
 
 const ViewLogs: React.FC = () => {
     const [rides, setRides] = useState<Ride[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const navigation = useNavigation<ViewLogsNavigationProp>();
+    const navigation = useNavigation<ViewActivityNavigationProp>();
 
     useFocusEffect(
         React.useCallback(() => {
@@ -40,7 +41,7 @@ const ViewLogs: React.FC = () => {
     const fetchRides = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/get-all/${'in_progress'}`);
+            const response = await fetch('https://mohammadalsheikh.pythonanywhere.com/api/rides/get-all/completed,cancelled');
             const data = await response.json();
             setRides(data);
         } catch (error) {
@@ -74,7 +75,7 @@ const ViewLogs: React.FC = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back-circle" size={30} color="black"/>
                 </TouchableOpacity>
-                <ThemedText type="title" style={styles.headerText}>Ride Logs</ThemedText>
+                <ThemedText type="title" style={styles.headerText}>Activity</ThemedText>
             </View>
 
             {/* Content Area */}
@@ -86,7 +87,7 @@ const ViewLogs: React.FC = () => {
                         <Card
                             key={ride.id}
                             title={getRideStatus(ride.status)}
-                            description={`Rider: ${ride.riderName}\nDriver: ${ride.driverName}\nVan: ${ride.van}\nPickup Location: ${ride.pickup_location}\nDropoff Location: ${ride.dropoff_location}${ride.status === 'cancelled' ? `\nReason: ${ride.reason}` : ''}`}
+                            description={`Rider: ${ride.riderName}\nDriver: ${ride.driverName}\nVan: ${ride.van}\nPickup Location: ${ride.pickup_location}\nDropoff Location: ${ride.dropoff_location}\nPickup Time: ${ride.pickup_time}${ride.status === 'cancelled' ? `\nReason: ${ride.reason}` : ''}`}
                             buttonLabel={undefined} onPress={undefined}
                             iconName="car-sport"
                         />

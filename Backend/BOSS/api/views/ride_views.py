@@ -42,6 +42,8 @@ def location_search(request):
 
 @api_view(['GET'])
 def get_all_rides(request, rstatus):
+    if isinstance(rstatus, str):
+        rstatus = rstatus.split(',')
     rides = Ride.objects.exclude(status__in=rstatus)
     serializer = RideSerializer(rides, many=True)
     return Response(serializer.data)
