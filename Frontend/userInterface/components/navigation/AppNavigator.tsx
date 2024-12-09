@@ -24,6 +24,7 @@ import SupervisorVans from '@/screens/Supervisor/SupervisorVans';
 import SupervisorCreateVan from '@/screens/Supervisor/SupervisorCreateVan';
 import SupervisorEditVan from '@/screens/Supervisor/SupervisorEditVan';
 import ViewLogs from "@/screens/Supervisor/ViewLogs";
+import ViewActivity from "@/screens/Supervisor/ViewActivity";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -54,6 +55,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="SupervisorCreateVan" component={SupervisorCreateVan} />
         <Stack.Screen name="SupervisorEditVan" component={SupervisorEditVan} />
         <Stack.Screen name="ViewLogs" component={ViewLogs} />
+        <Stack.Screen name="ViewActivity" component={ViewActivity} />
     </Stack.Navigator>
     );
 };

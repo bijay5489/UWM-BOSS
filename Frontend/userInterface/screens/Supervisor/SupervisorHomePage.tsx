@@ -34,7 +34,7 @@ const SupervisorHomePage: React.FC = () => {
         {
             label: "View Activity",
             icon: "eye",
-            nav: 'CreateAccount',
+            nav: 'ViewActivity',
         },
         {
             label: "View Logs",

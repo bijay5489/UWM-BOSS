@@ -23,4 +23,5 @@ export type RootStackParamList = {
   SupervisorCreateVan: undefined;
   SupervisorEditVan: { id: number }
   ViewLogs: undefined;
+  ViewActivity: undefined;
 };
