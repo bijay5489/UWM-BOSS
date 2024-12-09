@@ -41,6 +41,9 @@ Before cloning and running the app, make sure you have the following installed:
 
 ## Installation
 
+### Important Note:
+The database used for the backend is global, meaning all changes will affect all users. Testers are encouraged to only delete or edit accounts that they have created. Please exercise caution when performing any operations on the database to avoid impacting other users.
+
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/your-username/uwm-boss.git
@@ -89,10 +92,10 @@ This guest account is intended for testing and demonstration purposes only.
 ## Support
 Something not working? Contact us below!
 - Shae Kuhnke:
-  - `shaejk29@gmail.com`
+  - Email: `shaejk29@gmail.com`
   - Discord: `rainy6721`
 - Mohammad Alsheikh:
-  - `mj.alsheikh24@gmail.com`
+  - Email: `mj.alsheikh24@gmail.com`
   - Discord: `devilnknight`
 
 ---
