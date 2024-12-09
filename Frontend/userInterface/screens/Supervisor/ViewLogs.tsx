@@ -88,7 +88,7 @@ const ViewLogs: React.FC = () => {
                             title={ride.id}
                             description={`Rider: ${ride.riderName}\nDriver: ${ride.driverName}\nVan: ${ride.van}\nPickup Location: ${ride.pickup_location}\nDropoff Location: ${ride.dropoff_location}\nStatus: ${getRideStatus(ride.status)}${ride.status === 'cancelled' ? `\nReason: ${ride.reason}` : ''}`}
                             buttonLabel={undefined} onPress={undefined}
-                            iconName="person"
+                            iconName="car-sport"
                         />
                     ))}
                 </ScrollView>
