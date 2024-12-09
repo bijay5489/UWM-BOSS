@@ -27,11 +27,6 @@ const SupervisorHomePage: React.FC = () => {
           nav: 'GenerateReport',
         },
         {
-            label: "Message Driver",
-            icon: "chatbubbles",
-            nav: 'CreateAccount',
-        },
-        {
             label: "View Activity",
             icon: "eye",
             nav: 'ViewActivity',
