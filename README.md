@@ -9,6 +9,7 @@ Welcome to the UWM BOSS app repository! This project is designed to enhance the 
 - [Installation](#installation)
 - [Running the App](#running-the-app)
 - [Supervisor Login Credentials](#supervisor-login-credentials)
+- [Support](#support)
 
 ---
 
@@ -82,3 +83,16 @@ To log in as a guest supervisor, use the following credentials:
 - **Password**: `Password@1`
 
 This guest account is intended for testing and demonstration purposes only.
+
+---
+
+## Support
+Something not working? Contact us below!
+- Shae Kuhnke:
+  - `shaejk29@gmail.com`
+  - Discord: `rainy6721`
+- Mohammad Alsheikh:
+  - `mj.alsheikh24@gmail.com`
+  - Discord: `devilnknight`
+
+---
