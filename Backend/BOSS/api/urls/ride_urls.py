@@ -16,7 +16,7 @@ urlpatterns = [
     path('delete/<int:ride_id>/', delete_ride),
     path('create/', create_ride),
     path('edit/<int:ride_id>', edit_ride),
-    path('get-all/', get_all_rides),
+    path('get-all/<str:rstatus>', get_all_rides),
     path('queue-position/<str:rider_id>/', get_queue_position),
     path('get-by-id/<str:ride_id>', get_ride_by_id),
 ]
