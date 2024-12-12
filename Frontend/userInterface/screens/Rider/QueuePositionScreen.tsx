@@ -11,7 +11,7 @@ type QueuePositionScreenProps = { route: RouteProp<RootStackParamList, 'Queue'>;
 
 const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
     const navigation = useNavigation<QueueScreenNavigationProp>();
-    const {queuePosition} = route.params;
+    const {queuePosition, rideId} = route.params;
     const [currentPosition, setCurrentPosition] = useState(queuePosition);
     const [ride_id, setRideId] = useState();
 
@@ -64,11 +64,22 @@ const QueuePositionScreen: React.FC<QueuePositionScreenProps> = ({route}) => {
 
     const deleteRide = async () => {
         try {
-            await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/delete/${ride_id}`, {
-                method: 'DELETE',
+            const updatedInfo = {status: 'cancelled', reason: 'Left the queue'};
+
+            const response = await fetch(`https://mohammadalsheikh.pythonanywhere.com/api/rides/edit/${rideId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedInfo),
             });
-            window.alert("Ride Deleted you have left the queue.");
-            navigation.navigate('RiderDashboard');
+
+            if (response.ok) {
+                await AsyncStorage.setItem('inProgress', 'false');
+                navigation.navigate('RiderDashboard');
+            } else {
+                window.alert("Failed to cancel ride");
+            }
         } catch (error) {
             console.error("Error deleting ride:", error);
         }
