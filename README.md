@@ -46,7 +46,7 @@ The database used for the backend is global, meaning all changes will affect all
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/uwm-boss.git
+git clone https://github.com/AlsheikhMohammmad/UWM-BOSS.git
 cd uwm-boss
 ```
 ## Running the app
