@@ -97,5 +97,6 @@ Something not working? Contact us below!
 - Mohammad Alsheikh:
   - Email: `mj.alsheikh24@gmail.com`
   - Discord: `devilnknight`
-
+- Bijay Panta
+  -Email: 'pantabijay@gmail.com'
 ---
